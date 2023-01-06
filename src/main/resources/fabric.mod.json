@@ -1,33 +1,33 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "dimensional-inventories",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Dimensional Inventories",
+  "description": "A Minecraft Fabric mod for keeping separate inventories across sets of dimensions.",
   "authors": [
-    "Me!"
+    "Thomilist"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/thomilist/dimensional-inventories/"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "MIT",
+  "icon": "assets/dimensionalinventories/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "net.thomilist.dimensionalinventories.DimensionalInventoriesMod"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "dimensionalinventories.mixins.json"
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.11",
+    "fabricloader": ">=0.14.12",
     "fabric-api": "*",
     "minecraft": "~1.19.3",
     "java": ">=17"
