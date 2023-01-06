@@ -2,7 +2,7 @@ package net.thomilist.dimensionalinventories;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
-import net.minecraft.util.ActionResult;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +21,22 @@ public class DimensionalInventoriesMod implements ModInitializer {
 
 		LOGGER.info("Dimensional Inventories initialised.");
 
+		ServerLifecycleEvents.SERVER_STARTING.register((server) ->
+		{
+			InventoryManager.onServerStart(server, LOGGER);
+		});
+
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) ->
 		{
-			LOGGER.info("Player crossed dimensions.");
+			String originDimensionName = origin.getRegistryKey().getValue().toString();
+			String destinationDimensionName = destination.getRegistryKey().getValue().toString();
 			
+			LOGGER.info(player.getName().getString() + " travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
+
+			InventoryManager.saveInventory(player, originDimensionName);
+			InventoryManager.clearInventory(player);
+			InventoryManager.loadInventory(player, destinationDimensionName);
+
 			return;
 		});
 	}
