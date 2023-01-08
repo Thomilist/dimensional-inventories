@@ -38,8 +38,8 @@ public class DimensionalInventoriesMod implements ModInitializer
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) ->
 		{
-			String originDimensionName = oldPlayer.getWorld().getDimensionKey().getValue().toString();
-			String destinationDimensionName = newPlayer.getWorld().getDimensionKey().getValue().toString();
+			String originDimensionName = oldPlayer.getWorld().getRegistryKey().getValue().toString();
+			String destinationDimensionName = newPlayer.getWorld().getRegistryKey().getValue().toString();
 
 			handleDimensionChange(newPlayer, originDimensionName, destinationDimensionName);
 
@@ -58,10 +58,25 @@ public class DimensionalInventoriesMod implements ModInitializer
 		else
 		{
 			LOGGER.info("The origin and destination dimensions are in different pools. Switching inventories...");
-			InventoryManager.saveInventory(player, originDimensionName);
+
+			String originDimensionPoolName;
+			String destinationDimensionPoolName;
+
+			try
+			{
+				originDimensionPoolName = DimensionPoolManager.getPoolWithDimension(originDimensionName).getName();
+				destinationDimensionPoolName = DimensionPoolManager.getPoolWithDimension(destinationDimensionName).getName();
+			}
+			catch (NullPointerException e)
+			{
+				LOGGER.warn("Not all dimensions are assigned a dimension pool. Player unaffected.");
+				return;
+			}
+
+			InventoryManager.saveInventory(player, originDimensionPoolName);
 			InventoryManager.clearInventory(player);
-			InventoryManager.loadInventory(player, destinationDimensionName);
-			player.changeGameMode(DimensionPoolManager.getGameModeOfDimension(destinationDimensionName));
+			InventoryManager.loadInventory(player, destinationDimensionPoolName);
+			player.changeGameMode(DimensionPoolManager.getGameModeOfDimensionPool(destinationDimensionPoolName));
 		}
 
 		return;

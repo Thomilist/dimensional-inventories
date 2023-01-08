@@ -38,8 +38,8 @@ public final class DimensionalInventoriesCommands {
                         .executes(context -> removeDimensionPool(context)))
                     .then(literal("dimension")
                         .then(argument("dimensionName", dimension())
-                            .then(literal("put")
-                                .executes(context -> putDimensionIntoPool(context)))
+                            .then(literal("assign")
+                                .executes(context -> assignDimensionToPool(context)))
                             .then(literal("remove")
                                 .executes(context -> removeDimensionFromPool(context)))))
                     .then(literal("gamemode")
@@ -49,7 +49,7 @@ public final class DimensionalInventoriesCommands {
 
     public static int printVersion(CommandContext<ServerCommandSource> context)
     {
-        final Text text = Text.literal("Dimensional Inventories v1.0.0 by Thomilist");
+        final Text text = Text.literal("Dimensional Inventories 1.0.0+1.19.3 by Thomilist");
         context.getSource().sendFeedback(text, false);
         return Command.SINGLE_SUCCESS;
     }
@@ -111,7 +111,7 @@ public final class DimensionalInventoriesCommands {
         return Command.SINGLE_SUCCESS;
     }
 
-    public static int putDimensionIntoPool(CommandContext<ServerCommandSource> context)
+    public static int assignDimensionToPool(CommandContext<ServerCommandSource> context)
     {
         String poolName = StringArgumentType.getString(context, "poolName");
         ServerWorld dimension;
@@ -129,7 +129,7 @@ public final class DimensionalInventoriesCommands {
         String dimensionName = dimension.getRegistryKey().getValue().toString();
         DimensionPoolManager.addDimensionToPool(poolName, dimensionName);
         DimensionPoolManager.saveToFile();
-        sendFeedback(context, "Put '" + dimensionName + "' into '" + poolName + "'.");
+        sendFeedback(context, "Assigned '" + dimensionName + "' to '" + poolName + "'.");
         return Command.SINGLE_SUCCESS;
     }
 

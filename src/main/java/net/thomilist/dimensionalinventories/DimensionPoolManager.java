@@ -6,11 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.ObjectUtils.Null;
 import org.slf4j.Logger;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.server.MinecraftServer;
@@ -135,7 +135,7 @@ public class DimensionPoolManager
 
     public static void saveToFile()
     {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String dimensionPoolsJson = gson.toJson(pools);
         
         try
@@ -257,6 +257,12 @@ public class DimensionPoolManager
     public static GameMode getGameModeOfDimension(String dimensionName)
     {
         DimensionPool pool = getPoolWithDimension(dimensionName);
+        return pool.getGameMode();
+    }
+
+    public static GameMode getGameModeOfDimensionPool(String dimensionPoolName)
+    {
+        DimensionPool pool = getPoolWithName(dimensionPoolName);
         return pool.getGameMode();
     }
 }

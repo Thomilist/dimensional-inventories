@@ -49,10 +49,10 @@ public class InventoryManager
         return;
     }
     
-    public static void saveInventory(ServerPlayerEntity player, String dimension)
+    public static void saveInventory(ServerPlayerEntity player, String dimensionPool)
     {
         String nbtString = getNbtStringOfInventory(player);
-        Path saveFile = getDimensionPlayerPath(player, dimension);
+        Path saveFile = getDimensionPoolPlayerPath(player, dimensionPool);
 
         if (saveFile == null)
         {
@@ -73,10 +73,10 @@ public class InventoryManager
         return;
     }
 
-    public static void loadInventory(ServerPlayerEntity player, String dimension)
+    public static void loadInventory(ServerPlayerEntity player, String dimensionPool)
     {
         String nbtString;
-        Path saveFile = getDimensionPlayerPath(player, dimension);
+        Path saveFile = getDimensionPoolPlayerPath(player, dimensionPool);
 
         if (saveFile == null)
         {
@@ -219,11 +219,9 @@ public class InventoryManager
         return nbtString;
     }
 
-    public static Path getDimensionPlayerPath(ServerPlayerEntity player, String dimension)
+    public static Path getDimensionPoolPlayerPath(ServerPlayerEntity player, String dimensionPool)
     {
-        dimension = dimension.replace(":", "-");
-
-        Path directory = saveDirectory.resolve(dimension);
+        Path directory = saveDirectory.resolve(dimensionPool);
         Path file = directory.resolve(player.getUuidAsString() + ".txt");
 
         try
