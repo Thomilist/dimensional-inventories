@@ -9,13 +9,16 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import static net.minecraft.command.argument.DimensionArgumentType.dimension;
+import static net.minecraft.command.argument.GameModeArgumentType.gameMode;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import net.minecraft.command.argument.DimensionArgumentType;
+import net.minecraft.command.argument.GameModeArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.world.GameMode;
 
 public final class DimensionalInventoriesCommands {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
@@ -38,7 +41,10 @@ public final class DimensionalInventoriesCommands {
                             .then(literal("put")
                                 .executes(context -> putDimensionIntoPool(context)))
                             .then(literal("remove")
-                                .executes(context -> removeDimensionFromPool(context))))))));
+                                .executes(context -> removeDimensionFromPool(context)))))
+                    .then(literal("gamemode")
+                        .then(argument("gameModeName", gameMode())
+                            .executes(context -> setDimensionPoolGameMode(context)))))));
     }
 
     public static int printVersion(CommandContext<ServerCommandSource> context)
@@ -79,7 +85,7 @@ public final class DimensionalInventoriesCommands {
     {
         String poolName = StringArgumentType.getString(context, "poolName");
 
-        if (DimensionPoolManager.createPool(poolName))
+        if (DimensionPoolManager.createPool(poolName, GameMode.SURVIVAL))
         {
             sendFeedback(context, "Unable to create pool '" + poolName + "'.");
             return -1;
@@ -163,6 +169,38 @@ public final class DimensionalInventoriesCommands {
 
         DimensionPoolManager.saveToFile();
         sendFeedback(context, "Removed '" + dimensionName + "' from '" + poolName + "'.");
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int setDimensionPoolGameMode(CommandContext<ServerCommandSource> context)
+    {
+        String poolName = StringArgumentType.getString(context, "poolName");
+        GameMode gameMode;
+        
+        try
+        {
+            gameMode = GameModeArgumentType.getGameMode(context, "gameModeName");
+        }
+        catch (CommandSyntaxException e)
+        {
+            sendFeedback(context, "Invalid gamemode.");
+            return -1;
+        }
+
+        DimensionPool pool;
+
+        try
+        {
+            pool = DimensionPoolManager.getPoolWithName(poolName);
+        }
+        catch (NullPointerException e)
+        {
+            sendFeedback(context, "Unable to fetch pool '" + poolName + "'.");
+            return -1;
+        }
+
+        pool.setGameMode(gameMode);
+        sendFeedback(context, "Gamemode '" + gameMode.asString() + "' set for dimension pool '" + poolName + "'.");
         return Command.SINGLE_SUCCESS;
     }
 

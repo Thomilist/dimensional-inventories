@@ -15,6 +15,7 @@ import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
+import net.minecraft.world.GameMode;
 
 public class DimensionPoolManager
 {
@@ -42,15 +43,7 @@ public class DimensionPoolManager
 
         DimensionPoolManager.saveFile = saveDirectory.resolve("dimension-pools.json");
         loadFromFile();
-        //test();
 
-        return;
-    }
-
-    public static void test()
-    {
-        createPool("test");
-        addDimensionToPool("test", "minecraft:the_end");
         return;
     }
 
@@ -62,7 +55,7 @@ public class DimensionPoolManager
             "minecraft:the_end"
         };
 
-        createPool("default");
+        createPool("default", GameMode.SURVIVAL);
 
         for (String dimension : defaultDimensions)
         {
@@ -72,14 +65,14 @@ public class DimensionPoolManager
         return;
     }
 
-    public static boolean createPool(String poolName)
+    public static boolean createPool(String poolName, GameMode poolGameMode)
     {
         if (poolExists(poolName))
         {
             return true;
         }
         
-        DimensionPool pool = new DimensionPool(poolName);
+        DimensionPool pool = new DimensionPool(poolName, poolGameMode);
         pools.add(pool);
 
         return false;
@@ -246,5 +239,24 @@ public class DimensionPoolManager
         }
 
         return false;
+    }
+
+    public static DimensionPool getPoolWithDimension(String dimensionName) throws NullPointerException
+    {
+        for (DimensionPool pool : getPools())
+        {
+            if (pool.getDimensions().contains(dimensionName))
+            {
+                return pool;
+            }
+        }
+
+        throw new NullPointerException("No dimension pool contains the dimension '" + dimensionName + "'.");
+    }
+
+    public static GameMode getGameModeOfDimension(String dimensionName)
+    {
+        DimensionPool pool = getPoolWithDimension(dimensionName);
+        return pool.getGameMode();
     }
 }

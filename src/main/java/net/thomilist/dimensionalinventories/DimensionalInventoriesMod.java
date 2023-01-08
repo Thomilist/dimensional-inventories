@@ -61,6 +61,7 @@ public class DimensionalInventoriesMod implements ModInitializer
 			InventoryManager.saveInventory(player, originDimensionName);
 			InventoryManager.clearInventory(player);
 			InventoryManager.loadInventory(player, destinationDimensionName);
+			player.changeGameMode(DimensionPoolManager.getGameModeOfDimension(destinationDimensionName));
 		}
 
 		return;
