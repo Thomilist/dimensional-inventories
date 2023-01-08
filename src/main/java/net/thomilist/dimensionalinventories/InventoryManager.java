@@ -1,9 +1,9 @@
 package net.thomilist.dimensionalinventories;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ListIterator;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EnderChestInventory;
@@ -13,7 +13,6 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.WorldSavePath;
-import net.minecraft.util.math.MathHelper;
 
 import org.slf4j.Logger;
 
@@ -21,8 +20,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class InventoryManager
 {
-    private static Path saveDirectory;
     public static Logger LOGGER;
+    private static Path saveDirectory;
 
     public static void onServerStart(MinecraftServer server, Logger logger)
     {
@@ -46,6 +45,7 @@ public class InventoryManager
         player.getInventory().clear();
         player.getEnderChestInventory().clear();
         ExperienceHelper.setExperience(player, 0);
+        player.clearStatusEffects();
         return;
     }
     
@@ -86,6 +86,11 @@ public class InventoryManager
         try
         {
             nbtString = Files.readString(saveFile);
+        }
+        catch (FileNotFoundException e)
+        {
+            LOGGER.warn("Inventory data file not found. It will be created when the player leaves the dimension.");
+            return;
         }
         catch (IOException e)
         {

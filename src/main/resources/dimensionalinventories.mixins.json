@@ -6,7 +6,6 @@
   "mixins": [
   ],
   "client": [
-    "DimensionalInventoriesMixin"
   ],
   "injectors": {
     "defaultRequire": 1
