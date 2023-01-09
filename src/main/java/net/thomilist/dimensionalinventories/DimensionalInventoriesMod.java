@@ -20,8 +20,8 @@ public class DimensionalInventoriesMod implements ModInitializer
 	{
 		ServerLifecycleEvents.SERVER_STARTING.register((server) ->
 		{
-			InventoryManager.onServerStart(server, LOGGER);
-			DimensionPoolManager.onServerStart(server, LOGGER);
+			InventoryManager.onServerStart(server);
+			DimensionPoolManager.onServerStart(server);
 			LOGGER.info("Dimensional Inventories initialised.");
 		});
 
@@ -105,13 +105,10 @@ public class DimensionalInventoriesMod implements ModInitializer
 		{
 			LOGGER.info("The origin and destination dimensions are in different pools. Deleting entity...");
 
-			String originDimensionPoolName;
-			String destinationDimensionPoolName;
-
 			try
 			{
-				originDimensionPoolName = DimensionPoolManager.getPoolWithDimension(originDimensionName).getName();
-				destinationDimensionPoolName = DimensionPoolManager.getPoolWithDimension(destinationDimensionName).getName();
+				DimensionPoolManager.getPoolWithDimension(originDimensionName).getName();
+				DimensionPoolManager.getPoolWithDimension(destinationDimensionName).getName();
 			}
 			catch (NullPointerException e)
 			{

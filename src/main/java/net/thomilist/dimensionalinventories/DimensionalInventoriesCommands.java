@@ -1,9 +1,11 @@
 package net.thomilist.dimensionalinventories;
 
 //import static com.mojang.brigadier.arguments.StringArgumentType.getString;
+import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -44,7 +46,10 @@ public final class DimensionalInventoriesCommands {
                                 .executes(context -> removeDimensionFromPool(context)))))
                     .then(literal("gamemode")
                         .then(argument("gameModeName", gameMode())
-                            .executes(context -> setDimensionPoolGameMode(context)))))));
+                            .executes(context -> setDimensionPoolGameMode(context))))
+                    .then(literal("progressAdvancements")
+                        .then(argument("progressAdvancements", bool())
+                            .executes(context -> setProgressAdvancementsInPool(context)))))));
     }
 
     public static int printVersion(CommandContext<ServerCommandSource> context)
@@ -201,6 +206,37 @@ public final class DimensionalInventoriesCommands {
 
         pool.setGameMode(gameMode);
         sendFeedback(context, "Gamemode '" + gameMode.asString() + "' set for dimension pool '" + poolName + "'.");
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int setProgressAdvancementsInPool(CommandContext<ServerCommandSource> context)
+    {
+        String poolName = StringArgumentType.getString(context, "poolName");
+        boolean progressAdvancements = BoolArgumentType.getBool(context, "progressAdvancements");
+
+        DimensionPool pool;
+
+        try
+        {
+            pool = DimensionPoolManager.getPoolWithName(poolName);
+        }
+        catch (NullPointerException e)
+        {
+            sendFeedback(context, "Unable to fetch pool '" + poolName + "'.");
+            return -1;
+        }
+
+        pool.setProgressAdvancements(progressAdvancements);
+
+        if (progressAdvancements)
+        {
+            sendFeedback(context, "Players can now progress advancements while in the dimension pool '" + poolName + "'.");
+        }
+        else
+        {
+            sendFeedback(context, "Players can no longer progress advancements while in the dimension pool '" + poolName + "'.");
+        }
+
         return Command.SINGLE_SUCCESS;
     }
 

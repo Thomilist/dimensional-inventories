@@ -6,8 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,7 +17,6 @@ import net.minecraft.world.GameMode;
 
 public class DimensionPoolManager
 {
-    public static Logger LOGGER;
     private static Path saveFile;
     private static ArrayList<DimensionPool> pools = new ArrayList<DimensionPool>();
     private static Type listType = new TypeToken<ArrayList<DimensionPool>>(){}.getType();
@@ -27,10 +24,8 @@ public class DimensionPoolManager
     public DimensionPoolManager()
     { }
     
-    public static void onServerStart(MinecraftServer server, Logger logger)
+    public static void onServerStart(MinecraftServer server)
     {
-        DimensionPoolManager.LOGGER = logger;
-
         Path saveDirectory = server.getSavePath(WorldSavePath.ROOT).resolve("dimensionalinventories");
         try
         {
@@ -111,14 +106,14 @@ public class DimensionPoolManager
 
         if (poolIndex >= pools.size())
         {
-            LOGGER.error("Pool " + pool + " not found.");
+            DimensionalInventoriesMod.LOGGER.error("Pool " + pool + " not found.");
             return;
         }
 
         // Exit early if the dimension is already in the pool
         if (pools.get(poolIndex).getDimensions().contains(dimension))
         {
-            LOGGER.info("Dimension " + dimension + " is already in pool " + pool + ".");
+            DimensionalInventoriesMod.LOGGER.info("Dimension " + dimension + " is already in pool " + pool + ".");
             return;
         }
 
@@ -145,7 +140,7 @@ public class DimensionPoolManager
         catch (IOException e)
         {
             e.printStackTrace();
-            LOGGER.error("Unable to write to dimension pool file.", e);
+            DimensionalInventoriesMod.LOGGER.error("Unable to write to dimension pool file.", e);
             return;
         }
 
@@ -176,7 +171,7 @@ public class DimensionPoolManager
         catch (JsonSyntaxException e)
         {
             e.printStackTrace();
-            LOGGER.error("Invalid JSON syntax.", e);
+            DimensionalInventoriesMod.LOGGER.error("Invalid JSON syntax.", e);
             return;
         }
 

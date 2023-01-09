@@ -14,19 +14,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.WorldSavePath;
 
-import org.slf4j.Logger;
-
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class InventoryManager
 {
-    public static Logger LOGGER;
     private static Path saveDirectory;
 
-    public static void onServerStart(MinecraftServer server, Logger logger)
+    public static void onServerStart(MinecraftServer server)
     {
-        InventoryManager.LOGGER = logger;
-
         InventoryManager.saveDirectory = server.getSavePath(WorldSavePath.ROOT).resolve("dimensionalinventories");
         try
         {
@@ -66,7 +61,7 @@ public class InventoryManager
         catch (IOException e)
         {
             e.printStackTrace();
-            LOGGER.error("Error while writing inventory data.", e);
+            DimensionalInventoriesMod.LOGGER.error("Error while writing inventory data.", e);
             return;
         }
 
@@ -89,13 +84,13 @@ public class InventoryManager
         }
         catch (FileNotFoundException e)
         {
-            LOGGER.warn("Inventory data file not found. It will be created when the player leaves the dimension.");
+            DimensionalInventoriesMod.LOGGER.warn("Inventory data file not found. It will be created when the player leaves the dimension.");
             return;
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            LOGGER.error("Error while reading inventory data.", e);
+            DimensionalInventoriesMod.LOGGER.error("Error while reading inventory data.", e);
             return;
         }
 
@@ -103,7 +98,7 @@ public class InventoryManager
 
         if (nbtArray.length < 68)
         {
-            LOGGER.error("Invalid inventory data.");
+            DimensionalInventoriesMod.LOGGER.error("Invalid inventory data.");
             return;
         }
 
@@ -214,7 +209,7 @@ public class InventoryManager
         String nbtString = nbt.toString();
         nbtString = nbtString.replace(" : ", ": ");
 
-        InventoryManager.LOGGER.debug("NBT: " + nbtString);
+        DimensionalInventoriesMod.LOGGER.debug("NBT: " + nbtString);
 
         return nbtString;
     }
@@ -236,7 +231,7 @@ public class InventoryManager
         catch (IOException e)
         {
             e.printStackTrace();
-            LOGGER.error("File path error.", e);
+            DimensionalInventoriesMod.LOGGER.error("File path error.", e);
             return null;
         }
 
@@ -254,7 +249,7 @@ public class InventoryManager
         catch (CommandSyntaxException e)
         {
             e.printStackTrace();
-            LOGGER.error("Syntax error in inventory data", e);
+            DimensionalInventoriesMod.LOGGER.error("Syntax error in inventory data", e);
             return null;
         }
 

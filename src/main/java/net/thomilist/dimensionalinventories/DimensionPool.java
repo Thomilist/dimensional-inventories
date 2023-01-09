@@ -9,6 +9,7 @@ public class DimensionPool
     private String name;
     private ArrayList<String> dimensions = new ArrayList<String>();
     private GameMode gameMode;
+    private boolean progressAdvancements = true;
 
     public DimensionPool(String poolName, GameMode poolGameMode)
     {
@@ -58,16 +59,35 @@ public class DimensionPool
         return gameMode;
     }
 
+    public void setProgressAdvancements(boolean setting)
+    {
+        progressAdvancements = setting;
+        return;
+    }
+
+    public boolean canProgressAdvancements()
+    {
+        return progressAdvancements;
+    }
+
     public String asString()
     {
         StringBuilder dimensionPoolString = new StringBuilder();
 
-        dimensionPoolString.append("\n").append(getName());
-        dimensionPoolString.append(" [").append(getGameMode().asString()).append("]");
+        // Dimension pool header
+        dimensionPoolString.append("\n[").append(getName()).append("]");
+
+        // Rules
+        dimensionPoolString.append("\n    Rules:");
+        dimensionPoolString.append("\n        Gamemode: ").append(getGameMode().asString());
+        dimensionPoolString.append("\n        Progress advancements: ").append(canProgressAdvancements());
+
+        // Dimensions
+        dimensionPoolString.append("\n    Dimensions:");
 
         for (String dimension : getDimensions())
         {
-            dimensionPoolString.append("\n    ").append(dimension);
+            dimensionPoolString.append("\n        ").append(dimension);
         }
 
         return dimensionPoolString.toString();
