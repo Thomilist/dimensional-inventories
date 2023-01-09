@@ -22,7 +22,7 @@ All other commands require permission level 4 (operator).
 
 ### Managing Dimension Pools
 
-List all dimension pools, their gamemode and the dimensions they contain:
+List all dimension pools, their gamemodes and the dimensions they contain:
 ```
 diminv list
 ```
