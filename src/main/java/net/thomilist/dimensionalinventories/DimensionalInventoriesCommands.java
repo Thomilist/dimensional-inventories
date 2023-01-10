@@ -205,6 +205,7 @@ public final class DimensionalInventoriesCommands {
         }
 
         pool.setGameMode(gameMode);
+        DimensionPoolManager.saveToFile();
         sendFeedback(context, "Gamemode '" + gameMode.asString() + "' set for dimension pool '" + poolName + "'.");
         return Command.SINGLE_SUCCESS;
     }
@@ -227,6 +228,7 @@ public final class DimensionalInventoriesCommands {
         }
 
         pool.setProgressAdvancements(progressAdvancements);
+        DimensionPoolManager.saveToFile();
 
         if (progressAdvancements)
         {

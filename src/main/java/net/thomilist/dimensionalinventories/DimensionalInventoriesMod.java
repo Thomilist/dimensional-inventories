@@ -95,14 +95,9 @@ public class DimensionalInventoriesMod implements ModInitializer
 
 	public static void handleEntityDimensionChange(Entity newEntity, String originDimensionName, String destinationDimensionName)
 	{
-		LOGGER.info("Entity '" + newEntity.getName().getString() + "' travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
-
-		if (DimensionPoolManager.samePoolContainsBoth(originDimensionName, destinationDimensionName))
+		if (!DimensionPoolManager.samePoolContainsBoth(originDimensionName, destinationDimensionName))
 		{
-			LOGGER.info("The origin and destination dimensions are in the same pool. Entity unaffected.");
-		}
-		else
-		{
+			LOGGER.info("Entity '" + newEntity.getName().getString() + "' travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
 			LOGGER.info("The origin and destination dimensions are in different pools. Deleting entity...");
 
 			try
