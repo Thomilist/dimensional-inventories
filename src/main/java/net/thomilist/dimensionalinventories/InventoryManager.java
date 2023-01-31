@@ -19,6 +19,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class InventoryManager
 {
     private static Path saveDirectory;
+    private static int expectedInventoryDataLines = 73;
 
     public static void onServerStart(MinecraftServer server)
     {
@@ -40,6 +41,7 @@ public class InventoryManager
         player.getInventory().clear();
         player.getEnderChestInventory().clear();
         ExperienceHelper.setExperience(player, 0);
+        player.setScore(0);
         player.clearStatusEffects();
         return;
     }
@@ -96,69 +98,76 @@ public class InventoryManager
 
         String[] nbtArray = nbtString.split("\\n");
 
-        if (nbtArray.length < 68)
-        {
-            DimensionalInventoriesMod.LOGGER.error("Invalid inventory data.");
-            return;
-        }
-
         PlayerInventory inventory = player.getInventory();
         EnderChestInventory enderChest = player.getEnderChestInventory();
         int index = 0;
 
-        for (int i = 0; i < inventory.armor.size(); i++)
+        try
         {
-            NbtCompound nbt = getNbtFromString(nbtArray[index++]);
-
-            if (nbt == null)
+            for (int i = 0; i < inventory.armor.size(); i++)
             {
-                return;
+                NbtCompound nbt = getNbtFromString(nbtArray[index++]);
+
+                if (nbt == null)
+                {
+                    return;
+                }
+
+                inventory.armor.set(i, ItemStack.fromNbt(nbt));
             }
 
-            inventory.armor.set(i, ItemStack.fromNbt(nbt));
-        }
-
-        for (int i = 0; i < inventory.main.size(); i++)
-        {
-            NbtCompound nbt = getNbtFromString(nbtArray[index++]);
-
-            if (nbt == null)
+            for (int i = 0; i < inventory.main.size(); i++)
             {
-                return;
+                NbtCompound nbt = getNbtFromString(nbtArray[index++]);
+
+                if (nbt == null)
+                {
+                    return;
+                }
+
+                inventory.main.set(i, ItemStack.fromNbt(nbt));
             }
 
-            inventory.main.set(i, ItemStack.fromNbt(nbt));
-        }
-
-        for (int i = 0; i < inventory.offHand.size(); i++)
-        {
-            NbtCompound nbt = getNbtFromString(nbtArray[index++]);
-
-            if (nbt == null)
+            for (int i = 0; i < inventory.offHand.size(); i++)
             {
-                return;
+                NbtCompound nbt = getNbtFromString(nbtArray[index++]);
+
+                if (nbt == null)
+                {
+                    return;
+                }
+
+                inventory.offHand.set(i, ItemStack.fromNbt(nbt));
             }
 
-            inventory.offHand.set(i, ItemStack.fromNbt(nbt));
-        }
-
-        for (int i = 0; i < enderChest.stacks.size(); i++)
-        {
-            NbtCompound nbt = getNbtFromString(nbtArray[index++]);
-
-            if (nbt == null)
+            for (int i = 0; i < enderChest.stacks.size(); i++)
             {
-                return;
+                NbtCompound nbt = getNbtFromString(nbtArray[index++]);
+
+                if (nbt == null)
+                {
+                    return;
+                }
+
+                enderChest.stacks.set(i, ItemStack.fromNbt(nbt));
             }
 
-            enderChest.stacks.set(i, ItemStack.fromNbt(nbt));
+            int experiencePoints = Integer.parseInt(nbtArray[index++]);
+            ExperienceHelper.setExperience(player, experiencePoints);
+
+            int score = Integer.parseInt(nbtArray[index++]);
+            player.setScore(score);
+
+            player.getHungerManager().setFoodLevel(Integer.parseInt(nbtArray[index++]));
+            player.getHungerManager().setSaturationLevel(Float.parseFloat(nbtArray[index++]));
+            player.getHungerManager().setExhaustion(Float.parseFloat(nbtArray[index++]));
+
+            player.setHealth(Float.parseFloat(nbtArray[index++]));
         }
-
-        int experiencePoints = Integer.parseInt(nbtArray[index++]);
-        ExperienceHelper.setExperience(player, experiencePoints);
-
-        int score = Integer.parseInt(nbtArray[index++]);
-        player.setScore(score);
+        catch (IndexOutOfBoundsException e)
+        {
+            DimensionalInventoriesMod.LOGGER.warn("Expected " + expectedInventoryDataLines + " lines of inventory data, but found only " + nbtArray.length + ".");
+        }
 
         return;
     }
@@ -190,8 +199,14 @@ public class InventoryManager
             nbtString.append(getNbtStringOfItemStack(enderChestSlot)).append("\n");
         }
 
-        nbtString.append(player.totalExperience).append("\n");
-        nbtString.append(player.getScore());
+        nbtString.append(ExperienceHelper.getTotalExperience_Meridanus(player.experienceLevel, player.getNextLevelExperience(), player.experienceProgress)).append("\n");
+        nbtString.append(player.getScore()).append("\n");
+
+        nbtString.append(player.getHungerManager().getFoodLevel()).append("\n");
+        nbtString.append(player.getHungerManager().getSaturationLevel()).append("\n");
+        nbtString.append(player.getHungerManager().getExhaustion()).append("\n");
+        
+        nbtString.append(player.getHealth()).append("\n");
 
         return nbtString.toString();
     }
