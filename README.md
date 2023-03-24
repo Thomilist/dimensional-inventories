@@ -1,6 +1,6 @@
 # Dimensional Inventories
 
-A Minecraft Fabric mod for keeping separate inventories across pools of dimensions. Originally developed to add a separate creative world to a survival server using a custom dimension datapack.
+A Minecraft Fabric mod for keeping separate inventories across pools of dimensions. Originally developed to add a separate creative world to a survival server using a custom dimension datapack (not included here).
 
 ## Basic Functionality
 

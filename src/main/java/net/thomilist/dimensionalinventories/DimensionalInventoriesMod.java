@@ -60,15 +60,15 @@ public class DimensionalInventoriesMod implements ModInitializer
 
 	public static void handlePlayerDimensionChange(ServerPlayerEntity player, String originDimensionName, String destinationDimensionName)
 	{
-		LOGGER.info("Player " + player.getName().getString() + " travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
+		LOGGER.debug("Player " + player.getName().getString() + " travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
 
 		if (DimensionPoolManager.samePoolContainsBoth(originDimensionName, destinationDimensionName))
 		{
-			LOGGER.info("The origin and destination dimensions are in the same pool. Player unaffected.");
+			LOGGER.debug("The origin and destination dimensions are in the same pool. Player unaffected.");
 		}
 		else
 		{
-			LOGGER.info("The origin and destination dimensions are in different pools. Switching inventories...");
+			LOGGER.debug("The origin and destination dimensions are in different pools. Switching inventories...");
 
 			String originDimensionPoolName;
 			String destinationDimensionPoolName;
@@ -80,7 +80,7 @@ public class DimensionalInventoriesMod implements ModInitializer
 			}
 			catch (NullPointerException e)
 			{
-				LOGGER.warn("Not all dimensions are assigned a dimension pool. Player unaffected.");
+				LOGGER.warn("Not all dimensions are assigned a dimension pool. Player " + player.getName().getString() + " unaffected (" + originDimensionName + " -> " + destinationDimensionName + ").");
 				return;
 			}
 
@@ -97,8 +97,8 @@ public class DimensionalInventoriesMod implements ModInitializer
 	{
 		if (!DimensionPoolManager.samePoolContainsBoth(originDimensionName, destinationDimensionName))
 		{
-			LOGGER.info("Entity '" + newEntity.getName().getString() + "' travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
-			LOGGER.info("The origin and destination dimensions are in different pools. Deleting entity...");
+			LOGGER.debug("Entity '" + newEntity.getName().getString() + "' travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
+			LOGGER.debug("The origin and destination dimensions are in different pools. Deleting entity...");
 
 			try
 			{
@@ -107,7 +107,7 @@ public class DimensionalInventoriesMod implements ModInitializer
 			}
 			catch (NullPointerException e)
 			{
-				LOGGER.warn("Not all dimensions are assigned a dimension pool. Entity unaffected.");
+				LOGGER.warn("Not all dimensions are assigned a dimension pool. Entity" + newEntity.getName().getString() + "unaffected (" + originDimensionName + " -> " + destinationDimensionName + ").");
 				return;
 			}
 
