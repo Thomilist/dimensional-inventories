@@ -19,7 +19,7 @@ public class DimensionPoolManager
 {
     private static Path saveFile;
     private static ArrayList<DimensionPool> pools = new ArrayList<DimensionPool>();
-    private static Type listType = new TypeToken<ArrayList<DimensionPool>>(){}.getType();
+    private static final Type listType = new TypeToken<ArrayList<DimensionPool>>(){}.getType();
     
     public DimensionPoolManager()
     { }

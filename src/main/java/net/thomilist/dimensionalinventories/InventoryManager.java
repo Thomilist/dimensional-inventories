@@ -19,7 +19,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class InventoryManager
 {
     private static Path saveDirectory;
-    private static int expectedInventoryDataLines = 73;
+    private static final int expectedInventoryDataLines = 73;
 
     public static void onServerStart(MinecraftServer server)
     {
