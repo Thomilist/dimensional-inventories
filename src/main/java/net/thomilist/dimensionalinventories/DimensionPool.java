@@ -91,7 +91,7 @@ public class DimensionPool
 
         // Rules
         dimensionPoolString.append("\n    Rules:");
-        dimensionPoolString.append("\n        Gamemode: ").append(getGameMode().asString());
+        dimensionPoolString.append("\n        Gamemode: ").append(getGameMode().getName());
         dimensionPoolString.append("\n        Progress advancements: ").append(canProgressAdvancements());
         dimensionPoolString.append("\n        Increment statistics: ").append(canIncrementStatistics());
 

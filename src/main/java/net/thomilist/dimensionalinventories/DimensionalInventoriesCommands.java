@@ -11,12 +11,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import static net.minecraft.command.argument.DimensionArgumentType.dimension;
-import static net.minecraft.command.argument.GameModeArgumentType.gameMode;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import net.minecraft.command.argument.DimensionArgumentType;
-import net.minecraft.command.argument.GameModeArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
@@ -44,20 +42,30 @@ public final class DimensionalInventoriesCommands {
                                 .executes(context -> assignDimensionToPool(context)))
                             .then(literal("remove")
                                 .executes(context -> removeDimensionFromPool(context)))))
-                    .then(literal("gamemode")
-                        .then(argument("gameModeName", gameMode())
-                            .executes(context -> setDimensionPoolGameMode(context))))
                     .then(literal("progressAdvancements")
                         .then(argument("progressAdvancements", bool())
                             .executes(context -> setProgressAdvancementsInPool(context))))
                     .then(literal("incrementStatistics")
                         .then(argument("incrementStatistics", bool())
                             .executes(context -> setIncrementStatisticsInPool(context)))))));
+
+        for (GameMode gameMode : GameMode.values())
+        {
+            dispatcher.register(literal("diminv")
+                .requires(source -> source.hasPermissionLevel(4))
+                .then(literal("pool")
+                    .then(argument("poolName", word())
+                        .then(literal("gamemode")
+                            .then(literal(gameMode.getName())
+                                .executes(context -> setDimensionPoolGameMode(context, gameMode)))))));
+        }
+
+
     }
 
     public static int printVersion(CommandContext<ServerCommandSource> context)
     {
-        final Text text = Text.literal("Dimensional Inventories 1.0.1+1.19.4 by Thomilist");
+        final Text text = Text.literal("Dimensional Inventories 1.0.1+1.19.2 by Thomilist");
         context.getSource().sendFeedback(text, false);
         return Command.SINGLE_SUCCESS;
     }
@@ -180,21 +188,9 @@ public final class DimensionalInventoriesCommands {
         return Command.SINGLE_SUCCESS;
     }
 
-    public static int setDimensionPoolGameMode(CommandContext<ServerCommandSource> context)
+    public static int setDimensionPoolGameMode(CommandContext<ServerCommandSource> context, GameMode gameMode)
     {
         String poolName = StringArgumentType.getString(context, "poolName");
-        GameMode gameMode;
-        
-        try
-        {
-            gameMode = GameModeArgumentType.getGameMode(context, "gameModeName");
-        }
-        catch (CommandSyntaxException e)
-        {
-            sendFeedback(context, "Invalid gamemode.");
-            return -1;
-        }
-
         DimensionPool pool;
 
         try
@@ -209,7 +205,7 @@ public final class DimensionalInventoriesCommands {
 
         pool.setGameMode(gameMode);
         DimensionPoolManager.saveToFile();
-        sendFeedback(context, "Gamemode '" + gameMode.asString() + "' set for dimension pool '" + poolName + "'.");
+        sendFeedback(context, "Gamemode '" + gameMode.getName() + "' set for dimension pool '" + poolName + "'.");
         return Command.SINGLE_SUCCESS;
     }
 
