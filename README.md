@@ -70,3 +70,13 @@ Enable or disable incrementation of statistics for a dimension pool:
 ```
 diminv pool <pool_name> incrementStatistics <boolean>
 ```
+
+## Tips
+
+Accessing custom dimensions can be made easier with mods that provide warps, homes and other such teleports. For more convenient dimension hopping, players can also be allowed to teleport to their previous location - typically implemented with a `/back` command. An example of a mod that provides such functionality is [Essential Commands](https://modrinth.com/mod/essential-commands).
+
+On a survival server with a creative dimension, the creative dimension could be accessed with a warp. Players could then set a home in the creative dimension for easy access to their current project there, and they could quickly return to the survival world using a `/back` command. With this, players could easily design their builds in creative and use them as a reference when building them in survival.
+
+To manage access to these and other commands, it can be useful to assign permissions for different dimensions independently. This can be achieved with a permissions mod such as [LuckPerms](https://modrinth.com/mod/luckperms) - see their [wiki entry for contexts](https://luckperms.net/wiki/Context). Expanding on the teleport example, the `essentialcommands.warp.tp` and `essentialcommands.home.tp` permissions could be granted globally, while the `essentialcommands.home.set` and  `essentialcommands.back` permission could be granted only in the creative dimension.
+
+Use of [Vanilla Permissions](https://modrinth.com/mod/vanilla-permissions) or [Universal Perms](https://modrinth.com/mod/universal-perms) to expose additional permission nodes may also be useful in this context.
