@@ -63,7 +63,7 @@ public class DimensionalInventoriesMod implements ModInitializer
 
 	public static void handlePlayerDimensionChange(ServerPlayerEntity player, String originDimensionName, String destinationDimensionName)
 	{
-		LOGGER.debug("Player " + player.getName().getString() + " travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
+		LOGGER.debug("Player '" + player.getName().getString() + "' travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
 
 		if (DimensionPoolManager.samePoolContainsBoth(originDimensionName, destinationDimensionName))
 		{
