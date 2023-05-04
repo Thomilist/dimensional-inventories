@@ -1,6 +1,5 @@
 package net.thomilist.dimensionalinventories;
 
-//import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
 import com.mojang.brigadier.Command;
@@ -19,6 +18,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameMode;
+
+import java.util.Optional;
 
 public final class DimensionalInventoriesCommands {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
@@ -65,7 +66,7 @@ public final class DimensionalInventoriesCommands {
 
     public static int printVersion(CommandContext<ServerCommandSource> context)
     {
-        final Text text = Text.literal("Dimensional Inventories 1.0.1+1.19.2 by Thomilist");
+        final Text text = Text.literal("Dimensional Inventories 1.0.2+1.19.2 by Thomilist");
         context.getSource().sendFeedback(text, false);
         return Command.SINGLE_SUCCESS;
     }
@@ -80,20 +81,15 @@ public final class DimensionalInventoriesCommands {
     public static int listDimensionPool(CommandContext<ServerCommandSource> context)
     {
         String poolName = StringArgumentType.getString(context, "poolName");
-        Text text;
-        
-        try
+        Optional<DimensionPool> pool = DimensionPoolManager.getPoolWithName(poolName);
+
+        if (pool.isEmpty())
         {
-            text = Text.literal("Dimension pool:" + DimensionPoolManager.getPoolWithName(poolName).asString());
-        }
-        catch (NullPointerException e)
-        {
-            text = Text.literal(e.getMessage());
-            context.getSource().sendFeedback(text, false);
+            sendFeedback(context, "Unable to fetch pool '" + poolName + "'.");
             return -1;
         }
-        
-        context.getSource().sendFeedback(text, false);
+
+        sendFeedback(context, "Dimension pool:" + pool.get().asString());
         return Command.SINGLE_SUCCESS;
     }
 
@@ -165,19 +161,15 @@ public final class DimensionalInventoriesCommands {
         }
 
         String dimensionName = dimension.getRegistryKey().getValue().toString();
-        DimensionPool pool;
+        Optional<DimensionPool> pool = DimensionPoolManager.getPoolWithName(poolName);
 
-        try
-        {
-            pool = DimensionPoolManager.getPoolWithName(poolName);
-        }
-        catch (NullPointerException e)
+        if (pool.isEmpty())
         {
             sendFeedback(context, "Unable to fetch pool '" + poolName + "'.");
             return -1;
         }
 
-        if (pool.removeDimension(dimensionName))
+        if (pool.get().removeDimension(dimensionName))
         {
             sendFeedback(context, "'" + dimensionName + "' not found in '" + poolName + "'.");
             return 0;
@@ -191,19 +183,15 @@ public final class DimensionalInventoriesCommands {
     public static int setDimensionPoolGameMode(CommandContext<ServerCommandSource> context, GameMode gameMode)
     {
         String poolName = StringArgumentType.getString(context, "poolName");
-        DimensionPool pool;
+        Optional<DimensionPool> pool = DimensionPoolManager.getPoolWithName(poolName);
 
-        try
-        {
-            pool = DimensionPoolManager.getPoolWithName(poolName);
-        }
-        catch (NullPointerException e)
+        if (pool.isEmpty())
         {
             sendFeedback(context, "Unable to fetch pool '" + poolName + "'.");
             return -1;
         }
 
-        pool.setGameMode(gameMode);
+        pool.get().setGameMode(gameMode);
         DimensionPoolManager.saveToFile();
         sendFeedback(context, "Gamemode '" + gameMode.getName() + "' set for dimension pool '" + poolName + "'.");
         return Command.SINGLE_SUCCESS;
@@ -214,19 +202,15 @@ public final class DimensionalInventoriesCommands {
         String poolName = StringArgumentType.getString(context, "poolName");
         boolean progressAdvancements = BoolArgumentType.getBool(context, "progressAdvancements");
 
-        DimensionPool pool;
+        Optional<DimensionPool> pool = DimensionPoolManager.getPoolWithName(poolName);
 
-        try
-        {
-            pool = DimensionPoolManager.getPoolWithName(poolName);
-        }
-        catch (NullPointerException e)
+        if (pool.isEmpty())
         {
             sendFeedback(context, "Unable to fetch pool '" + poolName + "'.");
             return -1;
         }
 
-        pool.setProgressAdvancements(progressAdvancements);
+        pool.get().setProgressAdvancements(progressAdvancements);
         DimensionPoolManager.saveToFile();
 
         if (progressAdvancements)
@@ -246,19 +230,15 @@ public final class DimensionalInventoriesCommands {
         String poolName = StringArgumentType.getString(context, "poolName");
         boolean incrementStatistics = BoolArgumentType.getBool(context, "incrementStatistics");
 
-        DimensionPool pool;
+        Optional<DimensionPool> pool = DimensionPoolManager.getPoolWithName(poolName);
 
-        try
-        {
-            pool = DimensionPoolManager.getPoolWithName(poolName);
-        }
-        catch (NullPointerException e)
+        if (pool.isEmpty())
         {
             sendFeedback(context, "Unable to fetch pool '" + poolName + "'.");
             return -1;
         }
 
-        pool.setIncrementStatistics(incrementStatistics);
+        pool.get().setIncrementStatistics(incrementStatistics);
         DimensionPoolManager.saveToFile();
 
         if (incrementStatistics)

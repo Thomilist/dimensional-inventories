@@ -1,5 +1,6 @@
 package net.thomilist.dimensionalinventories.mixin;
 
+import net.thomilist.dimensionalinventories.LogThrottler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,10 +18,14 @@ import net.minecraft.world.World;
 import net.thomilist.dimensionalinventories.DimensionPool;
 import net.thomilist.dimensionalinventories.DimensionPoolManager;
 
+import java.util.Optional;
+
 @Mixin(PlayerEntity.class)
 public abstract class DisableStatisticIncrementMixin
 extends LivingEntity
 {
+    private static LogThrottler logThrottler = new LogThrottler(10000);
+
     public DisableStatisticIncrementMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super((EntityType<? extends LivingEntity>)EntityType.PLAYER, world);
     }
@@ -28,9 +33,18 @@ extends LivingEntity
     public boolean canPoolIncrementStatistics()
     {
         String dimensionName = this.getWorld().getRegistryKey().getValue().toString();
-        DimensionPool pool = DimensionPoolManager.getPoolWithDimension(dimensionName);
-        return pool.canIncrementStatistics();
+        Optional<DimensionPool> pool = DimensionPoolManager.getPoolWithDimension(dimensionName, logThrottler.get());
+
+        if (pool.isPresent())
+        {
+            return pool.get().canIncrementStatistics();
+        }
+        else
+        {
+            return true;
+        }
     }
+
     
     @Inject(at = @At("HEAD"), method = "incrementStat(Lnet/minecraft/util/Identifier;)V", cancellable = true)
     public void incrementStat(Identifier stat, CallbackInfo info)
