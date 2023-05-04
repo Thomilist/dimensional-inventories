@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -180,7 +181,7 @@ public class DimensionPoolManager
 
     public static boolean samePoolContainsBoth(String dimensionA, String dimensionB)
     {
-        for (DimensionPool pool : pools)
+        for (DimensionPool pool : getPools())
         {
             if (pool.getDimensions().contains(dimensionA) && pool.getDimensions().contains(dimensionB))
             {
@@ -210,17 +211,18 @@ public class DimensionPoolManager
         return poolsString.toString();
     }
 
-    public static DimensionPool getPoolWithName(String poolName) throws NullPointerException
+    public static Optional<DimensionPool> getPoolWithName(String poolName)
     {
         for (DimensionPool pool : getPools())
         {
             if (pool.getName().equals(poolName))
             {
-                return pool;
+                return Optional.of(pool);
             }
         }
 
-        throw new NullPointerException("No pool named '" + poolName + "'.");
+        DimensionalInventoriesMod.LOGGER.warn("No pool named '" + poolName + "'.");
+        return Optional.empty();
     }
 
     public static boolean poolExists(String poolName)
@@ -236,28 +238,56 @@ public class DimensionPoolManager
         return false;
     }
 
-    public static DimensionPool getPoolWithDimension(String dimensionName) throws NullPointerException
+    public static Optional<DimensionPool> getPoolWithDimension(String dimensionName)
+    {
+        return getPoolWithDimension(dimensionName, true);
+    }
+
+    public static Optional<DimensionPool> getPoolWithDimension(String dimensionName, boolean logging)
     {
         for (DimensionPool pool : getPools())
         {
             if (pool.getDimensions().contains(dimensionName))
             {
-                return pool;
+                return Optional.of(pool);
             }
         }
 
-        throw new NullPointerException("No dimension pool contains the dimension '" + dimensionName + "'.");
+        if (logging)
+        {
+            DimensionalInventoriesMod.LOGGER.warn("No dimension pool contains the dimension '" + dimensionName + "'.");
+        }
+
+        return Optional.empty();
     }
 
-    public static GameMode getGameModeOfDimension(String dimensionName)
+    public static Optional<GameMode> getGameModeOfDimension(String dimensionName)
     {
-        DimensionPool pool = getPoolWithDimension(dimensionName);
-        return pool.getGameMode();
+        Optional<DimensionPool> pool = getPoolWithDimension(dimensionName, true);
+
+        if (pool.isPresent())
+        {
+            return Optional.of(pool.get().getGameMode());
+        }
+        else
+        {
+            DimensionalInventoriesMod.LOGGER.warn("Unable to fetch gamemode of dimension '" + dimensionName + "'.");
+            return Optional.empty();
+        }
     }
 
-    public static GameMode getGameModeOfDimensionPool(String dimensionPoolName)
+    public static Optional<GameMode> getGameModeOfDimensionPool(String dimensionPoolName)
     {
-        DimensionPool pool = getPoolWithName(dimensionPoolName);
-        return pool.getGameMode();
+        Optional<DimensionPool> pool = getPoolWithName(dimensionPoolName);
+
+        if (pool.isPresent())
+        {
+            return Optional.of(pool.get().getGameMode());
+        }
+        else
+        {
+            DimensionalInventoriesMod.LOGGER.warn("Unable to fetch gamemode of dimension pool '" + dimensionPoolName + "'.");
+            return Optional.empty();
+        }
     }
 }
