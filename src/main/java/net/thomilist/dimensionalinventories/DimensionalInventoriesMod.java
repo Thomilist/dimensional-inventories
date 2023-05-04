@@ -63,7 +63,7 @@ public class DimensionalInventoriesMod implements ModInitializer
 
 	public static void handlePlayerDimensionChange(ServerPlayerEntity player, String originDimensionName, String destinationDimensionName)
 	{
-		LOGGER.debug("Player " + player.getName().getString() + " travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
+		LOGGER.debug("Player '" + player.getName().getString() + "' travelled from " + originDimensionName + " to " + destinationDimensionName + ".");
 
 		if (DimensionPoolManager.samePoolContainsBoth(originDimensionName, destinationDimensionName))
 		{
@@ -78,7 +78,7 @@ public class DimensionalInventoriesMod implements ModInitializer
 
 			if (originDimension.isEmpty() || destinationDimension.isEmpty())
 			{
-				LOGGER.warn("Not all dimensions are assigned a dimension pool. Player " + player.getName().getString() + " unaffected (" + originDimensionName + " -> " + destinationDimensionName + ").");
+				LOGGER.warn("Not all dimensions are assigned a dimension pool. Player '" + player.getName().getString() + "' unaffected (" + originDimensionName + " -> " + destinationDimensionName + ").");
 				return;
 			}
 
@@ -112,7 +112,7 @@ public class DimensionalInventoriesMod implements ModInitializer
 
 			if (originDimension.isEmpty() || destinationDimension.isEmpty())
 			{
-				LOGGER.warn("Not all dimensions are assigned a dimension pool. Entity" + newEntity.getName().getString() + "unaffected (" + originDimensionName + " -> " + destinationDimensionName + ").");
+				LOGGER.warn("Not all dimensions are assigned a dimension pool. Entity '" + newEntity.getName().getString() + "' unaffected (" + originDimensionName + " -> " + destinationDimensionName + ").");
 				return;
 			}
 
