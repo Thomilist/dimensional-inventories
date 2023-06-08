@@ -10,7 +10,8 @@
   ],
   "contact": {
     "homepage": "https://modrinth.com/mod/dimensional-inventories",
-    "sources": "https://github.com/thomilist/dimensional-inventories/"
+    "sources": "https://github.com/thomilist/dimensional-inventories/",
+    "issues": "https://github.com/Thomilist/dimensional-inventories/issues"
   },
 
   "license": "MIT",
@@ -27,9 +28,9 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.17",
+    "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "minecraft": "~1.19.4",
+    "minecraft": "1.20",
     "java": ">=17"
   },
   "suggests": {

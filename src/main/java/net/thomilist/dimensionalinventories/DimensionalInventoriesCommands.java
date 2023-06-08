@@ -58,15 +58,13 @@ public final class DimensionalInventoriesCommands {
 
     public static int printVersion(CommandContext<ServerCommandSource> context)
     {
-        final Text text = Text.literal("Dimensional Inventories 1.0.1+1.19.4 by Thomilist");
-        context.getSource().sendFeedback(text, false);
+        context.getSource().sendFeedback(() -> Text.literal("Dimensional Inventories 1.0.2+1.20 by Thomilist"), false);
         return Command.SINGLE_SUCCESS;
     }
 
     public static int listAllDimensionPools(CommandContext<ServerCommandSource> context)
     {
-        final Text text = Text.literal(DimensionPoolManager.getPoolsAsString());
-        context.getSource().sendFeedback(text, false);
+        context.getSource().sendFeedback(() -> Text.literal(DimensionPoolManager.getPoolsAsString()), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -259,8 +257,7 @@ public final class DimensionalInventoriesCommands {
 
     public static void sendFeedback(CommandContext<ServerCommandSource> context, String message)
     {
-        Text text = Text.literal(message);
-        context.getSource().sendFeedback(text, false);
+        context.getSource().sendFeedback(() -> Text.literal(message), false);
         return;
     }
 }
