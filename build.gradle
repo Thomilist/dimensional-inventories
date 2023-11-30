@@ -1,6 +1,7 @@
 plugins {
-	id 'fabric-loom' version '1.3-SNAPSHOT'
+	id 'fabric-loom' version '1.4-SNAPSHOT'
 	id 'maven-publish'
+	id "com.github.hexomod.replace.token.preprocessor" version "0.4"
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -72,4 +73,42 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+// https://github.com/HexoMod-tools/gradle.replace.token.preprocessor.plugin
+replaceTokenPreprocessorSettings {
+	verbose = true     // default: false
+
+	//extensions = [ ".properties",  ".yaml",  ".yml" ]
+	//extension = ".java"
+
+	java {
+		enable = true   // default: true
+	}
+
+	resources {
+		enable = true   // default: true
+	}
+
+	replace '@VERSION@': project.version
+}
+
+tasks.named("assemble") {
+	sourceSets {
+		main {
+			java {
+				srcDirs = ["${buildDir}/preprocessor/replace/main/java"]
+			}
+			resources {
+				srcDirs = ["${buildDir}/preprocessor/replace/main/resources"]
+			}
+		}
+	}
+
+	dependsOn(":replacePreprocessorJava", ":replacePreprocessorResource")
+	inputs.files sourceSets.main.allJava
+}
+
+tasks.named("sourcesJar") {
+	dependsOn(":replacePreprocessorJava", ":replacePreprocessorResource")
 }

@@ -58,7 +58,7 @@ public final class DimensionalInventoriesCommands {
 
     public static int printVersion(CommandContext<ServerCommandSource> context)
     {
-        context.getSource().sendFeedback(() -> Text.literal("Dimensional Inventories 1.0.2+1.20.2 by Thomilist"), false);
+        context.getSource().sendFeedback(() -> Text.literal("Dimensional Inventories @VERSION@ by Thomilist"), false);
         return Command.SINGLE_SUCCESS;
     }
 
