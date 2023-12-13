@@ -140,7 +140,7 @@ public class InventoryManager
                 inventory.offHand.set(i, ItemStack.fromNbt(nbt));
             }
 
-            for (int i = 0; i < enderChest.stacks.size(); i++)
+            for (int i = 0; i < enderChest.heldStacks.size(); i++)
             {
                 NbtCompound nbt = getNbtFromString(nbtArray[index++]);
 
@@ -149,7 +149,7 @@ public class InventoryManager
                     return;
                 }
 
-                enderChest.stacks.set(i, ItemStack.fromNbt(nbt));
+                enderChest.heldStacks.set(i, ItemStack.fromNbt(nbt));
             }
 
             int experiencePoints = Integer.parseInt(nbtArray[index++]);
@@ -194,7 +194,7 @@ public class InventoryManager
             nbtString.append(getNbtStringOfItemStack(offHand)).append("\n");
         }
 
-        for (ItemStack enderChestSlot : enderChest.stacks)
+        for (ItemStack enderChestSlot : enderChest.heldStacks)
         {
             nbtString.append(getNbtStringOfItemStack(enderChestSlot)).append("\n");
         }

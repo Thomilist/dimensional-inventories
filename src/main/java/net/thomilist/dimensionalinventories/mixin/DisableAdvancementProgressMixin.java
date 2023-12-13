@@ -10,14 +10,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.advancement.criterion.AbstractCriterion;
-import net.minecraft.advancement.criterion.AbstractCriterionConditions;
+import net.minecraft.advancement.criterion.AbstractCriterion.Conditions;
 import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.DimensionPool;
 import net.thomilist.dimensionalinventories.DimensionPoolManager;
 
 @Mixin(AbstractCriterion.class)
-public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterionConditions>
+public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterion.Conditions>
 implements Criterion<T> {
     private static LogThrottler logThrottler = new LogThrottler(10000);
 
