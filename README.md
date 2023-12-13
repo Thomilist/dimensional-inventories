@@ -85,3 +85,5 @@ On a survival server with a creative dimension, the creative dimension could be 
 To manage access to these and other commands, it can be useful to assign permissions for different dimensions independently. This can be achieved with a permissions mod such as [LuckPerms](https://modrinth.com/mod/luckperms) - see their [wiki entry for contexts](https://luckperms.net/wiki/Context). Expanding on the teleport example, the `essentialcommands.warp.tp` and `essentialcommands.home.tp` permissions could be granted globally, while the `essentialcommands.home.set` and  `essentialcommands.back` permission could be granted only in the creative dimension.
 
 Use of [Vanilla Permissions](https://modrinth.com/mod/vanilla-permissions) or [Universal Perms](https://modrinth.com/mod/universal-perms) to expose additional permission nodes may also be useful in this context.
+
+Adding portal support to custom dimensions using another mod alongside Dimensional Inventories may be of interest. An example of such a mod could be [Dimension Portal Linker](https://github.com/Encrypted-Thoughts/DimensionPortalLinker/).
