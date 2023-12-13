@@ -4,7 +4,7 @@ A Minecraft Fabric mod for keeping separate inventories across pools of dimensio
 
 ## Basic Functionality
 
-The mod operators with dimension pools. A dimension pool can contain any number of dimensions, but a dimension can only be present in one dimension pool. A player's inventory (including the regular inventory, armour, offhand, ender chest, experience, score, food, saturation, exhaustion and health) and gamemode is the same within the same dimension pool. 
+The mod operates with dimension pools. A dimension pool can contain any number of dimensions, but a dimension can only be present in one dimension pool. A player's inventory (including the regular inventory, armour, offhand, ender chest, experience, score, food, saturation, exhaustion and health) and gamemode is the same within the same dimension pool. 
 
 When a player travels to a dimension in a different dimension pool, the player's inventory is saved to a file corresponding to the origin dimension pool. The player's inventory and status effects are then cleared, their inventory is loaded from their file in the destination dimension pool (if present), and their gamemode is switched to the dimension pool's gamemode. On the other hand, when a non-player entity travels from one dimension pool to another, it is simply deleted.
 
