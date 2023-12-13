@@ -73,6 +73,11 @@ diminv pool <pool_name> incrementStatistics <boolean>
 
 ## Tips
 
+Custom dimensions do not support travel via portals, so to actually get to one, a teleport of some sort is required. One way is to use the vanilla `teleport` command in conjunction with the `execute` command:
+```
+execute in <dimension_name> run teleport <coordinates>
+```
+
 Accessing custom dimensions can be made easier with mods that provide warps, homes and other such teleports. For more convenient dimension hopping, players can also be allowed to teleport to their previous location - typically implemented with a `/back` command. An example of a mod that provides such functionality is [Essential Commands](https://modrinth.com/mod/essential-commands).
 
 On a survival server with a creative dimension, the creative dimension could be accessed with a warp. Players could then set a home in the creative dimension for easy access to their current project there, and they could quickly return to the survival world using a `/back` command. With this, players could easily design their builds in creative and use them as a reference when building them in survival.
