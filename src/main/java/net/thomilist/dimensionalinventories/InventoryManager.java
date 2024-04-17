@@ -110,7 +110,7 @@ public class InventoryManager
 
                 if (nbt == null)
                 {
-                    return;
+                    nbt = lostItem(player, nbtArray[index - 1], "armor["+i+"]");
                 }
 
                 inventory.armor.set(i, ItemStack.fromNbt(nbt));
@@ -122,7 +122,7 @@ public class InventoryManager
 
                 if (nbt == null)
                 {
-                    return;
+                    nbt = lostItem(player, nbtArray[index - 1], "inventory["+i+"]");
                 }
 
                 inventory.main.set(i, ItemStack.fromNbt(nbt));
@@ -134,7 +134,7 @@ public class InventoryManager
 
                 if (nbt == null)
                 {
-                    return;
+                    nbt = lostItem(player, nbtArray[index - 1], "offhand");
                 }
 
                 inventory.offHand.set(i, ItemStack.fromNbt(nbt));
@@ -146,7 +146,7 @@ public class InventoryManager
 
                 if (nbt == null)
                 {
-                    return;
+                    nbt = lostItem(player, nbtArray[index - 1], "enderchest["+i+"]");
                 }
 
                 enderChest.heldStacks.set(i, ItemStack.fromNbt(nbt));
@@ -170,6 +170,31 @@ public class InventoryManager
         }
 
         return;
+    }
+
+    public static String lostItem(ServerPlayerEntity player, String nbtString, String location)
+    {
+        Path saveFile = getLostAndFoundPath();
+        String replacedWith = getNbtFromString('{Count:1b,id:"minecraft:paper",tag:{Enchantements:[{}],display:{Name:'"Corrupted Item - Ask Tech about Lost and Found."'}}}');
+
+        if (saveFile == null)
+        {
+            return replacedWith;
+        }
+        
+        try
+        {
+            Files.writeString(saveFile, player.getUuidAsString() + " : " + location + " : " + nbtString + "\n");
+            DimensionalInventoriesMod.LOGGER.info("Item sent to lost and found.");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            DimensionalInventoriesMod.LOGGER.error("Error while saving lost and found data.", e);
+            return replacedWith;
+        }
+
+        return replacedWith;
     }
 
     public static String getNbtStringOfInventory(ServerPlayerEntity player)
@@ -233,6 +258,29 @@ public class InventoryManager
     {
         Path directory = saveDirectory.resolve(dimensionPool);
         Path file = directory.resolve(player.getUuidAsString() + ".txt");
+
+        try
+        {
+            Files.createDirectories(directory);
+
+            if (!Files.exists(file))
+            {
+                Files.createFile(file);
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            DimensionalInventoriesMod.LOGGER.error("File path error.", e);
+            return null;
+        }
+
+        return file;
+    }
+
+    public static Path getLostAndFoundPath()
+    {
+        Path file = saveDirectory.resolve("lost-and-found.txt");
 
         try
         {
