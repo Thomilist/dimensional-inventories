@@ -96,7 +96,8 @@ public class InventoryManager
             return;
         }
 
-        String[] nbtArray = nbtString.split("\\n");
+        String[] nbtArray = nbtString.split("~.\\n");
+		if(nbtArray.length == 1) nbtArray = nbtString.split("\\n");
 
         PlayerInventory inventory = player.getInventory();
         EnderChestInventory enderChest = player.getEnderChestInventory();
@@ -172,10 +173,10 @@ public class InventoryManager
         return;
     }
 
-    public static String lostItem(ServerPlayerEntity player, String nbtString, String location)
+    public static NbtCompound lostItem(ServerPlayerEntity player, String nbtString, String location)
     {
         Path saveFile = getLostAndFoundPath();
-        String replacedWith = getNbtFromString('{Count:1b,id:"minecraft:paper",tag:{Enchantements:[{}],display:{Name:'"Corrupted Item - Ask Tech about Lost and Found."'}}}');
+        NbtCompound replacedWith = getNbtFromString("{Count:1b,id:\"minecraft:paper\",tag:{Enchantements:[{}],display:{Name:'\"Corrupted Item - Ask Tech about Lost and Found.\"'}}}");
 
         if (saveFile == null)
         {
@@ -206,32 +207,32 @@ public class InventoryManager
 
         for (ItemStack armorPiece : inventory.armor)
         {
-            nbtString.append(getNbtStringOfItemStack(armorPiece)).append("\n");
+            nbtString.append(getNbtStringOfItemStack(armorPiece)).append("~.\n");
         }
 
         for (ItemStack inventorySlot : inventory.main)
         {
-            nbtString.append(getNbtStringOfItemStack(inventorySlot)).append("\n");
+            nbtString.append(getNbtStringOfItemStack(inventorySlot)).append("~.\n");
         }
 
         for (ItemStack offHand : inventory.offHand)
         {
-            nbtString.append(getNbtStringOfItemStack(offHand)).append("\n");
+            nbtString.append(getNbtStringOfItemStack(offHand)).append("~.\n");
         }
 
         for (ItemStack enderChestSlot : enderChest.heldStacks)
         {
-            nbtString.append(getNbtStringOfItemStack(enderChestSlot)).append("\n");
+            nbtString.append(getNbtStringOfItemStack(enderChestSlot)).append("~.\n");
         }
 
-        nbtString.append(ExperienceHelper.getTotalExperience_Meridanus(player.experienceLevel, player.getNextLevelExperience(), player.experienceProgress)).append("\n");
-        nbtString.append(player.getScore()).append("\n");
+        nbtString.append(ExperienceHelper.getTotalExperience_Meridanus(player.experienceLevel, player.getNextLevelExperience(), player.experienceProgress)).append("~.\n");
+        nbtString.append(player.getScore()).append("~.\n");
 
-        nbtString.append(player.getHungerManager().getFoodLevel()).append("\n");
-        nbtString.append(player.getHungerManager().getSaturationLevel()).append("\n");
-        nbtString.append(player.getHungerManager().getExhaustion()).append("\n");
+        nbtString.append(player.getHungerManager().getFoodLevel()).append("~.\n");
+        nbtString.append(player.getHungerManager().getSaturationLevel()).append("~.\n");
+        nbtString.append(player.getHungerManager().getExhaustion()).append("~.\n");
         
-        nbtString.append(player.getHealth()).append("\n");
+        nbtString.append(player.getHealth()).append("~.\n");
 
         return nbtString.toString();
     }
@@ -279,12 +280,12 @@ public class InventoryManager
     }
 
     public static Path getLostAndFoundPath()
-    {
+    {        
         Path file = saveDirectory.resolve("lost-and-found.txt");
 
         try
         {
-            Files.createDirectories(directory);
+            Files.createDirectories(saveDirectory);
 
             if (!Files.exists(file))
             {
