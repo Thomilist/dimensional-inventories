@@ -1,8 +1,9 @@
-package net.thomilist.dimensionalinventories;
+package net.thomilist.dimensionalinventories.util;
 
-public class LogThrottler {
+public class LogThrottler
+{
     private Integer counter = 0;
-    private Integer factor = 0;
+    private final Integer factor;
 
     public LogThrottler(Integer throttlingFactor)
     {
