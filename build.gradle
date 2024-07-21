@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.4-SNAPSHOT'
+	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
 	id "com.github.hexomod.replace.token.preprocessor" version "0.4"
 }
@@ -30,6 +30,9 @@ dependencies {
 
 	// Google Gson for JSON parsing and writing
 	implementation "com.google.code.gson:gson:2.10.1"
+
+	// Apache Commons IO to move entire directories
+	implementation 'commons-io:commons-io:2.16.1'
 }
 
 processResources {
@@ -90,7 +93,7 @@ replaceTokenPreprocessorSettings {
 		enable = true   // default: true
 	}
 
-	replace '@VERSION@': project.version
+	replace '@MOD_VERSION@': project.version
 }
 
 tasks.named("assemble") {

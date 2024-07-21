@@ -1,4 +1,4 @@
-package net.thomilist.dimensionalinventories;
+package net.thomilist.dimensionalinventories.util;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.MathHelper;
@@ -18,12 +18,22 @@ public class ExperienceHelper
         player.addExperienceLevels(ExperienceHelper.getLevelFromExperience_sfinc(experience));
         int deltaExperience = player.totalExperience - ExperienceHelper.getExperienceToLevel_sfinc(player.experienceLevel);
         player.experienceProgress = deltaExperience / (float)player.getNextLevelExperience();
-        return;
+    }
+
+    public static int getTotalExperience_Meridanus(ServerPlayerEntity player)
+    {
+        return getTotalExperience_Meridanus
+        (
+            player.experienceLevel,
+            player.getNextLevelExperience(),
+            player.experienceProgress
+        );
     }
 
     public static int getTotalExperience_Meridanus(int level, int nextLevelExperience, float experienceProgress)
     {
-        return getExperienceFromLevel_Meridanus(level) + getExperienceFromBar_Meridanus(nextLevelExperience, experienceProgress);
+        return getExperienceFromLevel_Meridanus(level)
+            + getExperienceFromBar_Meridanus(nextLevelExperience, experienceProgress);
     }
 
     public static int getExperienceFromLevel_sfinc(final int level)

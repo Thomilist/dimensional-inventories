@@ -1,7 +1,10 @@
 package net.thomilist.dimensionalinventories.mixin;
 
-import net.thomilist.dimensionalinventories.LogThrottler;
+import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
+import net.thomilist.dimensionalinventories.util.LogThrottler;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,34 +18,45 @@ import net.minecraft.stat.Stat;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.thomilist.dimensionalinventories.DimensionPool;
-import net.thomilist.dimensionalinventories.DimensionPoolManager;
+import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 
 import java.util.Optional;
 
 @Mixin(PlayerEntity.class)
 public abstract class DisableStatisticIncrementMixin
-extends LivingEntity
+    extends LivingEntity
 {
-    private static LogThrottler logThrottler = new LogThrottler(10000);
+    @Unique
+    private static DimensionPoolConfigModule DIMENSION_POOL_CONFIG;
+
+    @Unique
+    private static DimensionPoolConfigModule dimensionPoolConfig()
+    {
+        if (DisableStatisticIncrementMixin.DIMENSION_POOL_CONFIG == null)
+        {
+            DisableStatisticIncrementMixin.DIMENSION_POOL_CONFIG =
+                DimensionalInventoriesMod.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
+        }
+
+        return DisableStatisticIncrementMixin.DIMENSION_POOL_CONFIG;
+    }
+
+    @Unique
+    private static final LogThrottler LOG_THROTTLER = new LogThrottler(10000);
 
     public DisableStatisticIncrementMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super((EntityType<? extends LivingEntity>)EntityType.PLAYER, world);
     }
 
+    @Unique
     public boolean canPoolIncrementStatistics()
     {
         String dimensionName = this.getWorld().getRegistryKey().getValue().toString();
-        Optional<DimensionPool> pool = DimensionPoolManager.getPoolWithDimension(dimensionName, logThrottler.get());
 
-        if (pool.isPresent())
-        {
-            return pool.get().canIncrementStatistics();
-        }
-        else
-        {
-            return true;
-        }
+        Optional<DimensionPool> pool = dimensionPoolConfig().state()
+            .poolWithDimension(dimensionName, DisableStatisticIncrementMixin.LOG_THROTTLER.get());
+
+        return pool.map(DimensionPool::canIncrementStatistics).orElse(true);
     }
 
     
