@@ -39,6 +39,6 @@ public class StatusEffectSerializerPair
     @Override
     public JsonElement toJson(StatusEffectInstance src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return context.serialize(src.writeNbt(new NbtCompound()), NbtCompound.class);
+        return context.serialize(src.writeNbt(), NbtCompound.class);
     }
 }
