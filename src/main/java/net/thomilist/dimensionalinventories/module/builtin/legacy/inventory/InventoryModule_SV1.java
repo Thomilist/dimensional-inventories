@@ -15,6 +15,7 @@ import net.thomilist.dimensionalinventories.module.builtin.inventory.InventoryMo
 import net.thomilist.dimensionalinventories.module.builtin.inventory.InventorySection;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.util.ItemStackListHelper;
+import net.thomilist.dimensionalinventories.util.NbtConversionHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -96,7 +97,7 @@ public class InventoryModule_SV1
                         return;
                     }
 
-                    items.set(i, ItemStack.fromNbt(nbt));
+                    items.set(i, NbtConversionHelper.fromNbt(nbt));
                 }
 
                 if (!items.isEmpty())
