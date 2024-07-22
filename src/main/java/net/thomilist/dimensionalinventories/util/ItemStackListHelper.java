@@ -16,6 +16,5 @@ public class ItemStackListHelper
         {
             target.set(i, source.get(i));
         }
-
     }
 }
