@@ -32,8 +32,7 @@ public class ItemStackListSerializerPair
         {
             items.set(i, Objects.requireNonNullElse(
                 context.deserialize(jsonArray.get(i), ItemStack.class),
-                ItemStack.EMPTY
-            ));
+                ItemStack.EMPTY));
         }
 
         return items;
