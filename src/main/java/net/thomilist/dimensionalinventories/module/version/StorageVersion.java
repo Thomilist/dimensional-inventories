@@ -36,12 +36,9 @@ public enum StorageVersion
         return StorageVersion.ALL;
     }
 
-    // Can be replaced with SortedSet.reversed() in Java 21
     public static SortedSet<StorageVersion> reversed()
     {
-        final var reversedSet = new TreeSet<StorageVersion>(Collections.reverseOrder());
-        reversedSet.addAll(StorageVersion.all());
-        return reversedSet;
+        return StorageVersion.all().reversed();
     }
 
     public static int compareSets(SortedSet<StorageVersion> a, SortedSet<StorageVersion> b)
