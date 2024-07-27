@@ -18,7 +18,7 @@ A clear and concise description of the bug.
 3. Perform a 360-noscope while jumping into the portal...
 4. [bug triggered]
 
-If the bug is difficult to reproduce, then attaching a zipped Minecraft world with a working example is much appreciated. Screenshots and videos may also help.
+If the bug is difficult to reproduce, then attaching a zipped Minecraft world with a working example is much appreciated. Logs, screenshots and videos may also help.
 
 ### Expected behaviour
 
