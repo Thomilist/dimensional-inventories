@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories.exception;
 
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 
 public class StorageVersionMigrationException
     extends RuntimeException
@@ -33,11 +33,11 @@ public class StorageVersionMigrationException
 
     private static void logMigrationStep(StorageVersion from, StorageVersion to, Throwable cause)
     {
-        DimensionalInventoriesMod.LOGGER.error("Failed to migrate storage from version {} to {}", from.version, to.version);
+        DimensionalInventories.LOGGER.error("Failed to migrate storage from version {} to {}", from.version, to.version);
 
         if (cause != null)
         {
-            DimensionalInventoriesMod.LOGGER.error("Caused by:", cause);
+            DimensionalInventories.LOGGER.error("Caused by:", cause);
         }
     }
 }

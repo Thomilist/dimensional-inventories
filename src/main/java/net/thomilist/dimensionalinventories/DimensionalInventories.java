@@ -21,15 +21,15 @@ import net.thomilist.dimensionalinventories.module.builtin.gamemode.GameModeModu
 import net.thomilist.dimensionalinventories.module.builtin.inventory.InventoryModule;
 import net.thomilist.dimensionalinventories.module.builtin.status.StatusModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolTransitionHandler;
+import net.thomilist.dimensionalinventories.util.Properties;
 import net.thomilist.dimensionalinventories.util.SavePaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DimensionalInventoriesMod
+public class DimensionalInventories
 	implements ModInitializer
 {
-	public static final Logger LOGGER = LoggerFactory.getLogger("DimensionalInventories");
-	public static final String MOD_VERSION = "@MOD_VERSION@";
+	public static final Logger LOGGER = LoggerFactory.getLogger(Properties.modNamePascal());
 	public static final StorageVersion STORAGE_VERSION = StorageVersion.V2;
 	public static final ModuleRegistry<ConfigModule> CONFIG_MODULES = new ModuleRegistry<>(ConfigModule.class);
 	public static final ModuleRegistry<PlayerModule> PLAYER_MODULES = new ModuleRegistry<>(PlayerModule.class);
@@ -39,19 +39,19 @@ public class DimensionalInventoriesMod
 	{
 		try (var LAF = LostAndFound.init("init"))
 		{
-			DimensionalInventoriesMod.registerModules();
-			DimensionalInventoriesMod.registerStartupHandlers();
-			DimensionalInventoriesMod.registerPlayerTravelHandler();
-			DimensionalInventoriesMod.registerPlayerRespawnHandler();
-			DimensionalInventoriesMod.registerEntityTravelHandler();
-			DimensionalInventoriesMod.registerCommands();
+			DimensionalInventories.registerModules();
+			DimensionalInventories.registerStartupHandlers();
+			DimensionalInventories.registerPlayerTravelHandler();
+			DimensionalInventories.registerPlayerRespawnHandler();
+			DimensionalInventories.registerEntityTravelHandler();
+			DimensionalInventories.registerCommands();
 		}
 	}
 
 	public static void registerModules(ModuleGroup modules)
 	{
-		DimensionalInventoriesMod.CONFIG_MODULES.register(modules);
-		DimensionalInventoriesMod.PLAYER_MODULES.register(modules);
+		DimensionalInventories.CONFIG_MODULES.register(modules);
+		DimensionalInventories.PLAYER_MODULES.register(modules);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -108,7 +108,7 @@ public class DimensionalInventoriesMod
 				"Health, hunger, experience & score."
 			);
 
-		DimensionalInventoriesMod.registerModules(modules);
+		DimensionalInventories.registerModules(modules);
 	}
 
 	private static void registerStartupHandlers()
@@ -120,13 +120,14 @@ public class DimensionalInventoriesMod
 				SavePaths.onServerStarted(server);
 				StorageVersionMigration.onServerStarted(server);
 
-				for (var config : DimensionalInventoriesMod.CONFIG_MODULES.get(StorageVersion.latest()))
+				for (var config : DimensionalInventories.CONFIG_MODULES.get(StorageVersion.latest()))
 				{
 					config.loadWithContext();
 				}
 
-				DimensionalInventoriesMod.LOGGER.info("Dimensional Inventories {} initialised",
-					DimensionalInventoriesMod.MOD_VERSION);
+				DimensionalInventories.LOGGER.info("{} {} initialised",
+					Properties.modNamePretty(),
+					Properties.modVersion());
 			}
 		});
 	}
