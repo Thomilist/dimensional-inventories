@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories.module.builtin.pool;
 
 import net.minecraft.world.GameMode;
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPoolConfigModuleState_SV1;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModuleState;
 
@@ -68,7 +68,7 @@ public class DimensionPoolConfigModuleState
 
         if (logging)
         {
-            DimensionalInventoriesMod.LOGGER.warn("No dimension pool contains the dimension '{}'", dimension);
+            DimensionalInventories.LOGGER.warn("No dimension pool contains the dimension '{}'", dimension);
         }
 
         return Optional.empty();

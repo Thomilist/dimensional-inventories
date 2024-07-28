@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.mixin;
 
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.util.LogThrottler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +35,7 @@ public abstract class DisableStatisticIncrementMixin
         if (DisableStatisticIncrementMixin.DIMENSION_POOL_CONFIG == null)
         {
             DisableStatisticIncrementMixin.DIMENSION_POOL_CONFIG =
-                DimensionalInventoriesMod.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
+                DimensionalInventories.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
         }
 
         return DisableStatisticIncrementMixin.DIMENSION_POOL_CONFIG;

@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories.lostandfound;
 
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.base.Module;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.util.LogHelper;
@@ -96,21 +96,21 @@ public class LostAndFoundContext
         return switch (specialObjects.size())
         {
             case 1 -> SavePaths.lostAndFoundDirectory(
-                DimensionalInventoriesMod.STORAGE_VERSION,
+                DimensionalInventories.STORAGE_VERSION,
                 (DimensionPool) specialObjects.get(0)
             );
             case 2 -> SavePaths.lostAndFoundDirectory(
-                DimensionalInventoriesMod.STORAGE_VERSION,
+                DimensionalInventories.STORAGE_VERSION,
                 (DimensionPool) specialObjects.get(0),
                 (ServerPlayerEntity) specialObjects.get(1)
             );
             case 3 -> SavePaths.lostAndFoundDirectory(
-                DimensionalInventoriesMod.STORAGE_VERSION,
+                DimensionalInventories.STORAGE_VERSION,
                 (DimensionPool) specialObjects.get(0),
                 (ServerPlayerEntity) specialObjects.get(1),
                 (Module) specialObjects.get(2)
             );
-            default -> SavePaths.lostAndFoundDirectory(DimensionalInventoriesMod.STORAGE_VERSION);
+            default -> SavePaths.lostAndFoundDirectory(DimensionalInventories.STORAGE_VERSION);
         };
     }
 

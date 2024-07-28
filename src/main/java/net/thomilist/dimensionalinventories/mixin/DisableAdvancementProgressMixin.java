@@ -3,7 +3,7 @@ package net.thomilist.dimensionalinventories.mixin;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.util.LogThrottler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +30,7 @@ public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterio
         if (DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG == null)
         {
             DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG =
-                DimensionalInventoriesMod.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
+                DimensionalInventories.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
         }
 
         return DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG;

@@ -3,9 +3,9 @@ package net.thomilist.dimensionalinventories.module.version;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.world.GameMode;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.ModuleNotRegisteredException;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPoolConfigModule_SV1;
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
 import net.thomilist.dimensionalinventories.exception.StorageVersionMigrationException;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModuleState;
@@ -39,26 +39,26 @@ public class StorageVersionMigration
             // No data found. Start fresh
             if (writtenStorageVersion == null)
             {
-                DimensionalInventoriesMod.LOGGER.info("No data found");
-                DimensionalInventoriesMod.LOGGER.info("Initialising with storage version {}...",
-                    DimensionalInventoriesMod.STORAGE_VERSION.version);
+                DimensionalInventories.LOGGER.info("No data found");
+                DimensionalInventories.LOGGER.info("Initialising with storage version {}...",
+                    DimensionalInventories.STORAGE_VERSION.version);
             }
             // Outdated data found. Migrate
-            else if (writtenStorageVersion != DimensionalInventoriesMod.STORAGE_VERSION)
+            else if (writtenStorageVersion != DimensionalInventories.STORAGE_VERSION)
             {
-                DimensionalInventoriesMod.LOGGER.info("Data from storage version {} found.",
+                DimensionalInventories.LOGGER.info("Data from storage version {} found.",
                     writtenStorageVersion.version);
-                DimensionalInventoriesMod.LOGGER.info("Migrating to storage version {}...",
-                    DimensionalInventoriesMod.STORAGE_VERSION.version);
+                DimensionalInventories.LOGGER.info("Migrating to storage version {}...",
+                    DimensionalInventories.STORAGE_VERSION.version);
 
-                StorageVersionMigration.migrate(writtenStorageVersion, DimensionalInventoriesMod.STORAGE_VERSION, server);
+                StorageVersionMigration.migrate(writtenStorageVersion, DimensionalInventories.STORAGE_VERSION, server);
 
-                DimensionalInventoriesMod.LOGGER.info("Migration complete");
+                DimensionalInventories.LOGGER.info("Migration complete");
             }
             // Up-to-date data found
             else
             {
-                DimensionalInventoriesMod.LOGGER.info("Data from storage version {} found (up to date)",
+                DimensionalInventories.LOGGER.info("Data from storage version {} found (up to date)",
                     writtenStorageVersion.version);
             }
         }
@@ -101,14 +101,14 @@ public class StorageVersionMigration
     private static void migrate1to2(MinecraftServer server)
         throws StorageVersionMigrationException
     {
-        DimensionalInventoriesMod.LOGGER.info("Preparing migration step from {} to {}...",
+        DimensionalInventories.LOGGER.info("Preparing migration step from {} to {}...",
             StorageVersion.V1, StorageVersion.V2);
 
         StorageVersionMigration.prepareMigration1to2();
         StorageVersionMigration.migrateConfig1to2();
         StorageVersionMigration.migratePlayers1to2(server);
 
-        DimensionalInventoriesMod.LOGGER.info("Migration step from {} to {} complete",
+        DimensionalInventories.LOGGER.info("Migration step from {} to {} complete",
             StorageVersion.V1, StorageVersion.V2);
     }
 
@@ -119,7 +119,7 @@ public class StorageVersionMigration
         {
             // Copy old "<world>/dimensionalinventories" directory to new "<world>/dimensional-inventories/v1" directory
 
-            DimensionalInventoriesMod.LOGGER.info("Copying {} data...", StorageVersion.V1);
+            DimensionalInventories.LOGGER.info("Copying {} data...", StorageVersion.V1);
 
             try
             {
@@ -136,7 +136,7 @@ public class StorageVersionMigration
 
             // Create directory for v2 data
 
-            DimensionalInventoriesMod.LOGGER.info("Creating {} directory...", StorageVersion.V2);
+            DimensionalInventories.LOGGER.info("Creating {} directory...", StorageVersion.V2);
 
             try
             {
@@ -155,15 +155,15 @@ public class StorageVersionMigration
     {
         try (var LAF = LostAndFound.push("config"))
         {
-            DimensionalInventoriesMod.LOGGER.info("Migrating config to {}...", StorageVersion.V2);
+            DimensionalInventories.LOGGER.info("Migrating config to {}...", StorageVersion.V2);
 
             DimensionPoolConfigModule_SV1 legacyConfigModule;
             DimensionPoolConfigModule newConfigModule;
 
             try
             {
-                legacyConfigModule = DimensionalInventoriesMod.CONFIG_MODULES.get(DimensionPoolConfigModule_SV1.class);
-                newConfigModule = DimensionalInventoriesMod.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
+                legacyConfigModule = DimensionalInventories.CONFIG_MODULES.get(DimensionPoolConfigModule_SV1.class);
+                newConfigModule = DimensionalInventories.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
             }
             catch (ModuleNotRegisteredException e)
             {
@@ -184,14 +184,14 @@ public class StorageVersionMigration
         {
             // Migrate player data
 
-            DimensionalInventoriesMod.LOGGER.info("Migrating player data to {}...", StorageVersion.V2);
+            DimensionalInventories.LOGGER.info("Migrating player data to {}...", StorageVersion.V2);
 
             File[] v1DimensionPoolDirectories = SavePaths.saveDirectory(StorageVersion.V1)
                 .toFile().listFiles(File::isDirectory);
 
             if (v1DimensionPoolDirectories == null)
             {
-                DimensionalInventoriesMod.LOGGER.warn("Migration step from {} to {} finished early: No player data found",
+                DimensionalInventories.LOGGER.warn("Migration step from {} to {} finished early: No player data found",
                     StorageVersion.V1, StorageVersion.V2);
                 return;
             }
@@ -206,7 +206,7 @@ public class StorageVersionMigration
                 }
 
                 String dimensionPoolName = v1DimensionPoolDirectory.getName();
-                DimensionalInventoriesMod.LOGGER.info("Migrating dimension pool '{}'...", dimensionPoolName);
+                DimensionalInventories.LOGGER.info("Migrating dimension pool '{}'...", dimensionPoolName);
 
                 // Temporary dimension pool to hold the dimension pool name
                 DimensionPool tempDimensionPool = new DimensionPool(dimensionPoolName, GameMode.DEFAULT);
@@ -214,7 +214,7 @@ public class StorageVersionMigration
                 for (File v1InventoryFile : files)
                 {
                     String uuid = v1InventoryFile.getName().replace(".txt", "");
-                    DimensionalInventoriesMod.LOGGER.debug("Migrating data for player '{}' (UUID)...", uuid);
+                    DimensionalInventories.LOGGER.debug("Migrating data for player '{}' (UUID)...", uuid);
 
                     // Dummy player to store data during migration
                     DummyServerPlayerEntity dummyPlayer = new DummyServerPlayerEntity(server, uuid);

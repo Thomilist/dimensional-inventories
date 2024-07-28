@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories.module;
 
 import net.minecraft.util.InvalidIdentifierException;
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.InvalidModuleException;
 import net.thomilist.dimensionalinventories.exception.ModuleConstructionException;
 import net.thomilist.dimensionalinventories.module.base.Module;
@@ -44,7 +44,7 @@ public class ModuleGroup
     {
         if (!modules.add(module))
         {
-            DimensionalInventoriesMod.LOGGER.warn("Failed to add module: {} has already been registered",
+            DimensionalInventories.LOGGER.warn("Failed to add module: {} has already been registered",
                 LogHelper.joinAndWrapScopes(module.groupId(), module.moduleId()));
         }
     }

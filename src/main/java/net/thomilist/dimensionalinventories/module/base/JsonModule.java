@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import net.minecraft.nbt.NbtCompound;
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.module.version.VersionedJsonData;
 import net.thomilist.dimensionalinventories.module.version.VersionedJsonDataSerializerPair;
@@ -49,8 +49,8 @@ public interface JsonModule<T extends ModuleState>
         }
         catch (NoSuchFileException e)
         {
-            DimensionalInventoriesMod.LOGGER.warn(noSuchFileWarning());
-            DimensionalInventoriesMod.LOGGER.warn("Context: {}", LostAndFound.CONTEXT);
+            DimensionalInventories.LOGGER.warn(noSuchFileWarning());
+            DimensionalInventories.LOGGER.warn("Context: {}", LostAndFound.CONTEXT);
             return defaultState();
         }
         catch (IOException e)

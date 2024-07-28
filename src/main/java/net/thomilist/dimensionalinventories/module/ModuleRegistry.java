@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.module;
 
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.ModuleNotRegisteredException;
 import net.thomilist.dimensionalinventories.module.base.Module;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
@@ -28,7 +28,7 @@ public class ModuleRegistry<T extends Module>
 
             if (!modules.get(storageVersion).add(module))
             {
-                DimensionalInventoriesMod.LOGGER.warn("Failed to register module: {} has already been registered",
+                DimensionalInventories.LOGGER.warn("Failed to register module: {} has already been registered",
                     LogHelper.joinAndWrapScopes(module.groupId(), module.moduleId()));
             }
         }

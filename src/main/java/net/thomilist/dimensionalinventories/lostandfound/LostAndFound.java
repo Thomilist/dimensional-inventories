@@ -2,7 +2,7 @@ package net.thomilist.dimensionalinventories.lostandfound;
 
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,14 +32,14 @@ public class LostAndFound
     {
         var context = LostAndFoundContext.create(scopes);
         LostAndFound.CONTEXT = context;
-        DimensionalInventoriesMod.LOGGER.debug(LostAndFound.CONTEXT.toString());
+        DimensionalInventories.LOGGER.debug(LostAndFound.CONTEXT.toString());
         return context;
     }
 
     public static LostAndFoundScope push(Object... layers)
     {
         var pushed = LostAndFound.CONTEXT.push(layers);
-        DimensionalInventoriesMod.LOGGER.debug(LostAndFound.CONTEXT.toString());
+        DimensionalInventories.LOGGER.debug(LostAndFound.CONTEXT.toString());
         return pushed;
     }
 
@@ -89,20 +89,20 @@ public class LostAndFound
         final Path outputFile = outputDirectory
             .resolve(new SimpleDateFormat(LostAndFound.TIMESTAMP_FORMAT_FILE).format(now) + LostAndFound.FILE_EXT);
 
-        DimensionalInventoriesMod.LOGGER.error(cause);
-        DimensionalInventoriesMod.LOGGER.error("Context: {}", LostAndFound.CONTEXT);
+        DimensionalInventories.LOGGER.error(cause);
+        DimensionalInventories.LOGGER.error("Context: {}", LostAndFound.CONTEXT);
 
         try
         {
             Files.createDirectories(outputDirectory);
             Files.writeString(outputFile, entry);
-            DimensionalInventoriesMod.LOGGER.error("Details have been written to lost+found");
-            DimensionalInventoriesMod.LOGGER.error("File: '{}'", outputFile);
+            DimensionalInventories.LOGGER.error("Details have been written to lost+found");
+            DimensionalInventories.LOGGER.error("File: '{}'", outputFile);
         }
         catch (IOException e)
         {
-            DimensionalInventoriesMod.LOGGER.error("Failed to save lost+found entry:\n{}", entry);
-            DimensionalInventoriesMod.LOGGER.error("Caused by:", e);
+            DimensionalInventories.LOGGER.error("Failed to save lost+found entry:\n{}", entry);
+            DimensionalInventories.LOGGER.error("Caused by:", e);
         }
     }
 
