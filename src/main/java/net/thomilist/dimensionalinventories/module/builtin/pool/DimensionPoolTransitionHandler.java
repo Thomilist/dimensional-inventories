@@ -2,6 +2,7 @@ package net.thomilist.dimensionalinventories.module.builtin.pool;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Clearable;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
@@ -95,6 +96,11 @@ public class DimensionPoolTransitionHandler
                 );
 
                 return;
+            }
+
+            if (newEntity instanceof Clearable)
+            {
+                ((Clearable) newEntity).clear();
             }
 
             newEntity.discard();
