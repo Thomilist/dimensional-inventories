@@ -19,21 +19,24 @@
 
   "environment": "*",
   "entrypoints": {
+    "client": [
+      "net.thomilist.dimensionalinventories.client.DimensionalInventoriesClient"
+    ],
     "main": [
-      "net.thomilist.dimensionalinventories.DimensionalInventoriesMod"
+      "net.thomilist.dimensionalinventories.DimensionalInventories"
     ]
   },
   "mixins": [
-    "dimensionalinventories.mixins.json"
+    "dimensional-inventories.mixins.json",
+    {
+      "config": "dimensional-inventories.client.mixins.json",
+      "environment": "client"
+    }
   ],
 
   "depends": {
-    "fabricloader": ">=0.15.11",
-    "fabric-api": "*",
-    "minecraft": "~1.21",
-    "java": ">=21"
-  },
-  "suggests": {
-    "another-mod": "*"
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
   }
 }

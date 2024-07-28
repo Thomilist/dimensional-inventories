@@ -21,10 +21,11 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameMode;
-import net.thomilist.dimensionalinventories.DimensionalInventoriesMod;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolOperationResult;
+import net.thomilist.dimensionalinventories.util.Properties;
 
 import java.util.Optional;
 
@@ -70,7 +71,7 @@ public class Commands
     {
         if (Commands.DIMENSION_POOL_CONFIG == null)
         {
-            Commands.DIMENSION_POOL_CONFIG = DimensionalInventoriesMod.CONFIG_MODULES
+            Commands.DIMENSION_POOL_CONFIG = DimensionalInventories.CONFIG_MODULES
                 .get(DimensionPoolConfigModule.class);
         }
 
@@ -118,7 +119,7 @@ public class Commands
     public static int printVersion(CommandContext<ServerCommandSource> context)
     {
         context.getSource().sendFeedback(() ->
-            Text.literal("Dimensional Inventories " + DimensionalInventoriesMod.MOD_VERSION + " by Thomilist"),
+            Text.literal(Properties.modNamePretty() + " " + Properties.modVersion() + " by Thomilist"),
             false);
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
