@@ -2,12 +2,17 @@ package net.thomilist.dimensionalinventories.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.MinecraftServer;
 
 public class NbtConversionHelper
 {
-    private static final RegistryWrapper.WrapperLookup WRAPPER_LOOKUP = BuiltinRegistries.createWrapperLookup();
+    private static RegistryWrapper.WrapperLookup WRAPPER_LOOKUP;
+
+    public static void onServerStarted(MinecraftServer server)
+    {
+        NbtConversionHelper.WRAPPER_LOOKUP = server.getRegistryManager();
+    }
 
     public static ItemStack fromNbt(NbtCompound nbt)
     {

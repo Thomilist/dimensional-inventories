@@ -21,6 +21,7 @@ import net.thomilist.dimensionalinventories.module.builtin.gamemode.GameModeModu
 import net.thomilist.dimensionalinventories.module.builtin.inventory.InventoryModule;
 import net.thomilist.dimensionalinventories.module.builtin.status.StatusModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolTransitionHandler;
+import net.thomilist.dimensionalinventories.util.NbtConversionHelper;
 import net.thomilist.dimensionalinventories.util.Properties;
 import net.thomilist.dimensionalinventories.util.SavePaths;
 import org.slf4j.Logger;
@@ -117,6 +118,7 @@ public class DimensionalInventories
 		{
 			try (var LAF = LostAndFound.init("server started"))
 			{
+				NbtConversionHelper.onServerStarted(server);
 				SavePaths.onServerStarted(server);
 				StorageVersionMigration.onServerStarted(server);
 
