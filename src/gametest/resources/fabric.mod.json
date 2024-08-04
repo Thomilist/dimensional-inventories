@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "dimensional-inventories-gametest",
+  "name": "Dimensional Inventories Game Test",
+  "version": "${version}",
+
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "net.thomilist.dimensionalinventories.gametest.DimensionalInventoriesGameTest"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
