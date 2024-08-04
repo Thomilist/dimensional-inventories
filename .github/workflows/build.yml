@@ -37,7 +37,7 @@ jobs:
         uses: mikepenz/action-junit-report@v4
         if: success() || failure()
         with:
-          report_paths: '**/build/gametest/report/junit.xml'
+          report_paths: '**/run/gametest/server/report/junit.xml'
       # Artifacts
       - name: Capture build artifacts
         if: ${{ runner.os == 'Linux' }}
