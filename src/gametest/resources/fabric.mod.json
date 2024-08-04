@@ -10,6 +10,13 @@
       "net.thomilist.dimensionalinventories.gametest.DimensionalInventoriesGameTest"
     ]
   },
+  "mixins": [
+    "dimensional-inventories-gametest.mixins.json",
+    {
+      "config": "dimensional-inventories-gametest.client.mixins.json",
+      "environment": "client"
+    }
+  ],
 
   "depends": {
     "fabricloader": ">=${loader_version}",

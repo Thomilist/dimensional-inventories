@@ -10,20 +10,35 @@ base {
 	archivesName = project.archives_base_name
 }
 
-String gametestPath = "build/gametest"
+def interactiveRunPath = "run/interactive"
+def interactiveServerRunPath = interactiveRunPath + "/server"
+def interactiveClientRunPath = interactiveRunPath + "/client"
+
+def gametestRunPath = "run/gametest"
+def gametestServerRunPath = gametestRunPath + "/server"
+def gametestClientRunPath = gametestRunPath + "/client"
+
+
+loom {
+	splitEnvironmentSourceSets()
+}
 
 sourceSets {
 	gametest {
 		compileClasspath += main.compileClasspath
 		runtimeClasspath += main.runtimeClasspath
-		compileClasspath += main.output
-		runtimeClasspath += main.output
+	}
+	gametestClient {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+		compileClasspath += client.compileClasspath
+		runtimeClasspath += client.runtimeClasspath
+		compileClasspath += gametest.compileClasspath
+		runtimeClasspath += gametest.runtimeClasspath
 	}
 }
 
 loom {
-	splitEnvironmentSourceSets()
-
 	mods {
 		"dimensional-inventories" {
 			sourceSet sourceSets.main
@@ -31,24 +46,34 @@ loom {
 		}
 		"dimensional-inventories-gametest" {
 			sourceSet sourceSets.gametest
+			sourceSet sourceSets.gametestClient
 		}
 	}
 
 	runs {
+		server {
+			runDir(interactiveServerRunPath)
+		}
+
+		client {
+			runDir(interactiveClientRunPath)
+		}
+
 		gametestServer {
 			server()
 			name "Game Test Server"
 			vmArg "-Dfabric-api.gametest"
 			vmArg "-Dfabric-api.gametest.report-file=report/junit.xml"
-			runDir gametestPath
+			runDir(gametestServerRunPath)
 			source sourceSets.gametest
 		}
 
 		gametestClient {
 			client()
 			name "Game Test Client"
-			runDir gametestPath
-			source sourceSets.gametest
+			//vmArg "-Dfabric-api.gametest.structures.output-dir=${file("src/gametest/resources/data/dimensional-inventories-gametest/gametest/structures")}"
+			runDir(gametestClientRunPath)
+			source sourceSets.gametestClient
 		}
 	}
 }
@@ -56,7 +81,7 @@ loom {
 tasks.register("cleanGametestServer") {
 	group = "gametest"
 	doLast {
-		delete(gametestPath)
+		delete(gametestServerRunPath)
 	}
 }
 
@@ -64,18 +89,24 @@ tasks.register("acceptGametestServerEula") {
 	group = "gametest"
 	mustRunAfter(cleanGametestServer)
 	doLast {
-		mkdir(gametestPath)
-		new File(gametestPath, "eula.txt").text = "eula=true"
+		mkdir(gametestServerRunPath)
+		new File(gametestServerRunPath, "eula.txt").text = "eula=true"
 	}
 }
 
-tasks.register("runGametests") {
-	group = "gametest"
-	dependsOn(cleanGametestServer, acceptGametestServerEula, runGametestServer)
+tasks.register("acceptInteractiveServerEula") {
+	doLast {
+		mkdir(interactiveServerRunPath)
+		new File(interactiveServerRunPath, "eula.txt").text = "eula=true"
+	}
 }
 
 runGametestServer.configure {
-	mustRunAfter(acceptGametestServerEula)
+	dependsOn(cleanGametestServer, acceptGametestServerEula)
+}
+
+runServer.configure {
+	dependsOn(acceptInteractiveServerEula)
 }
 
 repositories {
@@ -100,6 +131,11 @@ dependencies {
 
 	// Apache Commons IO to move entire directories
 	implementation 'commons-io:commons-io:2.16.1'
+
+	gametestImplementation sourceSets.main.output
+	gametestClientImplementation sourceSets.main.output
+	gametestClientImplementation sourceSets.client.output
+	gametestClientImplementation sourceSets.gametest.output
 }
 
 processResources {
