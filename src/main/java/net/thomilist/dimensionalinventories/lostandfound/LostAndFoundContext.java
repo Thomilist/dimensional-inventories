@@ -96,21 +96,21 @@ public class LostAndFoundContext
         return switch (specialObjects.size())
         {
             case 1 -> SavePaths.lostAndFoundDirectory(
-                DimensionalInventories.STORAGE_VERSION,
+                DimensionalInventories.INSTANCE.storageVersion,
                 (DimensionPool) specialObjects.get(0)
             );
             case 2 -> SavePaths.lostAndFoundDirectory(
-                DimensionalInventories.STORAGE_VERSION,
+                DimensionalInventories.INSTANCE.storageVersion,
                 (DimensionPool) specialObjects.get(0),
                 (ServerPlayerEntity) specialObjects.get(1)
             );
             case 3 -> SavePaths.lostAndFoundDirectory(
-                DimensionalInventories.STORAGE_VERSION,
+                DimensionalInventories.INSTANCE.storageVersion,
                 (DimensionPool) specialObjects.get(0),
                 (ServerPlayerEntity) specialObjects.get(1),
                 (Module) specialObjects.get(2)
             );
-            default -> SavePaths.lostAndFoundDirectory(DimensionalInventories.STORAGE_VERSION);
+            default -> SavePaths.lostAndFoundDirectory(DimensionalInventories.INSTANCE.storageVersion);
         };
     }
 

@@ -25,12 +25,12 @@ public class DummyServerPlayerEntity extends ServerPlayerEntity
 
     public DummyServerPlayerEntity(ServerWorld world, UUID uuid)
     {
-        this(world, new GameProfile(uuid, DUMMY_NAME));
+        this(world, new GameProfile(uuid, DummyServerPlayerEntity.DUMMY_NAME));
     }
 
     public DummyServerPlayerEntity(MinecraftServer server, UUID uuid)
     {
-        this(server, new GameProfile(uuid, DUMMY_NAME));
+        this(server, new GameProfile(uuid, DummyServerPlayerEntity.DUMMY_NAME));
     }
 
     public DummyServerPlayerEntity(ServerWorld world, String uuid)
@@ -41,5 +41,15 @@ public class DummyServerPlayerEntity extends ServerPlayerEntity
     public DummyServerPlayerEntity(MinecraftServer server, String uuid)
     {
         this(server, UUID.fromString(uuid));
+    }
+
+    public DummyServerPlayerEntity(MinecraftServer server)
+    {
+        this(server, UUID.randomUUID());
+    }
+
+    public DummyServerPlayerEntity(ServerWorld world)
+    {
+        this(world, UUID.randomUUID());
     }
 }

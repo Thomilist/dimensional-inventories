@@ -30,7 +30,7 @@ public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterio
         if (DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG == null)
         {
             DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG =
-                DimensionalInventories.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
+                DimensionalInventories.INSTANCE.configModules.get(DimensionPoolConfigModule.class);
         }
 
         return DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG;

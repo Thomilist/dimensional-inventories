@@ -10,7 +10,7 @@ public class DimensionPoolConfigModule
     extends ModuleBase
     implements JsonConfigModule<DimensionPoolConfigModuleState>
 {
-    static final DimensionPoolConfigModuleState STATE = new DimensionPoolConfigModuleState();
+    private final DimensionPoolConfigModuleState state = new DimensionPoolConfigModuleState();
 
     private static final Gson GSON = JsonModule.GSON_BUILDER
         .registerTypeAdapter(DimensionPoolMapSerializerPair.TYPE, new DimensionPoolMapSerializerPair())
@@ -34,7 +34,7 @@ public class DimensionPoolConfigModule
     @Override
     public DimensionPoolConfigModuleState state()
     {
-        return DimensionPoolConfigModule.STATE;
+        return state;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class DimensionPoolConfigModule
     @Override
     public void loadFromOther(DimensionPoolConfigModuleState other)
     {
-        DimensionPoolConfigModule.STATE.dimensionPools.clear();
-        DimensionPoolConfigModule.STATE.dimensionPools.putAll(other.dimensionPools);
+        state().dimensionPools.clear();
+        state().dimensionPools.putAll(other.dimensionPools);
     }
 }
