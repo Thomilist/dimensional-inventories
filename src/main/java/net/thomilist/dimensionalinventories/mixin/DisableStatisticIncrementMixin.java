@@ -35,7 +35,7 @@ public abstract class DisableStatisticIncrementMixin
         if (DisableStatisticIncrementMixin.DIMENSION_POOL_CONFIG == null)
         {
             DisableStatisticIncrementMixin.DIMENSION_POOL_CONFIG =
-                DimensionalInventories.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
+                DimensionalInventories.INSTANCE.configModules.get(DimensionPoolConfigModule.class);
         }
 
         return DisableStatisticIncrementMixin.DIMENSION_POOL_CONFIG;

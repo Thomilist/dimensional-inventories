@@ -18,7 +18,7 @@ public class LogHelper
 
     public static String joinAndWrapScopes(String... scopes)
     {
-        return String.join("", "[ ", joinScopes(scopes), " ]");
+        return String.join(" ", "[", joinScopes(scopes), "]");
     }
 
     public static String joinAndWrapScopes(Collection<String> scopes)

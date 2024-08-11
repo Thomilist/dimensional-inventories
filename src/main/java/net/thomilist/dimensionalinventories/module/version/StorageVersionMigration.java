@@ -5,6 +5,8 @@ import net.minecraft.util.WorldSavePath;
 import net.minecraft.world.GameMode;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.ModuleNotRegisteredException;
+import net.thomilist.dimensionalinventories.module.ModuleRegistry;
+import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPoolConfigModule_SV1;
 import net.thomilist.dimensionalinventories.exception.StorageVersionMigrationException;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
@@ -25,33 +27,57 @@ public class StorageVersionMigration
 {
     private static final String LEGACY_BASE_SAVE_DIRECTORY_NAME = "dimensionalinventories";
 
-    private static Path legacyBaseSaveDirectory;
+    private final StorageVersion targetStorageVersion;
+    private final ModuleRegistry<ConfigModule> configModules;
+    private final DimensionPoolTransitionHandler transitionHandler;
+    private final String legacyBaseSaveDirectoryName;
 
-    public static void onServerStarted(MinecraftServer server)
+    private Path legacyBaseSaveDirectory;
+
+    public StorageVersionMigration(
+        StorageVersion targetStorageVersion,
+        ModuleRegistry<ConfigModule> configModules,
+        DimensionPoolTransitionHandler transitionHandler,
+        String legacyBaseSaveDirectoryName)
+    {
+        this.targetStorageVersion = targetStorageVersion;
+        this.configModules = configModules;
+        this.transitionHandler = transitionHandler;
+        this.legacyBaseSaveDirectoryName = legacyBaseSaveDirectoryName;
+    }
+
+    public StorageVersionMigration(
+        StorageVersion targetStorageVersion,
+        ModuleRegistry<ConfigModule> configModules,
+        DimensionPoolTransitionHandler transitionHandler)
+    {
+        this(targetStorageVersion, configModules, transitionHandler, StorageVersionMigration.LEGACY_BASE_SAVE_DIRECTORY_NAME);
+    }
+
+    public void tryMigrate(MinecraftServer server)
     {
         try (var LAF = LostAndFound.push("storage version migration"))
         {
-            StorageVersionMigration.legacyBaseSaveDirectory = server.getSavePath(WorldSavePath.ROOT)
-                .resolve(StorageVersionMigration.LEGACY_BASE_SAVE_DIRECTORY_NAME);
-
-            StorageVersion writtenStorageVersion = StorageVersionMigration.determineWrittenDataVersion();
+            legacyBaseSaveDirectory = server.getSavePath(WorldSavePath.ROOT)
+                .resolve(legacyBaseSaveDirectoryName);
+            StorageVersion writtenStorageVersion = determineWrittenDataVersion();
 
             // No data found. Start fresh
             if (writtenStorageVersion == null)
             {
                 DimensionalInventories.LOGGER.info("No data found");
                 DimensionalInventories.LOGGER.info("Initialising with storage version {}...",
-                    DimensionalInventories.STORAGE_VERSION.version);
+                    targetStorageVersion.version);
             }
             // Outdated data found. Migrate
-            else if (writtenStorageVersion != DimensionalInventories.STORAGE_VERSION)
+            else if (writtenStorageVersion != targetStorageVersion)
             {
                 DimensionalInventories.LOGGER.info("Data from storage version {} found.",
                     writtenStorageVersion.version);
                 DimensionalInventories.LOGGER.info("Migrating to storage version {}...",
-                    DimensionalInventories.STORAGE_VERSION.version);
+                    targetStorageVersion.version);
 
-                StorageVersionMigration.migrate(writtenStorageVersion, DimensionalInventories.STORAGE_VERSION, server);
+                migrate(writtenStorageVersion, targetStorageVersion, server);
 
                 DimensionalInventories.LOGGER.info("Migration complete");
             }
@@ -64,7 +90,7 @@ public class StorageVersionMigration
         }
     }
 
-    public static StorageVersion determineWrittenDataVersion()
+    public StorageVersion determineWrittenDataVersion()
     {
         // Reversed to get newest first
         for (StorageVersion storageVersion : StorageVersion.reversed())
@@ -75,7 +101,7 @@ public class StorageVersionMigration
             }
         }
 
-        if (Files.exists(StorageVersionMigration.legacyBaseSaveDirectory))
+        if (Files.exists(legacyBaseSaveDirectory))
         {
             return StorageVersion.V1;
         }
@@ -83,7 +109,7 @@ public class StorageVersionMigration
         return null;
     }
 
-    private static void migrate(StorageVersion from, StorageVersion to, MinecraftServer server)
+    private void migrate(StorageVersion from, StorageVersion to, MinecraftServer server)
         throws StorageVersionMigrationException
     {
         try (var LAF = LostAndFound.push("migrate " + from + ".." + to))
@@ -92,27 +118,27 @@ public class StorageVersionMigration
             {
                 try (var LAF_1_2 = LostAndFound.push(StorageVersion.V1 + ".." + StorageVersion.V2))
                 {
-                    StorageVersionMigration.migrate1to2(server);
+                    migrate1to2(server);
                 }
             }
         }
     }
 
-    private static void migrate1to2(MinecraftServer server)
+    private void migrate1to2(MinecraftServer server)
         throws StorageVersionMigrationException
     {
         DimensionalInventories.LOGGER.info("Preparing migration step from {} to {}...",
             StorageVersion.V1, StorageVersion.V2);
 
-        StorageVersionMigration.prepareMigration1to2();
-        StorageVersionMigration.migrateConfig1to2();
-        StorageVersionMigration.migratePlayers1to2(server);
+        prepareMigration1to2();
+        migrateConfig1to2();
+        migratePlayers1to2(server);
 
         DimensionalInventories.LOGGER.info("Migration step from {} to {} complete",
             StorageVersion.V1, StorageVersion.V2);
     }
 
-    private static void prepareMigration1to2()
+    private void prepareMigration1to2()
         throws StorageVersionMigrationException
     {
         try (var LAF = LostAndFound.push("prepare"))
@@ -124,7 +150,7 @@ public class StorageVersionMigration
             try
             {
                 FileUtils.copyDirectory(
-                    StorageVersionMigration.legacyBaseSaveDirectory.toFile(),
+                    legacyBaseSaveDirectory.toFile(),
                     SavePaths.saveDirectory(StorageVersion.V1).toFile()
                 );
             }
@@ -151,7 +177,7 @@ public class StorageVersionMigration
     }
 
     @SuppressWarnings("deprecation")
-    private static void migrateConfig1to2()
+    private void migrateConfig1to2()
     {
         try (var LAF = LostAndFound.push("config"))
         {
@@ -162,8 +188,8 @@ public class StorageVersionMigration
 
             try
             {
-                legacyConfigModule = DimensionalInventories.CONFIG_MODULES.get(DimensionPoolConfigModule_SV1.class);
-                newConfigModule = DimensionalInventories.CONFIG_MODULES.get(DimensionPoolConfigModule.class);
+                legacyConfigModule = configModules.get(DimensionPoolConfigModule_SV1.class);
+                newConfigModule = configModules.get(DimensionPoolConfigModule.class);
             }
             catch (ModuleNotRegisteredException e)
             {
@@ -178,7 +204,7 @@ public class StorageVersionMigration
         }
     }
 
-    private static void migratePlayers1to2(MinecraftServer server)
+    private void migratePlayers1to2(MinecraftServer server)
     {
         try (var LAF = LostAndFound.push("players"))
         {
@@ -219,8 +245,8 @@ public class StorageVersionMigration
                     // Dummy player to store data during migration
                     DummyServerPlayerEntity dummyPlayer = new DummyServerPlayerEntity(server, uuid);
 
-                    DimensionPoolTransitionHandler.loadToPlayer(StorageVersion.V1, tempDimensionPool, dummyPlayer);
-                    DimensionPoolTransitionHandler.saveFromPlayer(StorageVersion.V2, tempDimensionPool, dummyPlayer);
+                    transitionHandler.loadToPlayer(StorageVersion.V1, tempDimensionPool, dummyPlayer);
+                    transitionHandler.saveFromPlayer(StorageVersion.V2, tempDimensionPool, dummyPlayer);
                 }
             }
         }

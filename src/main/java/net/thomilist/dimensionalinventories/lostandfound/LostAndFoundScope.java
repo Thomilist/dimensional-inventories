@@ -49,29 +49,20 @@ public class LostAndFoundScope
 
     private static String formatLayer(Object layer)
     {
-        if (layer instanceof DimensionPool)
+        return switch (layer)
         {
-            return ((DimensionPool) layer).getDisplayName() + " (" + ((DimensionPool) layer).getId() + ")";
-        }
-        else if (layer instanceof ServerPlayerEntity)
-        {
-            return ((ServerPlayerEntity) layer).getName().getString() + " (" + ((ServerPlayerEntity) layer).getUuidAsString() + ")";
-        }
-        else if (layer instanceof ConfigModule)
-        {
-            return LogHelper.joinScopes(((ConfigModule) layer).groupId(), ((ConfigModule) layer).moduleId() + " (config module)");
-        }
-        else if (layer instanceof PlayerModule)
-        {
-            return LogHelper.joinScopes(((PlayerModule) layer).groupId(), ((PlayerModule) layer).moduleId() + " (player module)");
-        }
-        else if (layer instanceof Module)
-        {
-            return LogHelper.joinScopes(((Module) layer).groupId(), ((Module) layer).moduleId());
-        }
-        else
-        {
-            return layer.toString();
-        }
+            case DimensionPool dimensionPool ->
+                dimensionPool.getDisplayName() + " (" + dimensionPool.getId() + ")";
+            case ServerPlayerEntity serverPlayerEntity ->
+                serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getUuidAsString() + ")";
+            case ConfigModule configModule ->
+                LogHelper.joinScopes(configModule.groupId(), configModule.moduleId() + " (config module)");
+            case PlayerModule playerModule ->
+                LogHelper.joinScopes(playerModule.groupId(), playerModule.moduleId() + " (player module)");
+            case Module module ->
+                LogHelper.joinScopes(module.groupId(), module.moduleId());
+            default ->
+                layer.toString();
+        };
     }
 }

@@ -7,7 +7,9 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "net.thomilist.dimensionalinventories.gametest.DimensionalInventoriesGameTest"
+      "net.thomilist.dimensionalinventories.gametest.DimensionPoolTransitionHandlerTest",
+      "net.thomilist.dimensionalinventories.gametest.LogHelperTest",
+      "net.thomilist.dimensionalinventories.gametest.LogThrottlerTest"
     ]
   },
   "mixins": [
