@@ -7,7 +7,10 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "net.thomilist.dimensionalinventories.gametest.DimensionPoolTransitionHandlerTest",
+      "net.thomilist.dimensionalinventories.gametest.InventoryModuleTest",
+      "net.thomilist.dimensionalinventories.gametest.StatusEffectModuleTest",
+      "net.thomilist.dimensionalinventories.gametest.GameModeModuleTest",
+      "net.thomilist.dimensionalinventories.gametest.NonPlayerHandlingTest",
       "net.thomilist.dimensionalinventories.gametest.LogHelperTest",
       "net.thomilist.dimensionalinventories.gametest.LogThrottlerTest"
     ]
