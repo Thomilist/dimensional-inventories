@@ -23,7 +23,7 @@ import net.thomilist.dimensionalinventories.module.builtin.inventory.InventoryMo
 import net.thomilist.dimensionalinventories.module.builtin.status.StatusModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolTransitionHandler;
 import net.thomilist.dimensionalinventories.util.NbtConversionHelper;
-import net.thomilist.dimensionalinventories.util.Properties;
+import net.thomilist.dimensionalinventories.util.ModProperties;
 import net.thomilist.dimensionalinventories.util.SavePaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,10 @@ import org.slf4j.LoggerFactory;
 public class DimensionalInventories
 	implements ModInitializer
 {
-	public static final Logger LOGGER = LoggerFactory.getLogger(Properties.modNamePascal());
+	private static final String MOD_ID = "dimensional-inventories";
+
+	public static final ModProperties PROPERTIES = new ModProperties(DimensionalInventories.MOD_ID);
+	public static final Logger LOGGER = LoggerFactory.getLogger(DimensionalInventories.PROPERTIES.namePascal());
 	public static final DimensionalInventories INSTANCE = new DimensionalInventories();
 
 	public final StorageVersion storageVersion;
@@ -153,8 +156,8 @@ public class DimensionalInventories
 				}
 
 				DimensionalInventories.LOGGER.info("{} {} initialised",
-					Properties.modNamePretty(),
-					Properties.modVersion());
+					DimensionalInventories.PROPERTIES.namePretty(),
+					DimensionalInventories.PROPERTIES.version());
 			}
 		});
 	}

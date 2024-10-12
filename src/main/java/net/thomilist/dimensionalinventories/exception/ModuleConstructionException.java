@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.exception;
 
-import net.thomilist.dimensionalinventories.util.LogHelper;
+import net.thomilist.dimensionalinventories.util.StringHelper;
 
 public class ModuleConstructionException
     extends RuntimeException
@@ -10,7 +10,7 @@ public class ModuleConstructionException
         super
         (
             "The module "
-                + LogHelper.joinAndWrapScopes(groupId, moduleId)
+                + StringHelper.joinAndWrapScopes(groupId, moduleId)
                 + " of type '"
                 + moduleType.getName()
                 + "' could not be constructed",
