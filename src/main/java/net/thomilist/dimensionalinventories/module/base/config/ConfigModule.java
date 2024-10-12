@@ -24,4 +24,10 @@ public interface ConfigModule
             save();
         }
     }
+
+    @Override
+    default String toLostAndFoundScopeString()
+    {
+        return Module.super.toLostAndFoundScopeString() + " (config module)";
+    }
 }

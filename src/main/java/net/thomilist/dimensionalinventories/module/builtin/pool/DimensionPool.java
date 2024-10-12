@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.TreeSet;
 
 import net.minecraft.world.GameMode;
+import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundFormattable;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPool_SV1;
 
 public class DimensionPool
+    implements LostAndFoundFormattable
 {
     private static final List<String> DEFAULT_DIMENSIONS = List.of(
         "minecraft:overworld",
@@ -169,5 +171,11 @@ public class DimensionPool
         }
 
         return dimensionPoolString.toString();
+    }
+
+    @Override
+    public String toLostAndFoundScopeString()
+    {
+        return this.getDisplayName() + " (" + this.getId() + ")";
     }
 }

@@ -1,10 +1,6 @@
 package net.thomilist.dimensionalinventories.lostandfound;
 
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.thomilist.dimensionalinventories.module.base.Module;
-import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
-import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
-import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.util.LogHelper;
 
 import java.util.ArrayList;
@@ -51,16 +47,10 @@ public class LostAndFoundScope
     {
         return switch (layer)
         {
-            case DimensionPool dimensionPool ->
-                dimensionPool.getDisplayName() + " (" + dimensionPool.getId() + ")";
+            case LostAndFoundFormattable lostAndFoundFormattable ->
+                lostAndFoundFormattable.toLostAndFoundScopeString();
             case ServerPlayerEntity serverPlayerEntity ->
                 serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getUuidAsString() + ")";
-            case ConfigModule configModule ->
-                LogHelper.joinScopes(configModule.groupId(), configModule.moduleId() + " (config module)");
-            case PlayerModule playerModule ->
-                LogHelper.joinScopes(playerModule.groupId(), playerModule.moduleId() + " (player module)");
-            case Module module ->
-                LogHelper.joinScopes(module.groupId(), module.moduleId());
             default ->
                 layer.toString();
         };
