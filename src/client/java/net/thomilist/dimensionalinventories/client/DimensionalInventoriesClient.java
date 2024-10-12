@@ -2,7 +2,8 @@ package net.thomilist.dimensionalinventories.client;
 
 import net.fabricmc.api.ClientModInitializer;
 
-public class DimensionalInventoriesClient implements ClientModInitializer
+public class DimensionalInventoriesClient
+    implements ClientModInitializer
 {
     @Override
     public void onInitializeClient()

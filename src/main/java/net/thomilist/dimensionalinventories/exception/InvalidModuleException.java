@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.exception;
 
-import net.thomilist.dimensionalinventories.util.LogHelper;
+import net.thomilist.dimensionalinventories.util.StringHelper;
 
 public class InvalidModuleException
     extends RuntimeException
@@ -10,7 +10,7 @@ public class InvalidModuleException
         super
         (
             "The module "
-            + LogHelper.joinAndWrapScopes(groupId, moduleId)
+            + StringHelper.joinAndWrapScopes(groupId, moduleId)
             + " is invalid, because '"
             + moduleType.getName()
             + "' is not a valid module type"
