@@ -97,7 +97,7 @@ public class InventoryModuleTest
 
         player.getInventory().main.replaceAll(ignored -> itemStack.copy());
         player.getInventory().offHand.replaceAll(ignored -> itemStack.copy());
-        player.getEnderChestInventory().heldStacks.replaceAll(ignored -> itemStack.copy());
+        player.getEnderChestInventory().stacks.replaceAll(ignored -> itemStack.copy());
 
         var helmet = new ItemStack(Items.DIAMOND_HELMET);
         var chestPlate = new ItemStack(Items.DIAMOND_CHESTPLATE);
@@ -131,10 +131,10 @@ public class InventoryModuleTest
             );
         }
 
-        for (int i = 0; i < player.getEnderChestInventory().heldStacks.size(); i++)
+        for (int i = 0; i < player.getEnderChestInventory().stacks.size(); i++)
         {
             context.assertTrue(
-                ItemStack.areItemsEqual(ItemStack.EMPTY, player.getEnderChestInventory().heldStacks.get(i)),
+                ItemStack.areItemsEqual(ItemStack.EMPTY, player.getEnderChestInventory().stacks.get(i)),
                 "Ender chest inventory empty after first transition"
             );
         }
@@ -181,10 +181,10 @@ public class InventoryModuleTest
             );
         }
 
-        for (int i = 0; i < player.getEnderChestInventory().heldStacks.size(); i++)
+        for (int i = 0; i < player.getEnderChestInventory().stacks.size(); i++)
         {
             context.assertTrue(
-                ItemStack.areItemsEqual(itemStack, player.getEnderChestInventory().heldStacks.get(i)),
+                ItemStack.areItemsEqual(itemStack, player.getEnderChestInventory().stacks.get(i)),
                 "Ender chest inventory restored after return transition"
             );
         }

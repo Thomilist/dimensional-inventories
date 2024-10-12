@@ -3,6 +3,7 @@ package net.thomilist.dimensionalinventories.mixin;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import net.minecraft.advancement.criterion.AbstractCriterionConditions;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.util.LogThrottler;
@@ -18,7 +19,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 
 @Mixin(AbstractCriterion.class)
-public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterion.Conditions>
+public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterionConditions>
     implements Criterion<T>
 {
     @Unique

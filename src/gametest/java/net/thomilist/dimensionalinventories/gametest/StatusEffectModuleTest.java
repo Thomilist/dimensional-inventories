@@ -21,7 +21,7 @@ public class StatusEffectModuleTest
         for (var effect : Registries.STATUS_EFFECT)
         {
             var effectEntry = Registries.STATUS_EFFECT.getEntry(effect);
-            var effectInstance = new StatusEffectInstance(effectEntry);
+            var effectInstance = new StatusEffectInstance(effectEntry.value());
             DimensionalInventoriesGameTest.LOGGER.debug(
                 "transitionSwapsStatusEffects: {}", effect.getName().getString());
 
@@ -42,7 +42,7 @@ public class StatusEffectModuleTest
                 BasicModSetup.ORIGIN_DIMENSION
             );
 
-            context.assertTrue(player.hasStatusEffect(effectEntry),
+            context.assertTrue(player.hasStatusEffect(effectEntry.value()),
                 "Player regained status effect after return transition");
 
             player.clearStatusEffects();

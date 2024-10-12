@@ -51,7 +51,8 @@ public class ShoulderEntityModuleTest
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        context.assertEquals(NbtHelper.toNbtProviderString(player.getShoulderEntityLeft()), parrotNbtString,
+
+        context.assertTrue(NbtHelper.toNbtProviderString(player.getShoulderEntityLeft()).equals(parrotNbtString),
             "Left parrot restored after return transition");
         context.assertTrue(NbtUtils.isEmpty(player.getShoulderEntityRight()),
             "Right shoulder empty after return transition");
@@ -102,9 +103,9 @@ public class ShoulderEntityModuleTest
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        context.assertEquals(NbtHelper.toNbtProviderString(player.getShoulderEntityLeft()), leftParrotNbtString,
+        context.assertTrue(NbtHelper.toNbtProviderString(player.getShoulderEntityLeft()).equals(leftParrotNbtString),
             "Left parrot restored after return transition");
-        context.assertEquals(NbtHelper.toNbtProviderString(player.getShoulderEntityRight()), rightParrotNbtString,
+        context.assertTrue(NbtHelper.toNbtProviderString(player.getShoulderEntityRight()).equals(rightParrotNbtString),
             "Right parrot restored after return transition");
 
         context.complete();

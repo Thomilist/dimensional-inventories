@@ -45,14 +45,17 @@ public class LostAndFoundScope
 
     private static String formatLayer(Object layer)
     {
-        return switch (layer)
+        if (layer instanceof LostAndFoundFormattable lostAndFoundFormattable)
         {
-            case LostAndFoundFormattable lostAndFoundFormattable ->
-                lostAndFoundFormattable.toLostAndFoundScopeString();
-            case ServerPlayerEntity serverPlayerEntity ->
-                serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getUuidAsString() + ")";
-            default ->
-                layer.toString();
-        };
+            return lostAndFoundFormattable.toLostAndFoundScopeString();
+        }
+        else if (layer instanceof ServerPlayerEntity serverPlayerEntity)
+        {
+            return serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getUuidAsString() + ")";
+        }
+        else
+        {
+            return layer.toString();
+        }
     }
 }

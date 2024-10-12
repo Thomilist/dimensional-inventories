@@ -1,7 +1,6 @@
 package net.thomilist.dimensionalinventories.util;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -15,12 +14,12 @@ public class DummyServerPlayerEntity extends ServerPlayerEntity
 
     private DummyServerPlayerEntity(ServerWorld world, GameProfile profile)
     {
-        super(world.getServer(), world, profile, SyncedClientOptions.createDefault());
+        super(world.getServer(), world, profile);
     }
 
     private DummyServerPlayerEntity(MinecraftServer server, GameProfile profile)
     {
-        super(server, server.getOverworld(), profile, SyncedClientOptions.createDefault());
+        super(server, server.getOverworld(), profile);
     }
 
     public DummyServerPlayerEntity(ServerWorld world, UUID uuid)

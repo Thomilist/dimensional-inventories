@@ -50,7 +50,7 @@ public class LostAndFoundContext
     {
         if (!scopes.isEmpty())
         {
-            scopes.removeLast();
+            scopes.remove(scopes.size() - 1);
         }
     }
 
@@ -62,7 +62,7 @@ public class LostAndFoundContext
 
     public LostAndFoundScope head()
     {
-        return scopes.isEmpty() ? null : scopes.getLast();
+        return scopes.isEmpty() ? null : scopes.get(scopes.size() - 1);
     }
 
     public Collection<LostAndFoundScope> scopes()

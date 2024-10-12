@@ -38,7 +38,9 @@ public enum StorageVersion
 
     public static SortedSet<StorageVersion> reversed()
     {
-        return StorageVersion.all().reversed();
+        final var reversedSet = new TreeSet<StorageVersion>(Collections.reverseOrder());
+        reversedSet.addAll(StorageVersion.all());
+        return reversedSet;
     }
 
     public static int compareSets(SortedSet<StorageVersion> a, SortedSet<StorageVersion> b)

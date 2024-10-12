@@ -43,7 +43,7 @@ public class InventoryModuleState
         ItemStackListHelper.assignItemStacks(armor, player.getInventory().armor);
         ItemStackListHelper.assignItemStacks(main, player.getInventory().main);
         ItemStackListHelper.assignItemStacks(offHand, player.getInventory().offHand);
-        ItemStackListHelper.assignItemStacks(enderChest, player.getEnderChestInventory().heldStacks);
+        ItemStackListHelper.assignItemStacks(enderChest, player.getEnderChestInventory().stacks);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class InventoryModuleState
         ItemStackListHelper.assignItemStacks(player.getInventory().armor, armor);
         ItemStackListHelper.assignItemStacks(player.getInventory().main, main);
         ItemStackListHelper.assignItemStacks(player.getInventory().offHand, offHand);
-        ItemStackListHelper.assignItemStacks(player.getEnderChestInventory().heldStacks, enderChest);
+        ItemStackListHelper.assignItemStacks(player.getEnderChestInventory().stacks, enderChest);
     }
 
     public DefaultedList<ItemStack> section(InventorySection label)

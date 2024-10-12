@@ -21,7 +21,7 @@ public class NbtConversionHelper
             return ItemStack.EMPTY;
         }
 
-        return ItemStack.fromNbtOrEmpty(NbtConversionHelper.WRAPPER_LOOKUP, nbt);
+        return ItemStack.fromNbt(nbt);
     }
 
     public static NbtCompound toNbt(ItemStack itemStack)
@@ -31,6 +31,6 @@ public class NbtConversionHelper
             return null;
         }
 
-        return (NbtCompound) itemStack.encode(NbtConversionHelper.WRAPPER_LOOKUP);
+        return itemStack.writeNbt(new NbtCompound());
     }
 }
