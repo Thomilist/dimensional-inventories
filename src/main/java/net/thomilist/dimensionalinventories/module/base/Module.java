@@ -1,12 +1,14 @@
 package net.thomilist.dimensionalinventories.module.base;
 
+import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundFormattable;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
+import net.thomilist.dimensionalinventories.util.LogHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.SortedSet;
 
 public interface Module
-    extends Comparable<Module>
+    extends Comparable<Module>, LostAndFoundFormattable
 {
     String groupId();
     String moduleId();
@@ -39,5 +41,11 @@ public interface Module
         {
             return StorageVersion.compareSets(this.storageVersions(), other.storageVersions());
         }
+    }
+
+    @Override
+    default String toLostAndFoundScopeString()
+    {
+        return LogHelper.joinScopes(this.groupId(), this.moduleId());
     }
 }

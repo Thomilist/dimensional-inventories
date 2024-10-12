@@ -26,4 +26,10 @@ public interface PlayerModule
             save(player, dimensionPool);
         }
     }
+
+    @Override
+    default String toLostAndFoundScopeString()
+    {
+        return Module.super.toLostAndFoundScopeString() + " (player module)";
+    }
 }
