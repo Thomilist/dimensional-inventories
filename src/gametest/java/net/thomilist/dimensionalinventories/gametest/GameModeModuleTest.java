@@ -16,9 +16,6 @@ public class GameModeModuleTest
     public void transitionSwitchesGameMode(TestContext context)
     {
         var setup = new BasicModSetup();
-
-        // Using a Fabric API FakePlayer instead of a DummyServerPlayerEntity,
-        // since a server connection seems to be required to change game mode
         var player = FakePlayer.get(context.getWorld());
 
         var originPool = setup.dimensionPoolConfig.state().poolWithId(BasicModSetup.ORIGIN_DIMENSION_POOL_ID).orElseThrow();

@@ -11,6 +11,7 @@ import net.thomilist.dimensionalinventories.module.ModuleGroup;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPoolConfigModule_SV1;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.inventory.InventoryModule_SV1;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.status.StatusModule_SV1;
+import net.thomilist.dimensionalinventories.module.builtin.shoulderentity.ShoulderEntityModule;
 import net.thomilist.dimensionalinventories.module.version.StorageVersionMigration;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
@@ -103,6 +104,13 @@ public class DimensionalInventories
 				new StorageVersion[]{ StorageVersion.V2 },
 				"status",
 				"Health, hunger, experience, score & status effects."
+			)
+			.add
+			(
+				ShoulderEntityModule.class,
+				new StorageVersion[]{ StorageVersion.V2 },
+				"shoulder-entity",
+				"Shoulder entities - just parrots, at least for now"
 			)
 			.add
 			(
