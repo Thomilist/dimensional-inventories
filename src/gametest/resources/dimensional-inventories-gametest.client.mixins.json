@@ -2,7 +2,7 @@
   "required": false,
   "minVersion": "0.8",
   "package": "net.thomilist.dimensionalinventories.gametest.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "${javaVersion}",
   "client": [],
   "injectors": {
     "defaultRequire": 1
