@@ -16,9 +16,6 @@ public class StatusEffectModuleTest
     public void transitionSwapsStatusEffects(TestContext context)
     {
         var setup = new BasicModSetup();
-
-        // Using a Fabric API FakePlayer instead of a DummyServerPlayerEntity,
-        // since a server connection seems to be required to change status effects
         var player = FakePlayer.get(context.getWorld());
 
         for (var effect : Registries.STATUS_EFFECT)
