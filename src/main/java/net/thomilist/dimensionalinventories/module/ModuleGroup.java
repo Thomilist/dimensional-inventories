@@ -9,7 +9,7 @@ import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
-import net.thomilist.dimensionalinventories.util.LogHelper;
+import net.thomilist.dimensionalinventories.util.StringHelper;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -45,7 +45,7 @@ public class ModuleGroup
         if (!modules.add(module))
         {
             DimensionalInventories.LOGGER.warn("Failed to add module: {} has already been registered",
-                LogHelper.joinAndWrapScopes(module.groupId(), module.moduleId()));
+                StringHelper.joinAndWrapScopes(module.groupId(), module.moduleId()));
         }
     }
 

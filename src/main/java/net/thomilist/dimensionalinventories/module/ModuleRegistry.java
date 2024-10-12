@@ -4,7 +4,7 @@ import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.ModuleNotRegisteredException;
 import net.thomilist.dimensionalinventories.module.base.Module;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
-import net.thomilist.dimensionalinventories.util.LogHelper;
+import net.thomilist.dimensionalinventories.util.StringHelper;
 
 import java.util.HashMap;
 import java.util.SortedSet;
@@ -29,7 +29,7 @@ public class ModuleRegistry<T extends Module>
             if (!modules.get(storageVersion).add(module))
             {
                 DimensionalInventories.LOGGER.warn("Failed to register module: {} has already been registered",
-                    LogHelper.joinAndWrapScopes(module.groupId(), module.moduleId()));
+                    StringHelper.joinAndWrapScopes(module.groupId(), module.moduleId()));
             }
         }
     }
