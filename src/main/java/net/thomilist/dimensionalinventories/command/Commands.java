@@ -22,10 +22,10 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameMode;
+import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolOperationResult;
-import net.thomilist.dimensionalinventories.util.Properties;
 
 import java.util.Optional;
 
@@ -66,6 +66,17 @@ public class Commands
     }
 
     private DimensionPoolConfigModule dimensionPoolConfig;
+    private final String versionString;
+
+    public Commands()
+    {
+        this.versionString
+            = DimensionalInventories.PROPERTIES.namePretty()
+            + " "
+            + DimensionalInventories.PROPERTIES.version()
+            + " by "
+            + DimensionalInventories.PROPERTIES.authorsPretty();
+    }
 
     public void register(DimensionPoolConfigModule dimensionPoolConfig)
     {
@@ -110,7 +121,7 @@ public class Commands
     public int printVersion(CommandContext<ServerCommandSource> context)
     {
         context.getSource().sendFeedback(() ->
-            Text.literal(Properties.modNamePretty() + " " + Properties.modVersion() + " by Thomilist"),
+            Text.literal(this.versionString),
             false);
         return Command.SINGLE_SUCCESS;
     }

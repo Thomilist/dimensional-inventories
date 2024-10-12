@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories.lostandfound;
 
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.thomilist.dimensionalinventories.util.LogHelper;
+import net.thomilist.dimensionalinventories.util.StringHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class LostAndFoundScope
             formattedLayers.add(LostAndFoundScope.formatLayer(layer));
         }
 
-        return LogHelper.joinScopes(formattedLayers);
+        return StringHelper.joinScopes(formattedLayers);
     }
 
     private static String formatLayer(Object layer)

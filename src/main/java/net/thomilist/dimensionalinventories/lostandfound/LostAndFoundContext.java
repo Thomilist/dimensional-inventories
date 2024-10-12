@@ -4,7 +4,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.base.Module;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
-import net.thomilist.dimensionalinventories.util.LogHelper;
+import net.thomilist.dimensionalinventories.util.StringHelper;
 import net.thomilist.dimensionalinventories.util.SavePaths;
 
 import java.nio.file.Path;
@@ -36,7 +36,7 @@ public class LostAndFoundContext
     @Override
     public String toString()
     {
-        return LogHelper.joinAndWrapScopes(scopes.stream().map(LostAndFoundScope::toString).toList());
+        return StringHelper.joinAndWrapScopes(scopes.stream().map(LostAndFoundScope::toString).toList());
     }
 
     public LostAndFoundScope push(Object... layers)

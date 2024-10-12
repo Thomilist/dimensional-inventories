@@ -2,7 +2,7 @@ package net.thomilist.dimensionalinventories.module.base;
 
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundFormattable;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
-import net.thomilist.dimensionalinventories.util.LogHelper;
+import net.thomilist.dimensionalinventories.util.StringHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.SortedSet;
@@ -46,6 +46,6 @@ public interface Module
     @Override
     default String toLostAndFoundScopeString()
     {
-        return LogHelper.joinScopes(this.groupId(), this.moduleId());
+        return StringHelper.joinScopes(this.groupId(), this.moduleId());
     }
 }
