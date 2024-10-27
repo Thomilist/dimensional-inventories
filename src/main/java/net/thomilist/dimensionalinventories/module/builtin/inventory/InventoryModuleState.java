@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 public class InventoryModuleState
     implements PlayerModuleState
 {
-    private static final int ARMOR_SIZE = PlayerInventory.ARMOR_SLOTS.length;
+    private static final int ARMOR_SIZE = 4;
     private static final int MAIN_SIZE = PlayerInventory.MAIN_SIZE;
     private static final int OFF_HAND_SIZE = 1;
     private static final int ENDER_CHEST_SIZE = new EnderChestInventory().size();

@@ -31,6 +31,6 @@ public class NbtConversionHelper
             return null;
         }
 
-        return (NbtCompound) itemStack.encode(NbtConversionHelper.WRAPPER_LOOKUP);
+        return (NbtCompound) itemStack.toNbt(NbtConversionHelper.WRAPPER_LOOKUP);
     }
 }

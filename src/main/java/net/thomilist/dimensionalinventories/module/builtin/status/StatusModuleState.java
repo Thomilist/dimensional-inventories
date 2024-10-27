@@ -2,6 +2,7 @@ package net.thomilist.dimensionalinventories.module.builtin.status;
 
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.thomilist.dimensionalinventories.mixin.HungerManagerAccessor;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModuleState;
 import net.thomilist.dimensionalinventories.util.ExperienceHelper;
 
@@ -40,7 +41,7 @@ public class StatusModuleState implements PlayerModuleState
         player.setScore(score);
         player.getHungerManager().setFoodLevel(foodLevel);
         player.getHungerManager().setSaturationLevel(saturationLevel);
-        player.getHungerManager().setExhaustion(exhaustion);
+        ((HungerManagerAccessor) player.getHungerManager()).setExhaustion(exhaustion);
         player.setHealth(health);
 
         player.clearStatusEffects();
@@ -58,7 +59,7 @@ public class StatusModuleState implements PlayerModuleState
         score = player.getScore();
         foodLevel = player.getHungerManager().getFoodLevel();
         saturationLevel = player.getHungerManager().getSaturationLevel();
-        exhaustion = player.getHungerManager().getExhaustion();
+        exhaustion = ((HungerManagerAccessor) player.getHungerManager()).getExhaustion();
         health = player.getHealth();
 
         statusEffects = player.getStatusEffects();
