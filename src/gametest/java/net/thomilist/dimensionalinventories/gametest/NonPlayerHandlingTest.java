@@ -79,6 +79,11 @@ public class NonPlayerHandlingTest
 
         for (var entityType : Registries.ENTITY_TYPE)
         {
+            if (!entityType.isEnabled(context.getWorld().getEnabledFeatures()))
+            {
+                continue;
+            }
+
             if (!mobSpawnGroups.contains(entityType.getSpawnGroup()))
             {
                 continue;
@@ -128,8 +133,22 @@ public class NonPlayerHandlingTest
         BlockPlacement.PlaceFloor(context);
         var setup = new BasicModSetup();
 
-        for (var entityType : List.of(EntityType.CHEST_BOAT, EntityType.CHEST_MINECART, EntityType.HOPPER_MINECART))
+        var clearableEntityTypes = List.of(
+            // Minecarts
+            EntityType.HOPPER_MINECART,
+            EntityType.CHEST_MINECART,
+
+            // Boats
+            EntityType.CHEST_BOAT
+        );
+
+        for (var entityType : clearableEntityTypes)
         {
+            if (!entityType.isEnabled(context.getWorld().getEnabledFeatures()))
+            {
+                continue;
+            }
+
             var entity = context.spawnEntity(entityType, 4, 4, 4);
 
             entity.getInventory().replaceAll(ignored -> new ItemStack(Items.STONE, Items.STONE.getMaxCount()));
