@@ -8,7 +8,7 @@ However, the feature set remains largely the same. What gives?
 
 ## Background
 
-When I first created Dimensional Inventories, it was essentially a quick and dirty proof of concept for a server I administered myself, which only ended up running for a months.
+When I first created Dimensional Inventories, it was essentially a quick and dirty proof of concept for a server I administered myself, which only ended up running for a few months.
 It was just about sufficient to allow the use of a data pack to add a creative dimension while keeping the creative inventory separate from the survival one.
 Still, since I had been unable to find any existing Fabric mod to accomplish this, I decided to share it on the off chance that someone else might find it useful too.
 
@@ -21,7 +21,7 @@ Well, I found the time during spring and summer of 2024, so here we are!
 
 Besides poor code quality stemming from my inexperience with Java at the time, the implementation of the mod was fundamentally flawed.
 Player data was stored as lines of plain text, with items being formatted as NBT strings, while health, experience and so on were written directly.
-A valid file would have exactly 73 lines of data, which the position of a given line being tightly coupled with its meaning.
+A valid file would have exactly 73 lines of data, with the position of a given line being tightly coupled with its meaning.
 This meant that the save format was difficult to adapt to new features, and since the NBT strings were not escaped, it would break when any piece of data contained multiline text.
 
 For most items, and indeed all the cases I originally tested, this was okay, but not so much for the Book & Quill.
