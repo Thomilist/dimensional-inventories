@@ -3,7 +3,7 @@ plugins {
 	id 'maven-publish'
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 17
 def javaVersionString = "JAVA_" + targetJavaVersion.toString()
 
 version = project.mod_version
