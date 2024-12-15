@@ -63,11 +63,11 @@ public class StringHelper
         return switch (strings.size())
         {
             case 0 -> "";
-            case 1 -> strings.getFirst();
+            case 1 -> strings.get(0);
             default -> String.join(
                 lastDelimiter,
                 String.join(mainDelimiter, strings.subList(0, strings.size() - 1)),
-                strings.getLast()
+                strings.get(strings.size() - 1)
             );
         };
     }
