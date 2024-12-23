@@ -104,12 +104,22 @@ tasks.register("acceptInteractiveServerEula") {
 	}
 }
 
-runGametestServer.configure {
-	dependsOn(cleanGametestServer, acceptGametestServerEula)
+runClient.configure {
+	dependsOn(build)
 }
 
 runServer.configure {
+	dependsOn(build)
 	dependsOn(acceptInteractiveServerEula)
+}
+
+runGametestClient.configure {
+	dependsOn(build)
+}
+
+runGametestServer.configure {
+	dependsOn(build)
+	dependsOn(cleanGametestServer, acceptGametestServerEula)
 }
 
 repositories {
