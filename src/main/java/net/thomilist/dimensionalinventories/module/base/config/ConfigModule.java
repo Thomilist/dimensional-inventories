@@ -9,6 +9,12 @@ public interface ConfigModule
     void load();
     void save();
 
+    @Override
+    default String category()
+    {
+        return "config";
+    }
+
     default void loadWithContext()
     {
         try (var LAF = LostAndFound.push(this, "load"))

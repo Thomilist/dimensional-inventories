@@ -9,8 +9,11 @@ import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 
 import java.nio.file.Path;
 
-public class SavePaths
+public final class SavePaths
 {
+    private SavePaths()
+    { }
+
     private static final String BASE_SAVE_DIRECTORY_NAME = "dimensional-inventories";
     private static final String DATA_DIRECTORY_NAME = "data";
     private static final String CONFIG_DIRECTORY_NAME = "config";

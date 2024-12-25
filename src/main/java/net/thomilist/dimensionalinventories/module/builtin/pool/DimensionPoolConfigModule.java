@@ -6,23 +6,33 @@ import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.base.config.JsonConfigModule;
 
-public class DimensionPoolConfigModule
+public final class DimensionPoolConfigModule
     extends ModuleBase
     implements JsonConfigModule<DimensionPoolConfigModuleState>
 {
-    private final DimensionPoolConfigModuleState state = new DimensionPoolConfigModuleState();
+    private static final String MODULE_ID = "dimension-pools";
+    private static final String DESCRIPTION =
+        "Configuration of dimension pools, including assigned dimensions, game modes & more.";
+
+    private static final StorageVersion[] STORAGE_VERSIONS =
+    {
+        StorageVersion.V2
+    };
 
     private static final Gson GSON = JsonModule.GSON_BUILDER
         .registerTypeAdapter(DimensionPoolMapSerializerPair.TYPE, new DimensionPoolMapSerializerPair())
         .create();
 
-    public DimensionPoolConfigModule(
-        StorageVersion[] storageVersions,
-        String groupId,
-        String moduleId,
-        String description)
+    private final DimensionPoolConfigModuleState state = new DimensionPoolConfigModuleState();
+
+    public DimensionPoolConfigModule(String groupId)
     {
-        super(storageVersions, groupId, moduleId, description);
+        super(
+            DimensionPoolConfigModule.STORAGE_VERSIONS,
+            groupId,
+            DimensionPoolConfigModule.MODULE_ID,
+            DimensionPoolConfigModule.DESCRIPTION
+        );
     }
 
     @Override

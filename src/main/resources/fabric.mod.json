@@ -23,7 +23,8 @@
       "net.thomilist.dimensionalinventories.client.DimensionalInventoriesClient"
     ],
     "main": [
-      "net.thomilist.dimensionalinventories.DimensionalInventories"
+      "net.thomilist.dimensionalinventories.DimensionalInventories",
+      "net.thomilist.dimensionalinventories.extension.builtin.DimensionalInventoriesExtensionMain"
     ]
   },
   "mixins": [
