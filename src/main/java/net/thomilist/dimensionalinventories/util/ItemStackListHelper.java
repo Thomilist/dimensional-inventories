@@ -3,9 +3,12 @@ package net.thomilist.dimensionalinventories.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 
-public class ItemStackListHelper
+public final class ItemStackListHelper
 {
     public static void assignItemStacks(DefaultedList<ItemStack> source, DefaultedList<ItemStack> target)
+    private ItemStackListHelper()
+    { }
+
     {
         if (source.size() != target.size())
         {

@@ -9,9 +9,12 @@ import net.minecraft.util.math.MathHelper;
 // Code from Meridanus/fabric_xp_storage_1.18 (MIT license)
 // https://github.com/Meridanus/fabric_xp_storage_1.18/blob/ee109ef98654efefa92111effcc06101d13d330d/src/main/java/com/notker/xp_storage/XpFunctions.java#L34
 
-public class ExperienceHelper
+public final class ExperienceHelper
 {
     public static void setExperience(ServerPlayerEntity player, int experience)
+    private ExperienceHelper()
+    { }
+
     {
         player.totalExperience = MathHelper.clamp(experience, 0, Integer.MAX_VALUE);
         player.experienceLevel = 0;

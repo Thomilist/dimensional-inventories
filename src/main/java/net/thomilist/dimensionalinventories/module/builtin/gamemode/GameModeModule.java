@@ -6,17 +6,28 @@ import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 
-public class GameModeModule
+public final class GameModeModule
     extends ModuleBase
     implements PlayerModule
 {
-    public GameModeModule(
-        StorageVersion[] storageVersions,
-        String groupId,
-        String moduleId,
-        String description)
+    private static final String MODULE_ID = "gamemode";
+    private static final String DESCRIPTION =
+        "Apply dimension pool game mode setting.";
+
+    private static final StorageVersion[] STORAGE_VERSIONS =
     {
-        super(storageVersions, groupId, moduleId, description);
+        StorageVersion.V1,
+        StorageVersion.V2
+    };
+
+    public GameModeModule(String groupId)
+    {
+        super(
+            GameModeModule.STORAGE_VERSIONS,
+            groupId,
+            GameModeModule.MODULE_ID,
+            GameModeModule.DESCRIPTION
+        );
     }
 
     @Override

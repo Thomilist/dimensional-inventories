@@ -7,18 +7,32 @@ import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 
-public class ShoulderEntityModule
+public final class ShoulderEntityModule
     extends ModuleBase
     implements JsonPlayerModule<ShoulderEntityModuleState>
 {
-    static final ShoulderEntityModuleState STATE = new ShoulderEntityModuleState();
+    private static final String MODULE_ID = "shoulder-entity";
+    private static final String DESCRIPTION =
+        "Shoulder entities - just parrots, at least for now.";
+
+    private static final StorageVersion[] STORAGE_VERSIONS =
+    {
+        StorageVersion.V2
+    };
 
     private static final Gson GSON = JsonModule.GSON_BUILDER
         .create();
 
-    public ShoulderEntityModule(StorageVersion[] storageVersions, String groupId, String moduleId, String description)
+    private final ShoulderEntityModuleState state = new ShoulderEntityModuleState();
+
+    public ShoulderEntityModule(String groupId)
     {
-        super(storageVersions, groupId, moduleId, description);
+        super(
+            ShoulderEntityModule.STORAGE_VERSIONS,
+            groupId,
+            ShoulderEntityModule.MODULE_ID,
+            ShoulderEntityModule.DESCRIPTION
+        );
     }
 
     @Override

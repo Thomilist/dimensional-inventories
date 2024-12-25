@@ -3,9 +3,10 @@ package net.thomilist.dimensionalinventories.util;
 import java.util.Collection;
 import java.util.List;
 
-public class StringHelper
+public final class StringHelper
 {
-    public static final String NAMESPACE_DELIMITER = " :: ";
+    private StringHelper()
+    { }
 
     public static String joinScopes(String... scopes)
     {

@@ -8,11 +8,18 @@ import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
 
-public class InventoryModule
+public final class InventoryModule
     extends ModuleBase
     implements JsonPlayerModule<InventoryModuleState>
 {
-    static final InventoryModuleState STATE = new InventoryModuleState();
+    private static final String MODULE_ID = "inventory";
+    private static final String DESCRIPTION =
+        "Items in inventory, hotbar, offhand & armour slots.";
+
+    private static final StorageVersion[] STORAGE_VERSIONS =
+    {
+        StorageVersion.V2
+    };
 
     private static final Gson GSON = JsonModule.GSON_BUILDER
         .registerTypeAdapter(ItemStack.class, new ItemStackSerializerPair())
@@ -20,13 +27,16 @@ public class InventoryModule
         .registerTypeAdapter(InventoryModuleState.class, new InventoryModuleStateSerializerPair())
         .create();
 
-    public InventoryModule(
-        StorageVersion[] storageVersions,
-        String groupId,
-        String moduleId,
-        String description)
+    private final InventoryModuleState state = new InventoryModuleState();
+
+    public InventoryModule(String groupId)
     {
-        super(storageVersions, groupId, moduleId, description);
+        super(
+            InventoryModule.STORAGE_VERSIONS,
+            groupId,
+            InventoryModule.MODULE_ID,
+            InventoryModule.DESCRIPTION
+        );
     }
 
     @Override

@@ -8,12 +8,13 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.collection.DefaultedList;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
-import net.thomilist.dimensionalinventories.module.builtin.legacy.ModuleHelper_SV1;
-import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.base.player.StatefulPlayerModule;
+import net.thomilist.dimensionalinventories.module.builtin.inventory.InventoryModule;
 import net.thomilist.dimensionalinventories.module.builtin.inventory.InventoryModuleState;
 import net.thomilist.dimensionalinventories.module.builtin.inventory.InventorySection;
+import net.thomilist.dimensionalinventories.module.builtin.legacy.ModuleHelper_SV1;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
+import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.util.ItemStackListHelper;
 import net.thomilist.dimensionalinventories.util.NbtConversionHelper;
 
@@ -23,19 +24,29 @@ import java.nio.file.Path;
 import java.util.List;
 
 @Deprecated
-public class InventoryModule_SV1
+public final class InventoryModule_SV1
     extends ModuleBase
     implements StatefulPlayerModule<InventoryModuleState>
 {
-    static final InventoryModuleState STATE = new InventoryModuleState();
+    private static final String MODULE_ID = "inventory";
+    private static final String DESCRIPTION =
+        "Items in inventory, hotbar, offhand & armour slots.";
 
-    public InventoryModule_SV1(
-        StorageVersion[] storageVersions,
-        String groupId,
-        String moduleId,
-        String description)
+    private static final StorageVersion[] STORAGE_VERSIONS =
     {
-        super(storageVersions, groupId, moduleId, description);
+        StorageVersion.V1
+    };
+
+    private final InventoryModuleState state = new InventoryModuleState();
+
+    public InventoryModule_SV1(String groupId)
+    {
+        super(
+            InventoryModule_SV1.STORAGE_VERSIONS,
+            groupId,
+            InventoryModule_SV1.MODULE_ID,
+            InventoryModule_SV1.DESCRIPTION
+        );
     }
 
     @Override
@@ -114,5 +125,6 @@ public class InventoryModule_SV1
     public void save(ServerPlayerEntity player, DimensionPool dimensionPool)
     {
         // Intentionally not implemented
+        ModuleHelper_SV1.ThrowOnDeprecatedSave(InventoryModule.class);
     }
 }

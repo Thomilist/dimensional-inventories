@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class ModuleRegistry<T extends Module>
+public final class ModuleRegistry<T extends Module>
 {
-    protected final HashMap<StorageVersion, SortedSet<T>> modules = new HashMap<>();
+    private final HashMap<StorageVersion, SortedSet<T>> modules = new HashMap<>();
     private final Class<T> moduleType;
 
     public ModuleRegistry(Class<T> moduleType)
@@ -20,7 +20,7 @@ public class ModuleRegistry<T extends Module>
         this.moduleType = moduleType;
     }
 
-    public void register(T module)
+    private void register(T module)
     {
         for (StorageVersion storageVersion : module.storageVersions())
         {
@@ -28,14 +28,33 @@ public class ModuleRegistry<T extends Module>
 
             if (!modules.get(storageVersion).add(module))
             {
-                DimensionalInventories.LOGGER.warn("Failed to register module: {} has already been registered",
-                    StringHelper.joinAndWrapScopes(module.groupId(), module.moduleId()));
+                DimensionalInventories.LOGGER.warn(
+                    "Failed to register module: {} has already been registered",
+                    StringHelper.joinAndWrapScopes(module.groupId(), module.moduleId())
+                );
+
+                continue;
             }
+
+            DimensionalInventories.LOGGER.info(
+                "Registered {} module {}",
+                module.category(),
+                StringHelper.joinAndWrapScopes(storageVersion.toString(), module.groupId(), module.moduleId())
+            );
         }
     }
 
     public void register(ModuleGroup moduleGroup)
+        throws InvalidIdentifierException
     {
+        if (!ModuleRegistry.isValidId(moduleGroup.groupId()))
+        {
+            throw new InvalidIdentifierException(
+                "'%s' is not a valid module group ID"
+                    .formatted(moduleGroup.groupId())
+            );
+        }
+
         for (Module module : moduleGroup.modules)
         {
             if (moduleType.isInstance(module))
