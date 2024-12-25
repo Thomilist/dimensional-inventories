@@ -8,20 +8,34 @@ import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
 
-public class StatusModule
+public final class StatusModule
     extends ModuleBase
     implements JsonPlayerModule<StatusModuleState>
 {
-    static final StatusModuleState STATE = new StatusModuleState();
+    private static final String MODULE_ID = "status";
+    private static final String DESCRIPTION =
+        "Health, hunger, experience, score & status effects.";
+
+    private static final StorageVersion[] STORAGE_VERSIONS =
+    {
+        StorageVersion.V2
+    };
 
     private static final Gson GSON = JsonModule.GSON_BUILDER
         .registerTypeAdapter(StatusEffectInstance.class, new StatusEffectSerializerPair())
         .registerTypeAdapter(StatusEffectCollectionSerializerPair.TYPE, new StatusEffectCollectionSerializerPair())
         .create();
 
-    public StatusModule(StorageVersion[] storageVersions, String groupId, String moduleId, String description)
+    private final StatusModuleState state = new StatusModuleState();
+
+    public StatusModule(String groupId)
     {
-        super(storageVersions, groupId, moduleId, description);
+        super(
+            StatusModule.STORAGE_VERSIONS,
+            groupId,
+            StatusModule.MODULE_ID,
+            StatusModule.DESCRIPTION
+        );
     }
 
     @Override

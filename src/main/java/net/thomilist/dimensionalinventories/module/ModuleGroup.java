@@ -8,13 +8,12 @@ import net.thomilist.dimensionalinventories.module.base.Module;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
-import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.util.StringHelper;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class ModuleGroup
+public abstract class ModuleGroup
 {
     final private String groupId;
     final SortedSet<Module> modules = new TreeSet<>();
@@ -24,54 +23,47 @@ public class ModuleGroup
         this.groupId = groupId;
     }
 
-    public static ModuleGroup create(String groupId)
-        throws InvalidIdentifierException
-    {
-        if (!ModuleRegistry.isValidId(groupId))
-        {
-            throw new InvalidIdentifierException("'" + groupId + "' is not a valid group ID");
-        }
-
-        return new ModuleGroup(groupId);
-    }
-
     public String groupId()
     {
         return this.groupId;
     }
 
-    protected void add(Module module)
+    @SafeVarargs
+    protected final void register(final Class<? extends Module>... moduleTypes)
+        throws InvalidIdentifierException, InvalidModuleException, ModuleConstructionException
     {
-        if (!modules.add(module))
+        for (Class<? extends Module> moduleType : moduleTypes)
         {
-            DimensionalInventories.LOGGER.warn("Failed to add module: {} has already been registered",
-                StringHelper.joinAndWrapScopes(module.groupId(), module.moduleId()));
+            final Module module = ModuleBase.createDerived(moduleType, this.groupId);
+            this.register(module);
         }
     }
 
-    public <T extends Module> ModuleGroup add(
-        Class<T> moduleType,
-        StorageVersion[] storageVersions,
-        String moduleId,
-        String description)
-        throws InvalidIdentifierException, InvalidModuleException, ModuleConstructionException
+    private void register(final Module... modules)
+        throws InvalidIdentifierException, InvalidModuleException
     {
-        if (!ModuleRegistry.isValidId(moduleId))
+        for (final Module module : modules)
         {
-            throw new InvalidIdentifierException("'" + moduleId + "' is not a valid module ID");
-        }
+            if (!ModuleRegistry.isValidId(module.moduleId()))
+            {
+                throw new InvalidIdentifierException(
+                    "'%s' is not a valid module ID"
+                        .formatted(module.moduleId())
+                );
+            }
 
-        Module module = ModuleBase.createDerived(moduleType, storageVersions, groupId, moduleId, description);
+            if (!((module instanceof ConfigModule) || (module instanceof PlayerModule)))
+            {
+                throw new InvalidModuleException(module.getClass(), this.groupId, module.moduleId());
+            }
 
-        if (module instanceof ConfigModule || module instanceof PlayerModule)
-        {
-            add(module);
+            if (!this.modules.add(module))
+            {
+                DimensionalInventories.LOGGER.warn(
+                    "Failed to add module: {} has already been registered",
+                    StringHelper.joinAndWrapScopes(module.groupId(), module.moduleId())
+                );
+            }
         }
-        else
-        {
-            throw new InvalidModuleException(moduleType, groupId, moduleId);
-        }
-
-        return this;
     }
 }

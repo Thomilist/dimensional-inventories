@@ -59,7 +59,7 @@ public class DimensionalInventories
 	@Override
 	public void onInitialize()
 	{
-		try (var LAF = LostAndFound.init("init"))
+		try (var LAF = LostAndFound.init("init", "base", DimensionalInventories.PROPERTIES.id()))
 		{
 			DimensionalInventories.INSTANCE.registerBuiltinModules();
 			DimensionalInventories.INSTANCE.registerStartupHandlers();
@@ -70,74 +70,15 @@ public class DimensionalInventories
 		}
 	}
 
-	public void registerModules(ModuleGroup modules)
+	public void registerModules(ModuleGroup moduleGroup)
 	{
-		configModules.register(modules);
-		playerModules.register(modules);
-	}
+		DimensionalInventories.LOGGER.info(
+			"Registering modules from module group {} ...",
+			StringHelper.joinAndWrapScopes(moduleGroup.groupId())
+		);
 
-	@SuppressWarnings("deprecation")
-	public void registerBuiltinModules()
-	{
-		ModuleGroup modules = ModuleGroup.create("main")
-			.add
-			(
-				DimensionPoolConfigModule.class,
-				new StorageVersion[]{ StorageVersion.V2 },
-				"dimension-pools",
-				"Configuration of dimension pools, including assigned dimensions, game modes & more."
-			)
-			.add
-			(
-				GameModeModule.class,
-				new StorageVersion[]{ StorageVersion.V1, StorageVersion.V2 },
-				"gamemode",
-				"Apply dimension pool game mode setting."
-			)
-			.add
-			(
-				InventoryModule.class,
-				new StorageVersion[]{ StorageVersion.V2 },
-				"inventory",
-				"Items in inventory, hotbar, offhand & armour slots."
-			)
-			.add
-			(
-				StatusModule.class,
-				new StorageVersion[]{ StorageVersion.V2 },
-				"status",
-				"Health, hunger, experience, score & status effects."
-			)
-			.add
-			(
-				ShoulderEntityModule.class,
-				new StorageVersion[]{ StorageVersion.V2 },
-				"shoulder-entity",
-				"Shoulder entities - just parrots, at least for now"
-			)
-			.add
-			(
-				InventoryModule_SV1.class,
-				new StorageVersion[]{ StorageVersion.V1 },
-				"inventory",
-				"Items in inventory, hotbar, offhand & armour slots."
-			)
-			.add
-			(
-				DimensionPoolConfigModule_SV1.class,
-				new StorageVersion[]{ StorageVersion.V1 },
-				"dimension-pools",
-				"Configuration of dimension pools, including assigned dimensions, game modes & more."
-			)
-			.add
-			(
-				StatusModule_SV1.class,
-				new StorageVersion[]{ StorageVersion.V1 },
-				"status",
-				"Health, hunger, experience & score."
-			);
-
-		registerModules(modules);
+        this.configModules.register(moduleGroup);
+        this.playerModules.register(moduleGroup);
 	}
 
 	private void registerStartupHandlers()
