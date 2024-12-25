@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class ModuleBase
+public abstract class ModuleBase
     implements Module
 {
     private final String groupId;
@@ -27,23 +27,18 @@ public class ModuleBase
         this.storageVersions.addAll(List.of(storageVersions));
     }
 
-    public static <T extends Module> T createDerived(
-        Class<T> moduleType,
-        StorageVersion[] storageVersions,
-        String groupId,
-        String moduleId,
-        String description)
+    public static <T extends Module> T createDerived(Class<T> moduleType, String groupId)
         throws ModuleConstructionException
     {
         try
         {
             return moduleType
-                .getConstructor(StorageVersion[].class, String.class, String.class, String.class)
-                .newInstance(storageVersions, groupId, moduleId, description);
+                .getConstructor(String.class)
+                .newInstance(groupId);
         }
         catch (Exception e)
         {
-            throw new ModuleConstructionException(moduleType, groupId, moduleId, e);
+            throw new ModuleConstructionException(moduleType, groupId, e);
         }
     }
 

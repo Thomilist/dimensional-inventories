@@ -11,6 +11,12 @@ public interface PlayerModule
     void load(ServerPlayerEntity player, DimensionPool dimensionPool);
     void save(ServerPlayerEntity player, DimensionPool dimensionPool);
 
+    @Override
+    default String category()
+    {
+        return "player";
+    }
+
     default void loadWithContext(ServerPlayerEntity player, DimensionPool dimensionPool)
     {
         try (var LAF = LostAndFound.push(dimensionPool, player, this, "load"))

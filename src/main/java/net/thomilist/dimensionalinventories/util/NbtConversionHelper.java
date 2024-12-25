@@ -5,8 +5,11 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 
-public class NbtConversionHelper
+public final class NbtConversionHelper
 {
+    private NbtConversionHelper()
+    { }
+
     private static RegistryWrapper.WrapperLookup WRAPPER_LOOKUP;
 
     public static void onServerStarted(MinecraftServer server)

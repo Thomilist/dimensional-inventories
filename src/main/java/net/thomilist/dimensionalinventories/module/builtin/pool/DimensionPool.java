@@ -7,7 +7,7 @@ import net.minecraft.world.GameMode;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundFormattable;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPool_SV1;
 
-public class DimensionPool
+public final class DimensionPool
     implements LostAndFoundFormattable
 {
     private static final List<String> DEFAULT_DIMENSIONS = List.of(
@@ -56,7 +56,7 @@ public class DimensionPool
         return newDimensionPool;
     }
 
-    protected DimensionPool()
+    private DimensionPool()
     { }
 
     public DimensionPool(String id)
@@ -71,7 +71,7 @@ public class DimensionPool
         setGameMode(gameMode);
     }
 
-    protected void setId(String id)
+    private void setId(String id)
     {
         this.id = id;
     }

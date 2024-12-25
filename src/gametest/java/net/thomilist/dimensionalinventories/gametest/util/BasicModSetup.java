@@ -2,6 +2,7 @@ package net.thomilist.dimensionalinventories.gametest.util;
 
 import net.minecraft.world.GameMode;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
+import net.thomilist.dimensionalinventories.module.builtin.MainModuleGroup;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 
 public class BasicModSetup
@@ -18,8 +19,8 @@ public class BasicModSetup
 
     public BasicModSetup()
     {
-        instance.registerBuiltinModules();
         dimensionPoolConfig = instance.configModules.get(DimensionPoolConfigModule.class);
+        this.instance.registerModules(new MainModuleGroup());
 
         dimensionPoolConfig.state().createPool(
             BasicModSetup.ORIGIN_DIMENSION_POOL_ID,
