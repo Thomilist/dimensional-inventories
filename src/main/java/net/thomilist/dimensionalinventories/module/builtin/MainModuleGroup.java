@@ -17,7 +17,7 @@ public final class MainModuleGroup
 
     public MainModuleGroup()
     {
-        super(MainModuleGroup.GROUP_ID);
+        super( MainModuleGroup.GROUP_ID );
 
         this.RegisterLatestModules();
         this.RegisterLegacyModules();
@@ -34,13 +34,9 @@ public final class MainModuleGroup
         );
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings( "deprecation" )
     private void RegisterLegacyModules()
     {
-        this.register(
-            DimensionPoolConfigModule_SV1.class,
-            InventoryModule_SV1.class,
-            StatusModule_SV1.class
-        );
+        this.register( DimensionPoolConfigModule_SV1.class, InventoryModule_SV1.class, StatusModule_SV1.class );
     }
 }

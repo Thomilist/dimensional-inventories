@@ -8,35 +8,38 @@ import java.util.stream.IntStream;
 
 public class BlockPlacement
 {
-    public static void Fill(
-        TestContext context,
-        int xa, int ya, int za,
-        int xb, int yb, int zb,
-        Block block)
+    public static void PlaceFloor( final TestContext context )
     {
-        int[] xValues = IntStream.rangeClosed(xa, xb).toArray();
-        int[] yValues = IntStream.rangeClosed(ya, yb).toArray();
-        int[] zValues = IntStream.rangeClosed(za, zb).toArray();
+        BlockPlacement.PlaceFloor( context, 1, Blocks.SMOOTH_STONE );
+    }
 
-        for (int x : xValues)
+    public static void PlaceFloor( final TestContext context, final int y, final Block block )
+    {
+        BlockPlacement.Fill( context, 0, y, 0, 7, y, 7, block );
+    }
+
+    public static void Fill( final TestContext context,
+                             final int xa,
+                             final int ya,
+                             final int za,
+                             final int xb,
+                             final int yb,
+                             final int zb,
+                             final Block block )
+    {
+        final int[] xValues = IntStream.rangeClosed( xa, xb ).toArray();
+        final int[] yValues = IntStream.rangeClosed( ya, yb ).toArray();
+        final int[] zValues = IntStream.rangeClosed( za, zb ).toArray();
+
+        for ( final int x : xValues )
         {
-            for (int y : yValues)
+            for ( final int y : yValues )
             {
-                for (int z : zValues)
+                for ( final int z : zValues )
                 {
-                    context.setBlockState(x, y, z, block);
+                    context.setBlockState( x, y, z, block );
                 }
             }
         }
-    }
-
-    public static void PlaceFloor(TestContext context, int y, Block block)
-    {
-        BlockPlacement.Fill(context, 0, y, 0, 7, y, 7, block);
-    }
-
-    public static void PlaceFloor(TestContext context)
-    {
-        BlockPlacement.PlaceFloor(context, 1, Blocks.SMOOTH_STONE);
     }
 }

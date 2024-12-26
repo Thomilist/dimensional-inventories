@@ -8,48 +8,49 @@ import net.minecraft.server.world.ServerWorld;
 
 import java.util.UUID;
 
-// Intended to hold data during data migrations: load old format to this, save this to new format
-public class DummyServerPlayerEntity extends ServerPlayerEntity
+// Intended to hold data during data migrations: load the old format to this, save this to the new format
+public class DummyServerPlayerEntity
+    extends ServerPlayerEntity
 {
     private static final String DUMMY_NAME = "TempPlayer";
 
-    private DummyServerPlayerEntity(ServerWorld world, GameProfile profile)
+    private DummyServerPlayerEntity( final ServerWorld world, final GameProfile profile )
     {
-        super(world.getServer(), world, profile, SyncedClientOptions.createDefault());
+        super( world.getServer(), world, profile, SyncedClientOptions.createDefault() );
     }
 
-    private DummyServerPlayerEntity(MinecraftServer server, GameProfile profile)
+    private DummyServerPlayerEntity( final MinecraftServer server, final GameProfile profile )
     {
-        super(server, server.getOverworld(), profile, SyncedClientOptions.createDefault());
+        super( server, server.getOverworld(), profile, SyncedClientOptions.createDefault() );
     }
 
-    public DummyServerPlayerEntity(ServerWorld world, UUID uuid)
+    public DummyServerPlayerEntity( final ServerWorld world, final UUID uuid )
     {
-        this(world, new GameProfile(uuid, DummyServerPlayerEntity.DUMMY_NAME));
+        this( world, new GameProfile( uuid, DummyServerPlayerEntity.DUMMY_NAME ) );
     }
 
-    public DummyServerPlayerEntity(MinecraftServer server, UUID uuid)
+    public DummyServerPlayerEntity( final MinecraftServer server, final UUID uuid )
     {
-        this(server, new GameProfile(uuid, DummyServerPlayerEntity.DUMMY_NAME));
+        this( server, new GameProfile( uuid, DummyServerPlayerEntity.DUMMY_NAME ) );
     }
 
-    public DummyServerPlayerEntity(ServerWorld world, String uuid)
+    public DummyServerPlayerEntity( final ServerWorld world, final String uuid )
     {
-        this(world, UUID.fromString(uuid));
+        this( world, UUID.fromString( uuid ) );
     }
 
-    public DummyServerPlayerEntity(MinecraftServer server, String uuid)
+    public DummyServerPlayerEntity( final MinecraftServer server, final String uuid )
     {
-        this(server, UUID.fromString(uuid));
+        this( server, UUID.fromString( uuid ) );
     }
 
-    public DummyServerPlayerEntity(MinecraftServer server)
+    public DummyServerPlayerEntity( final MinecraftServer server )
     {
-        this(server, UUID.randomUUID());
+        this( server, UUID.randomUUID() );
     }
 
-    public DummyServerPlayerEntity(ServerWorld world)
+    public DummyServerPlayerEntity( final ServerWorld world )
     {
-        this(world, UUID.randomUUID());
+        this( world, UUID.randomUUID() );
     }
 }

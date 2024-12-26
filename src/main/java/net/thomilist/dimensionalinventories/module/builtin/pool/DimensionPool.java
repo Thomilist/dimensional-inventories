@@ -1,11 +1,11 @@
 package net.thomilist.dimensionalinventories.module.builtin.pool;
 
-import java.util.List;
-import java.util.TreeSet;
-
 import net.minecraft.world.GameMode;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundFormattable;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPool_SV1;
+
+import java.util.List;
+import java.util.TreeSet;
 
 public final class DimensionPool
     implements LostAndFoundFormattable
@@ -17,100 +17,99 @@ public final class DimensionPool
     );
 
     private static final String DEFAULT_DIMENSION_POOL_ID = "default";
-
+    private final TreeSet<String> dimensions = new TreeSet<>();
     private String id;
     private String displayName;
-    private final TreeSet<String> dimensions = new TreeSet<>();
     private GameMode gameMode = GameMode.DEFAULT;
     private boolean progressAdvancements = true;
     private boolean incrementStatistics = true;
 
+    private DimensionPool()
+    { }
+
+    public DimensionPool( final String id )
+    {
+        this.setId( id );
+        this.setDisplayName( id );
+    }
+
+    public DimensionPool( final String id, final GameMode gameMode )
+    {
+        this( id );
+        this.setGameMode( gameMode );
+    }
+
     public static DimensionPool createDefault()
     {
-        DimensionPool dimensionPool = new DimensionPool(DimensionPool.DEFAULT_DIMENSION_POOL_ID);
+        final DimensionPool dimensionPool = new DimensionPool( DimensionPool.DEFAULT_DIMENSION_POOL_ID );
 
-        for (String dimension : DimensionPool.DEFAULT_DIMENSIONS)
+        for ( final String dimension : DimensionPool.DEFAULT_DIMENSIONS )
         {
-            dimensionPool.addDimension(dimension);
+            dimensionPool.addDimension( dimension );
         }
 
         return dimensionPool;
     }
 
-    @SuppressWarnings("deprecation")
-    public static DimensionPool fromLegacy(DimensionPool_SV1 legacyDimensionPool)
+    @SuppressWarnings( "deprecation" )
+    public static DimensionPool fromLegacy( final DimensionPool_SV1 legacyDimensionPool )
     {
-        var newDimensionPool = new DimensionPool();
+        final DimensionPool newDimensionPool = new DimensionPool();
 
-        newDimensionPool.setId(legacyDimensionPool.name());
-        newDimensionPool.setDisplayName(legacyDimensionPool.name());
-        newDimensionPool.setGameMode(legacyDimensionPool.gameMode());
-        newDimensionPool.setProgressAdvancements(legacyDimensionPool.progressAdvancements());
-        newDimensionPool.setIncrementStatistics(legacyDimensionPool.incrementStatistics());
+        newDimensionPool.setId( legacyDimensionPool.name() );
+        newDimensionPool.setDisplayName( legacyDimensionPool.name() );
+        newDimensionPool.setGameMode( legacyDimensionPool.gameMode() );
+        newDimensionPool.setProgressAdvancements( legacyDimensionPool.progressAdvancements() );
+        newDimensionPool.setIncrementStatistics( legacyDimensionPool.incrementStatistics() );
 
-        for (String dimension : legacyDimensionPool.dimensions())
+        for ( final String dimension : legacyDimensionPool.dimensions() )
         {
-            newDimensionPool.addDimension(dimension);
+            newDimensionPool.addDimension( dimension );
         }
 
         return newDimensionPool;
     }
 
-    private DimensionPool()
-    { }
-
-    public DimensionPool(String id)
+    public String getId()
     {
-        setId(id);
-        setDisplayName(id);
+        return this.id;
     }
 
-    public DimensionPool(String id, GameMode gameMode)
-    {
-        this(id);
-        setGameMode(gameMode);
-    }
-
-    private void setId(String id)
+    private void setId( final String id )
     {
         this.id = id;
     }
 
-    public String getId()
+    public String getDisplayName()
     {
-        return id;
+        return this.displayName;
     }
 
-    public void setDisplayName(String displayName)
+    public void setDisplayName( final String displayName )
     {
         this.displayName = displayName;
     }
 
-    public String getDisplayName()
+    public void addDimension( final String dimension )
     {
-        return displayName;
+        this.dimensions.add( dimension );
     }
 
-    public void addDimension(String dimension)
+    public void removeDimension( final String dimension )
     {
-        dimensions.add(dimension);
-    }
-
-    public void removeDimension(String dimension)
-    {
-        dimensions.remove(dimension);
+        this.dimensions.remove( dimension );
     }
 
     public TreeSet<String> getDimensions()
     {
-        return dimensions;
+        return this.dimensions;
     }
 
-    public boolean hasDimensions(String... dimensions)
+    public boolean hasDimensions( final String... dimensions )
     {
-        for (String dimension : dimensions)
+        for ( final String dimension : dimensions )
         {
-            if (!this.dimensions.contains(dimension))
+            if ( !this.dimensions.contains( dimension ) )
             {
                 return false;
             }
@@ -119,55 +118,55 @@ public final class DimensionPool
         return true;
     }
 
-    public void setGameMode(GameMode gameMode)
+    public GameMode getGameMode()
+    {
+        return this.gameMode;
+    }
+
+    public void setGameMode( final GameMode gameMode )
     {
         this.gameMode = gameMode;
     }
 
-    public GameMode getGameMode()
+    public void setProgressAdvancements( final boolean setting )
     {
-        return gameMode;
-    }
-
-    public void setProgressAdvancements(boolean setting)
-    {
-        progressAdvancements = setting;
+        this.progressAdvancements = setting;
     }
 
     public boolean canProgressAdvancements()
     {
-        return progressAdvancements;
+        return this.progressAdvancements;
     }
 
-    public void setIncrementStatistics(boolean setting)
+    public void setIncrementStatistics( final boolean setting )
     {
-        incrementStatistics = setting;
+        this.incrementStatistics = setting;
     }
 
     public boolean canIncrementStatistics()
     {
-        return incrementStatistics;
+        return this.incrementStatistics;
     }
 
     public String asString()
     {
-        StringBuilder dimensionPoolString = new StringBuilder();
+        final StringBuilder dimensionPoolString = new StringBuilder();
 
         // Dimension pool header
-        dimensionPoolString.append("\n[").append(getId()).append("]");
+        dimensionPoolString.append( "\n[" ).append( this.getId() ).append( ']' );
 
         // Rules
-        dimensionPoolString.append("\n    Rules:");
-        dimensionPoolString.append("\n        Gamemode: ").append(getGameMode().asString());
-        dimensionPoolString.append("\n        Progress advancements: ").append(canProgressAdvancements());
-        dimensionPoolString.append("\n        Increment statistics: ").append(canIncrementStatistics());
+        dimensionPoolString.append( "\n    Rules:" );
+        dimensionPoolString.append( "\n        Gamemode: " ).append( this.getGameMode().asString() );
+        dimensionPoolString.append( "\n        Progress advancements: " ).append( this.canProgressAdvancements() );
+        dimensionPoolString.append( "\n        Increment statistics: " ).append( this.canIncrementStatistics() );
 
         // Dimensions
-        dimensionPoolString.append("\n    Dimensions:");
+        dimensionPoolString.append( "\n    Dimensions:" );
 
-        for (String dimension : getDimensions())
+        for ( final String dimension : this.getDimensions() )
         {
-            dimensionPoolString.append("\n        ").append(dimension);
+            dimensionPoolString.append( "\n        " ).append( dimension );
         }
 
         return dimensionPoolString.toString();
@@ -176,6 +175,6 @@ public final class DimensionPool
     @Override
     public String toLostAndFoundScopeString()
     {
-        return this.getDisplayName() + " (" + this.getId() + ")";
+        return this.getDisplayName() + " (" + this.getId() + ')';
     }
 }

@@ -12,28 +12,27 @@ public class OptionalSerializerPair<T>
     implements SerializerPair<Optional<T>>
 {
     @Override
-    public Optional<T> fromJson(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public Optional<T> fromJson( final JsonElement json, final Type typeOfT, final JsonDeserializationContext context )
         throws JsonParseException
     {
-        if (!json.isJsonArray())
+        if ( !json.isJsonArray() )
         {
-            LostAndFound.log("Unexpected JSON structure for Optional<T> (expected an array)",
-                json.toString());
+            LostAndFound.log( "Unexpected JSON structure for Optional<T> (expected an array)", json.toString() );
             return Optional.empty();
         }
 
         final JsonArray asJsonArray = json.getAsJsonArray();
-        final JsonElement jsonElement = asJsonArray.get(0);
-        final T value = context.deserialize(jsonElement, ((ParameterizedType) typeOfT).getActualTypeArguments()[0]);
-        return Optional.ofNullable(value);
+        final JsonElement jsonElement = asJsonArray.get( 0 );
+        final T value = context.deserialize( jsonElement, ((ParameterizedType) typeOfT).getActualTypeArguments()[0] );
+        return Optional.ofNullable( value );
     }
 
     @Override
-    public JsonElement toJson(Optional<T> src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement toJson( final Optional<T> src, final Type typeOfSrc, final JsonSerializationContext context )
     {
-        final JsonElement element = context.serialize(src.orElse(null));
+        final JsonElement element = context.serialize( src.orElse( null ) );
         final JsonArray result = new JsonArray();
-        result.add(element);
+        result.add( element );
         return result;
     }
 }

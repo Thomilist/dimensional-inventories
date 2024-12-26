@@ -10,7 +10,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class StatusModuleState implements PlayerModuleState
+public class StatusModuleState
+    implements PlayerModuleState
 {
     public int experiencePoints = 0;
     public int score = 0;
@@ -23,9 +24,9 @@ public class StatusModuleState implements PlayerModuleState
     public StatusModuleState()
     { }
 
-    public StatusModuleState(ServerPlayerEntity player)
+    public StatusModuleState( final ServerPlayerEntity player )
     {
-        loadFromPlayer(player);
+        this.loadFromPlayer( player );
     }
 
     @Override
@@ -35,33 +36,33 @@ public class StatusModuleState implements PlayerModuleState
     }
 
     @Override
-    public void applyToPlayer(ServerPlayerEntity player)
+    public void applyToPlayer( final ServerPlayerEntity player )
     {
-        ExperienceHelper.setExperience(player, experiencePoints);
-        player.setScore(score);
-        player.getHungerManager().setFoodLevel(foodLevel);
-        player.getHungerManager().setSaturationLevel(saturationLevel);
-        ((HungerManagerAccessor) player.getHungerManager()).setExhaustion(exhaustion);
-        player.setHealth(health);
+        ExperienceHelper.setExperience( player, this.experiencePoints );
+        player.setScore( this.score );
+        player.getHungerManager().setFoodLevel( this.foodLevel );
+        player.getHungerManager().setSaturationLevel( this.saturationLevel );
+        ((HungerManagerAccessor) player.getHungerManager()).setExhaustion( this.exhaustion );
+        player.setHealth( this.health );
 
         player.clearStatusEffects();
 
-        for (StatusEffectInstance statusEffect : statusEffects)
+        for ( final StatusEffectInstance statusEffect : this.statusEffects )
         {
-            player.addStatusEffect(statusEffect);
+            player.addStatusEffect( statusEffect );
         }
     }
 
     @Override
-    public void loadFromPlayer(ServerPlayerEntity player)
+    public void loadFromPlayer( final ServerPlayerEntity player )
     {
-        experiencePoints = ExperienceHelper.getTotalExperience_Meridanus(player);
-        score = player.getScore();
-        foodLevel = player.getHungerManager().getFoodLevel();
-        saturationLevel = player.getHungerManager().getSaturationLevel();
-        exhaustion = ((HungerManagerAccessor) player.getHungerManager()).getExhaustion();
-        health = player.getHealth();
+        this.experiencePoints = ExperienceHelper.getTotalExperience_Meridanus( player );
+        this.score = player.getScore();
+        this.foodLevel = player.getHungerManager().getFoodLevel();
+        this.saturationLevel = player.getHungerManager().getSaturationLevel();
+        this.exhaustion = ((HungerManagerAccessor) player.getHungerManager()).getExhaustion();
+        this.health = player.getHealth();
 
-        statusEffects = player.getStatusEffects();
+        this.statusEffects = player.getStatusEffects();
     }
 }

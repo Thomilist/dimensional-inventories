@@ -1,5 +1,6 @@
 package net.thomilist.dimensionalinventories.module;
 
+import net.minecraft.util.InvalidIdentifierException;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.ModuleNotRegisteredException;
 import net.thomilist.dimensionalinventories.module.base.Module;
@@ -15,22 +16,27 @@ public final class ModuleRegistry<T extends Module>
     private final HashMap<StorageVersion, SortedSet<T>> modules = new HashMap<>();
     private final Class<T> moduleType;
 
-    public ModuleRegistry(Class<T> moduleType)
+    public ModuleRegistry( final Class<T> moduleType )
     {
         this.moduleType = moduleType;
     }
 
-    private void register(T module)
+    public static boolean isValidId( final String groupId )
     {
-        for (StorageVersion storageVersion : module.storageVersions())
-        {
-            modules.putIfAbsent(storageVersion, new TreeSet<>());
+        return groupId.matches( "^[a-z]+[a-z0-9_-]*[a-z0-9]*$" );
+    }
 
-            if (!modules.get(storageVersion).add(module))
+    private void register( final T module )
+    {
+        for ( final StorageVersion storageVersion : module.storageVersions() )
+        {
+            this.modules.putIfAbsent( storageVersion, new TreeSet<>() );
+
+            if ( !this.modules.get( storageVersion ).add( module ) )
             {
                 DimensionalInventories.LOGGER.warn(
                     "Failed to register module: {} has already been registered",
-                    StringHelper.joinAndWrapScopes(module.groupId(), module.moduleId())
+                    StringHelper.joinAndWrapScopes( module.groupId(), module.moduleId() )
                 );
 
                 continue;
@@ -39,60 +45,52 @@ public final class ModuleRegistry<T extends Module>
             DimensionalInventories.LOGGER.info(
                 "Registered {} module {}",
                 module.category(),
-                StringHelper.joinAndWrapScopes(storageVersion.toString(), module.groupId(), module.moduleId())
+                StringHelper.joinAndWrapScopes( storageVersion.toString(), module.groupId(), module.moduleId() )
             );
         }
     }
 
-    public void register(ModuleGroup moduleGroup)
+    public void register( final ModuleGroup moduleGroup )
         throws InvalidIdentifierException
     {
-        if (!ModuleRegistry.isValidId(moduleGroup.groupId()))
+        if ( !ModuleRegistry.isValidId( moduleGroup.groupId() ) )
         {
-            throw new InvalidIdentifierException(
-                "'%s' is not a valid module group ID"
-                    .formatted(moduleGroup.groupId())
-            );
+            throw new InvalidIdentifierException( "'%s' is not a valid module group ID".formatted( moduleGroup.groupId() ) );
         }
 
-        for (Module module : moduleGroup.modules)
+        for ( final Module module : moduleGroup.modules )
         {
-            if (moduleType.isInstance(module))
+            if ( this.moduleType.isInstance( module ) )
             {
-                register(moduleType.cast(module));
+                this.register( this.moduleType.cast( module ) );
             }
         }
     }
 
-    public boolean has(StorageVersion storageVersion)
+    public boolean has( final StorageVersion storageVersion )
     {
-        return modules.containsKey(storageVersion);
+        return this.modules.containsKey( storageVersion );
     }
 
-    public SortedSet<T> get(StorageVersion storageVersion)
+    public SortedSet<T> get( final StorageVersion storageVersion )
     {
-        return modules.getOrDefault(storageVersion, new TreeSet<>());
+        return this.modules.getOrDefault( storageVersion, new TreeSet<>() );
     }
 
-    public <M extends T> M get(Class<M> moduleType)
+    public <M extends T> M get( final Class<M> moduleType )
         throws ModuleNotRegisteredException
     {
-        for (var moduleSet : modules.values())
+        for ( final SortedSet<T> moduleSet : this.modules.values() )
         {
-            for (var module : moduleSet)
+            for ( final T module : moduleSet )
             {
-                if (moduleType.isInstance(module))
+                if ( moduleType.isInstance( module ) )
                 {
-                    return moduleType.cast(module);
+                    return moduleType.cast( module );
                 }
             }
         }
 
-        throw new ModuleNotRegisteredException(moduleType);
-    }
-
-    public static boolean isValidId(String groupId)
-    {
-        return groupId.matches("^[a-z]+[a-z0-9_-]*[a-z0-9]*$");
+        throw new ModuleNotRegisteredException( moduleType );
     }
 }

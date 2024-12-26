@@ -12,6 +12,6 @@ public interface StatefulConfigModule<T extends ConfigModuleState>
 
     default Path saveDirectory()
     {
-        return SavePaths.configDirectory(latestStorageVersion(), groupId());
+        return SavePaths.configDirectory( this.latestStorageVersion(), this.groupId() );
     }
 }

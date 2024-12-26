@@ -7,16 +7,13 @@ import net.thomilist.dimensionalinventories.util.StringHelper;
 public class InvalidModuleException
     extends RuntimeException
 {
-    public InvalidModuleException(Class<?> moduleType, String groupId, String moduleId)
+    public InvalidModuleException( final Class<?> moduleType, final String groupId, final String moduleId )
     {
-        super(
-            "The module '%s' is invalid, because '%s' is not a valid module type (modules must extend '%s' or '%s')"
-                .formatted(
-                    StringHelper.joinAndWrapScopes(groupId, moduleId),
-                    moduleType.getName(),
-                    PlayerModule.class,
-                    ConfigModule.class
-                )
-        );
+        super( "The module '%s' is invalid, because '%s' is not a valid module type (modules must extend '%s' or '%s')".formatted(
+            StringHelper.joinAndWrapScopes( groupId, moduleId ),
+            moduleType.getName(),
+            PlayerModule.class,
+            ConfigModule.class
+        ) );
     }
 }

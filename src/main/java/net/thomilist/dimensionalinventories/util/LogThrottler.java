@@ -2,16 +2,16 @@ package net.thomilist.dimensionalinventories.util;
 
 public class LogThrottler
 {
-    private Integer counter = 0;
     private final Integer factor;
+    private Integer counter = 0;
 
-    public LogThrottler(Integer throttlingFactor)
+    public LogThrottler( final Integer throttlingFactor )
     {
-        factor = throttlingFactor;
+        this.factor = throttlingFactor;
     }
 
     public boolean get()
     {
-        return counter++ % factor == 0;
+        return (this.counter++ % this.factor) == 0;
     }
 }

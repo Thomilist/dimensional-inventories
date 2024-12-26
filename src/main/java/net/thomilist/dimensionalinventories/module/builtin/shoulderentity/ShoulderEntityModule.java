@@ -12,20 +12,17 @@ public final class ShoulderEntityModule
     implements JsonPlayerModule<ShoulderEntityModuleState>
 {
     private static final String MODULE_ID = "shoulder-entity";
-    private static final String DESCRIPTION =
-        "Shoulder entities - just parrots, at least for now.";
+    private static final String DESCRIPTION = "Shoulder entities - just parrots, at least for now.";
 
-    private static final StorageVersion[] STORAGE_VERSIONS =
-    {
+    private static final StorageVersion[] STORAGE_VERSIONS = {
         StorageVersion.V2
     };
 
-    private static final Gson GSON = JsonModule.GSON_BUILDER
-        .create();
+    private static final Gson GSON = JsonModule.GSON_BUILDER.create();
 
     private final ShoulderEntityModuleState state = new ShoulderEntityModuleState();
 
-    public ShoulderEntityModule(String groupId)
+    public ShoulderEntityModule( final String groupId )
     {
         super(
             ShoulderEntityModule.STORAGE_VERSIONS,
@@ -42,15 +39,15 @@ public final class ShoulderEntityModule
     }
 
     @Override
-    public ShoulderEntityModuleState newInstance(ServerPlayerEntity player)
+    public ShoulderEntityModuleState newInstance( final ServerPlayerEntity player )
     {
-        return new ShoulderEntityModuleState(player);
+        return new ShoulderEntityModuleState( player );
     }
 
     @Override
     public ShoulderEntityModuleState state()
     {
-        return ShoulderEntityModule.STATE;
+        return this.state;
     }
 
     @Override
