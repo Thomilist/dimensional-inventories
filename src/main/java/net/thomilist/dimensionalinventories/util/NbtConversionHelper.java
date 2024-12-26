@@ -7,33 +7,33 @@ import net.minecraft.server.MinecraftServer;
 
 public final class NbtConversionHelper
 {
+    private static RegistryWrapper.WrapperLookup WRAPPER_LOOKUP;
+
     private NbtConversionHelper()
     { }
 
-    private static RegistryWrapper.WrapperLookup WRAPPER_LOOKUP;
-
-    public static void onServerStarted(MinecraftServer server)
+    public static void onServerStarted( final MinecraftServer server )
     {
         NbtConversionHelper.WRAPPER_LOOKUP = server.getRegistryManager();
     }
 
-    public static ItemStack fromNbt(NbtCompound nbt)
+    public static ItemStack fromNbt( final NbtCompound nbt )
     {
-        if (nbt.isEmpty() || nbt.getString("id").matches("^minecraft:air$"))
+        if ( nbt.isEmpty() || nbt.getString( "id" ).matches( "^minecraft:air$" ) )
         {
             return ItemStack.EMPTY;
         }
 
-        return ItemStack.fromNbt(nbt);
+        return ItemStack.fromNbt( nbt );
     }
 
-    public static NbtCompound toNbt(ItemStack itemStack)
+    public static NbtCompound toNbt( final ItemStack itemStack )
     {
-        if (itemStack.isEmpty())
+        if ( itemStack.isEmpty() )
         {
             return null;
         }
 
-        return itemStack.writeNbt(new NbtCompound());
+        return itemStack.writeNbt( new NbtCompound() );
     }
 }

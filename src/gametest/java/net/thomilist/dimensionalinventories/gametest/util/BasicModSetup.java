@@ -19,25 +19,19 @@ public class BasicModSetup
 
     public BasicModSetup()
     {
-        dimensionPoolConfig = instance.configModules.get(DimensionPoolConfigModule.class);
-        this.instance.registerModules(new MainModuleGroup());
+        this.instance.registerModules( new MainModuleGroup() );
+        this.dimensionPoolConfig = this.instance.configModules.get( DimensionPoolConfigModule.class );
 
-        dimensionPoolConfig.state().createPool(
-            BasicModSetup.ORIGIN_DIMENSION_POOL_ID,
-            GameMode.DEFAULT
-        );
+        this.dimensionPoolConfig.state().createPool( BasicModSetup.ORIGIN_DIMENSION_POOL_ID, GameMode.DEFAULT );
 
-        dimensionPoolConfig.state().createPool(
-            BasicModSetup.DESTINATION_DIMENSION_POOL_ID,
-            GameMode.DEFAULT
-        );
+        this.dimensionPoolConfig.state().createPool( BasicModSetup.DESTINATION_DIMENSION_POOL_ID, GameMode.DEFAULT );
 
-        dimensionPoolConfig.state().assignDimensionToPool(
+        this.dimensionPoolConfig.state().assignDimensionToPool(
             BasicModSetup.ORIGIN_DIMENSION,
             BasicModSetup.ORIGIN_DIMENSION_POOL_ID
         );
 
-        dimensionPoolConfig.state().assignDimensionToPool(
+        this.dimensionPoolConfig.state().assignDimensionToPool(
             BasicModSetup.DESTINATION_DIMENSION,
             BasicModSetup.DESTINATION_DIMENSION_POOL_ID
         );

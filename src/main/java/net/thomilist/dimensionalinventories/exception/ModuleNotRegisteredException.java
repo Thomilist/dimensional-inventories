@@ -3,13 +3,13 @@ package net.thomilist.dimensionalinventories.exception;
 public class ModuleNotRegisteredException
     extends RuntimeException
 {
-    public <T> ModuleNotRegisteredException(Class<T> moduleType)
+    public <T> ModuleNotRegisteredException( final Class<T> moduleType )
     {
-        super("No module of type '" + moduleType.getName() + "' registered");
+        super( "No module of type '%s' registered".formatted( moduleType.getName() ) );
     }
 
-    public ModuleNotRegisteredException(String message, Throwable cause)
+    public ModuleNotRegisteredException( final String message, final Throwable cause )
     {
-        super(message, cause);
+        super( message, cause );
     }
 }

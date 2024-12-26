@@ -12,7 +12,7 @@ public abstract class DimensionalInventoriesExtension
     private final String extensionId;
     private final ModuleGroup[] moduleGroups;
 
-    protected DimensionalInventoriesExtension(final String extensionId, final ModuleGroup... moduleGroups)
+    protected DimensionalInventoriesExtension( final String extensionId, final ModuleGroup... moduleGroups )
     {
         this.extensionId = extensionId;
         this.moduleGroups = moduleGroups;
@@ -21,11 +21,11 @@ public abstract class DimensionalInventoriesExtension
     @Override
     public void onInitialize()
     {
-        try (final LostAndFoundContext LAF = LostAndFound.init("init", "extension", this.extensionId))
+        try ( final LostAndFoundContext LAF = LostAndFound.init( "init", "extension", this.extensionId ) )
         {
-            for (final ModuleGroup moduleGroup : this.moduleGroups)
+            for ( final ModuleGroup moduleGroup : this.moduleGroups )
             {
-                DimensionalInventories.INSTANCE.registerModules(moduleGroup);
+                DimensionalInventories.INSTANCE.registerModules( moduleGroup );
             }
         }
     }

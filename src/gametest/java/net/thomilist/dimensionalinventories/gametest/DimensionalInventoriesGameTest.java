@@ -7,5 +7,5 @@ import org.slf4j.LoggerFactory;
 public class DimensionalInventoriesGameTest
 {
     public static final Logger LOGGER = LoggerFactory.getLogger(
-        DimensionalInventories.PROPERTIES.namePascal() + "GameTest");
+        DimensionalInventories.PROPERTIES.namePascal() + "GameTest" );
 }

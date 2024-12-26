@@ -16,21 +16,21 @@ public class ItemStackSerializerPair
     implements SerializerPair<ItemStack>
 {
     @Override
-    public ItemStack fromJson(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public ItemStack fromJson( final JsonElement json, final Type typeOfT, final JsonDeserializationContext context )
         throws JsonParseException
     {
-        NbtCompound nbt = context.deserialize(json, NbtCompound.class);
+        final NbtCompound nbt = context.deserialize( json, NbtCompound.class );
 
-        if (nbt == null || nbt.isEmpty())
+        if ( (nbt == null) || nbt.isEmpty() )
         {
             return null;
         }
 
-        ItemStack itemStack = NbtConversionHelper.fromNbt(nbt);
+        final ItemStack itemStack = NbtConversionHelper.fromNbt( nbt );
 
-        if (itemStack == null)
+        if ( itemStack == null )
         {
-            LostAndFound.log("Invalid NBT compound for item stack", nbt.toString());
+            LostAndFound.log( "Invalid NBT compound for item stack", nbt.toString() );
             return null;
         }
 
@@ -38,13 +38,13 @@ public class ItemStackSerializerPair
     }
 
     @Override
-    public JsonElement toJson(ItemStack src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement toJson( final ItemStack src, final Type typeOfSrc, final JsonSerializationContext context )
     {
-        if (src.isEmpty())
+        if ( src.isEmpty() )
         {
             return null;
         }
 
-        return context.serialize(NbtConversionHelper.toNbt(src), NbtCompound.class);
+        return context.serialize( NbtConversionHelper.toNbt( src ), NbtCompound.class );
     }
 }

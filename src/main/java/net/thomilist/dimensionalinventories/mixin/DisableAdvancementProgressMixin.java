@@ -23,32 +23,36 @@ public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterio
     implements Criterion<T>
 {
     @Unique
+    private static final LogThrottler LOG_THROTTLER = new LogThrottler( 10000 );
+
+    @Unique
     private static DimensionPoolConfigModule DIMENSION_POOL_CONFIG;
 
     @Unique
     private static DimensionPoolConfigModule dimensionPoolConfig()
     {
-        if (DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG == null)
+        if ( DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG == null )
         {
-            DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG =
-                DimensionalInventories.INSTANCE.configModules.get(DimensionPoolConfigModule.class);
+            DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG = DimensionalInventories.INSTANCE.configModules.get(
+                DimensionPoolConfigModule.class );
         }
 
         return DisableAdvancementProgressMixin.DIMENSION_POOL_CONFIG;
     }
 
-    @Unique
-    private static final LogThrottler LOG_THROTTLER = new LogThrottler(10000);
-
-    @Inject(at = @At("HEAD"), method = "trigger(Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Predicate;)V", cancellable = true)
-    public void trigger(ServerPlayerEntity player, Predicate<T> predicate, CallbackInfo info)
+    @Inject( at = @At( "HEAD" ),
+             method = "trigger(Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Predicate;)V",
+             cancellable = true )
+    public void trigger( final ServerPlayerEntity player, final Predicate<T> predicate, final CallbackInfo info )
     {
-        String dimensionName = player.getWorld().getRegistryKey().getValue().toString();
+        final String dimensionName = player.getWorld().getRegistryKey().getValue().toString();
 
-        Optional<DimensionPool> pool = dimensionPoolConfig().state()
-            .poolWithDimension(dimensionName, DisableAdvancementProgressMixin.LOG_THROTTLER.get());
+        final Optional<DimensionPool> pool = DisableAdvancementProgressMixin
+            .dimensionPoolConfig()
+            .state()
+            .poolWithDimension( dimensionName, DisableAdvancementProgressMixin.LOG_THROTTLER.get() );
 
-        if (pool.isPresent() && !pool.get().canProgressAdvancements())
+        if ( pool.isPresent() && !pool.get().canProgressAdvancements() )
         {
             info.cancel();
         }

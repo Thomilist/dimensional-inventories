@@ -5,70 +5,76 @@ import java.util.List;
 
 public final class StringHelper
 {
+    public static final String SCOPE_DELIMITER = " :: ";
+
     private StringHelper()
     { }
 
-    public static String joinScopes(String... scopes)
+    public static String joinScopes( final String... scopes )
     {
-        return String.join(StringHelper.NAMESPACE_DELIMITER, scopes);
+        return String.join( StringHelper.SCOPE_DELIMITER, scopes );
     }
 
-    public static String joinScopes(Collection<String> scopes)
+    public static String joinScopes( final Collection<String> scopes )
     {
-        return joinScopes(scopes.toArray(String[]::new));
+        return StringHelper.joinScopes( scopes.toArray( String[]::new ) );
     }
 
-    public static String joinAndWrapScopes(String... scopes)
+    public static String joinAndWrapScopes( final String... scopes )
     {
-        return String.join(" ", "[", joinScopes(scopes), "]");
+        return String.join( " ", "[", StringHelper.joinScopes( scopes ), "]" );
     }
 
-    public static String joinAndWrapScopes(Collection<String> scopes)
+    public static String joinAndWrapScopes( final Collection<String> scopes )
     {
-        return joinAndWrapScopes(scopes.toArray(String[]::new));
+        return StringHelper.joinAndWrapScopes( scopes.toArray( String[]::new ) );
     }
 
-    public static String toPascalCase(String text)
+    public static String toPascalCase( final String text )
     {
-        char[] characters = text.toLowerCase().toCharArray();
-        StringBuilder builder = new StringBuilder();
+        final char[] characters = text.toLowerCase().toCharArray();
+        final StringBuilder builder = new StringBuilder();
         boolean capitalizeNext = true;
 
-        for (char c : characters)
+        for ( final char c : characters )
         {
-            if (!Character.isLetterOrDigit(c))
+            if ( !Character.isLetterOrDigit( c ) )
             {
                 capitalizeNext = true;
             }
-            else if (capitalizeNext)
+            else if ( capitalizeNext )
             {
-                builder.append(Character.toTitleCase(c));
+                builder.append( Character.toTitleCase( c ) );
                 capitalizeNext = false;
             }
             else
             {
-                builder.append(c);
+                builder.append( c );
             }
         }
 
         return builder.toString();
     }
 
-    public static String joinLastDifferent(String mainDelimiter, String lastDelimiter, String... strings)
+    public static String joinLastDifferent( final String mainDelimiter,
+                                            final String lastDelimiter,
+                                            final String... strings )
     {
-        return joinLastDifferent(mainDelimiter, lastDelimiter, List.of(strings));
+        return StringHelper.joinLastDifferent( mainDelimiter, lastDelimiter, List.of( strings ) );
     }
 
-    public static String joinLastDifferent(String mainDelimiter, String lastDelimiter, List<String> strings)
+    public static String joinLastDifferent( final String mainDelimiter,
+                                            final String lastDelimiter,
+                                            final List<String> strings )
     {
-        return switch (strings.size())
+        return switch ( strings.size() )
         {
             case 0 -> "";
-            case 1 -> strings.get(0);
+            case 1 -> strings.get( 0 );
             default -> String.join(
                 lastDelimiter,
-                String.join(mainDelimiter, strings.subList(0, strings.size() - 1)),
-                strings.get(strings.size() - 1)
+                String.join( mainDelimiter, strings.subList( 0, strings.size() - 1 ) ),
+                strings.get( strings.size() - 1 )
             );
         };
     }

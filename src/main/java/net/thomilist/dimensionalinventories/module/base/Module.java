@@ -11,11 +11,14 @@ public interface Module
     extends Comparable<Module>, LostAndFoundFormattable
 {
     String category();
-    String groupId();
-    String moduleId();
+
     String description();
 
     SortedSet<StorageVersion> storageVersions();
+
+    String groupId();
+
+    String moduleId();
 
     default int moduleVersion()
     {
@@ -24,29 +27,29 @@ public interface Module
 
     default StorageVersion latestStorageVersion()
     {
-        return storageVersions().last();
+        return this.storageVersions().last();
     }
 
     @Override
-    default int compareTo(@NotNull Module other)
+    default int compareTo( @NotNull final Module other )
     {
-        if (!this.groupId().equals(other.groupId()))
+        if ( !this.groupId().equals( other.groupId() ) )
         {
-            return this.groupId().compareTo(other.groupId());
+            return this.groupId().compareTo( other.groupId() );
         }
-        else if (!this.moduleId().equals(other.moduleId()))
+        else if ( !this.moduleId().equals( other.moduleId() ) )
         {
-            return this.moduleId().compareTo(other.moduleId());
+            return this.moduleId().compareTo( other.moduleId() );
         }
         else
         {
-            return StorageVersion.compareSets(this.storageVersions(), other.storageVersions());
+            return StorageVersion.compareSets( this.storageVersions(), other.storageVersions() );
         }
     }
 
     @Override
     default String toLostAndFoundScopeString()
     {
-        return StringHelper.joinScopes(this.groupId(), this.moduleId());
+        return StringHelper.joinScopes( this.groupId(), this.moduleId() );
     }
 }

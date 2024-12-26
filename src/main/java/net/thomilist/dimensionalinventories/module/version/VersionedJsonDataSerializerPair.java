@@ -9,66 +9,79 @@ import java.lang.reflect.Type;
 public class VersionedJsonDataSerializerPair
     implements SerializerPair<VersionedJsonData>
 {
-    private static final String VERSION = "version";
-    private static final String DATA = "data";
+    private static final String VERSION_FIELD = "version";
+    private static final String DATA_FIELD = "data";
+
+    private static void logMissingField( final String field, final JsonElement json )
+    {
+        LostAndFound.log( "Missing field '%s' in versioned data JSON".formatted( field ), json.toString() );
+    }
 
     @Override
-    public VersionedJsonData fromJson(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public VersionedJsonData fromJson( final JsonElement json,
+                                       final Type typeOfT,
+                                       final JsonDeserializationContext context )
         throws JsonParseException
     {
-        if (!json.isJsonObject())
+        if ( !json.isJsonObject() )
         {
-            if (!json.isJsonObject())
+            if ( !json.isJsonObject() )
             {
-                LostAndFound.log("Unexpected JSON structure for versioned data (expected an object)",
-                    json.toString());
+                LostAndFound.log(
+                    "Unexpected JSON structure for versioned data (expected an object)",
+                    json.toString()
+                );
+
                 return null;
             }
         }
 
-        var jsonObject = json.getAsJsonObject();
+        final JsonObject jsonObject = json.getAsJsonObject();
 
-        if (!jsonObject.has(VersionedJsonDataSerializerPair.VERSION))
+        if ( !jsonObject.has( VersionedJsonDataSerializerPair.VERSION_FIELD ) )
         {
-            VersionedJsonDataSerializerPair.logMissingField(VersionedJsonDataSerializerPair.VERSION, json);
+            VersionedJsonDataSerializerPair.logMissingField( VersionedJsonDataSerializerPair.VERSION_FIELD, json );
+
             return null;
         }
 
-        var versionJson = jsonObject.get(VersionedJsonDataSerializerPair.VERSION);
+        final JsonElement versionJson = jsonObject.get( VersionedJsonDataSerializerPair.VERSION_FIELD );
 
-        if (!versionJson.isJsonPrimitive())
+        if ( !versionJson.isJsonPrimitive() )
         {
-            LostAndFound.log("Unexpected JSON structure for field '" + VersionedJsonDataSerializerPair.VERSION + "' (expected an integer)",
-                json.toString());
+            LostAndFound.log(
+                "Unexpected JSON structure for field '%s' (expected an integer)".formatted(
+                    VersionedJsonDataSerializerPair.VERSION_FIELD ), json.toString()
+            );
+
             return null;
         }
 
-        int version = versionJson.getAsInt();
+        final int version = versionJson.getAsInt();
 
-        if (!jsonObject.has(VersionedJsonDataSerializerPair.DATA))
+        if ( !jsonObject.has( VersionedJsonDataSerializerPair.DATA_FIELD ) )
         {
-            VersionedJsonDataSerializerPair.logMissingField(VersionedJsonDataSerializerPair.DATA, json);
+            VersionedJsonDataSerializerPair.logMissingField( VersionedJsonDataSerializerPair.DATA_FIELD, json );
+
             return null;
         }
 
-        var dataJson = jsonObject.get(VersionedJsonDataSerializerPair.DATA);
+        final JsonElement dataJson = jsonObject.get( VersionedJsonDataSerializerPair.DATA_FIELD );
 
-        return new VersionedJsonData(version, dataJson);
+        return new VersionedJsonData( version, dataJson );
     }
 
     @Override
-    public JsonElement toJson(VersionedJsonData src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement toJson( final VersionedJsonData src,
+                               final Type typeOfSrc,
+                               final JsonSerializationContext context )
     {
-        var json = new JsonObject();
+        final JsonObject json = new JsonObject();
 
-        json.add(VersionedJsonDataSerializerPair.VERSION, context.serialize(src.version()));
-        json.add(VersionedJsonDataSerializerPair.DATA, context.serialize(src.data()));
+        json.add( VersionedJsonDataSerializerPair.VERSION_FIELD, context.serialize( src.version() ) );
+
+        json.add( VersionedJsonDataSerializerPair.DATA_FIELD, context.serialize( src.data() ) );
 
         return json;
-    }
-
-    private static void logMissingField(String field, JsonElement json)
-    {
-        LostAndFound.log("Missing field '" + field + "' in versioned data JSON", json.toString());
     }
 }

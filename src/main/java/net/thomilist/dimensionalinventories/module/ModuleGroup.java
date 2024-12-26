@@ -15,10 +15,10 @@ import java.util.TreeSet;
 
 public abstract class ModuleGroup
 {
-    final private String groupId;
     final SortedSet<Module> modules = new TreeSet<>();
+    private final String groupId;
 
-    protected ModuleGroup(String groupId)
+    protected ModuleGroup( final String groupId )
     {
         this.groupId = groupId;
     }
@@ -29,39 +29,36 @@ public abstract class ModuleGroup
     }
 
     @SafeVarargs
-    protected final void register(final Class<? extends Module>... moduleTypes)
+    protected final void register( final Class<? extends Module>... moduleTypes )
         throws InvalidIdentifierException, InvalidModuleException, ModuleConstructionException
     {
-        for (Class<? extends Module> moduleType : moduleTypes)
+        for ( final Class<? extends Module> moduleType : moduleTypes )
         {
-            final Module module = ModuleBase.createDerived(moduleType, this.groupId);
-            this.register(module);
+            final Module module = ModuleBase.createDerived( moduleType, this.groupId );
+            this.register( module );
         }
     }
 
-    private void register(final Module... modules)
+    private void register( final Module... modules )
         throws InvalidIdentifierException, InvalidModuleException
     {
-        for (final Module module : modules)
+        for ( final Module module : modules )
         {
-            if (!ModuleRegistry.isValidId(module.moduleId()))
+            if ( !ModuleRegistry.isValidId( module.moduleId() ) )
             {
-                throw new InvalidIdentifierException(
-                    "'%s' is not a valid module ID"
-                        .formatted(module.moduleId())
-                );
+                throw new InvalidIdentifierException( "'%s' is not a valid module ID".formatted( module.moduleId() ) );
             }
 
-            if (!((module instanceof ConfigModule) || (module instanceof PlayerModule)))
+            if ( !((module instanceof ConfigModule) || (module instanceof PlayerModule)) )
             {
-                throw new InvalidModuleException(module.getClass(), this.groupId, module.moduleId());
+                throw new InvalidModuleException( module.getClass(), this.groupId, module.moduleId() );
             }
 
-            if (!this.modules.add(module))
+            if ( !this.modules.add( module ) )
             {
                 DimensionalInventories.LOGGER.warn(
                     "Failed to add module: {} has already been registered",
-                    StringHelper.joinAndWrapScopes(module.groupId(), module.moduleId())
+                    StringHelper.joinAndWrapScopes( module.groupId(), module.moduleId() )
                 );
             }
         }

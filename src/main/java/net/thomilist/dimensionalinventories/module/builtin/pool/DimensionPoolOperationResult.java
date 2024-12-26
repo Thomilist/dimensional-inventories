@@ -7,5 +7,6 @@ public record DimensionPoolOperationResult(
     String target,
     String from,
     String to,
-    boolean success)
+    boolean success
+)
 { }

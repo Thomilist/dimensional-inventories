@@ -6,7 +6,8 @@
   "mixins": [
     "DisableAdvancementProgressMixin",
     "DisableStatisticIncrementMixin",
-    "PlayerEntityAccessor"
+    "PlayerEntityAccessor",
+    "HungerManagerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

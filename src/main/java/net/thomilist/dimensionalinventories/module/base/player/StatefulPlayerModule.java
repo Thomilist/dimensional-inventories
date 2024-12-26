@@ -10,10 +10,10 @@ import java.nio.file.Path;
 public interface StatefulPlayerModule<T extends PlayerModuleState>
     extends PlayerModule, StatefulModule<T>
 {
-    T newInstance(ServerPlayerEntity player);
+    T newInstance( ServerPlayerEntity player );
 
-    default Path saveDirectory(ServerPlayerEntity player, DimensionPool dimensionPool)
+    default Path saveDirectory( final ServerPlayerEntity player, final DimensionPool dimensionPool )
     {
-        return SavePaths.saveDirectory(latestStorageVersion(), dimensionPool, player, groupId());
+        return SavePaths.saveDirectory( this.latestStorageVersion(), dimensionPool, player, this.groupId() );
     }
 }

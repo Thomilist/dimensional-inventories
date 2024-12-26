@@ -9,6 +9,6 @@ public final class DimensionalInventoriesExtensionMain
 {
     public DimensionalInventoriesExtensionMain()
     {
-        super(DimensionalInventories.PROPERTIES.id(), new MainModuleGroup());
+        super( DimensionalInventories.PROPERTIES.id(), new MainModuleGroup() );
     }
 }

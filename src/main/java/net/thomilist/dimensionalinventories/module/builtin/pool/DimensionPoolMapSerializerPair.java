@@ -14,36 +14,43 @@ public class DimensionPoolMapSerializerPair
     public static final Type TYPE = new DimensionPoolMapSerializerPair().type();
 
     @Override
-    public HashMap<String, DimensionPool> fromJson(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public HashMap<String, DimensionPool> fromJson( final JsonElement json,
+                                                    final Type typeOfT,
+                                                    final JsonDeserializationContext context )
         throws JsonParseException
     {
-        if (!json.isJsonArray())
+        if ( !json.isJsonArray() )
         {
-            LostAndFound.log("Unexpected JSON structure for dimension pool config (expected an array)",
-                json.getAsString());
+            LostAndFound.log(
+                "Unexpected JSON structure for dimension pool config (expected an array)",
+                json.getAsString()
+            );
+
             return new HashMap<>();
         }
 
-        var dimensionPools = new HashMap<String, DimensionPool>();
-        var dimensionPoolsJson = json.getAsJsonArray();
+        final HashMap<String, DimensionPool> dimensionPools = new HashMap<>();
+        final JsonArray dimensionPoolsJson = json.getAsJsonArray();
 
-        for (var entry : dimensionPoolsJson)
+        for ( final JsonElement entry : dimensionPoolsJson )
         {
-            DimensionPool dimensionPool = context.deserialize(entry, DimensionPool.class);
-            dimensionPools.put(dimensionPool.getId(), dimensionPool);
+            final DimensionPool dimensionPool = context.deserialize( entry, DimensionPool.class );
+            dimensionPools.put( dimensionPool.getId(), dimensionPool );
         }
 
         return dimensionPools;
     }
 
     @Override
-    public JsonElement toJson(HashMap<String, DimensionPool> src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement toJson( final HashMap<String, DimensionPool> src,
+                               final Type typeOfSrc,
+                               final JsonSerializationContext context )
     {
-        var json = new JsonArray();
+        final JsonArray json = new JsonArray();
 
-        for (Map.Entry<String, DimensionPool> entry : src.entrySet())
+        for ( final Map.Entry<String, DimensionPool> entry : src.entrySet() )
         {
-            json.add(context.serialize(entry.getValue(), DimensionPool.class));
+            json.add( context.serialize( entry.getValue(), DimensionPool.class ) );
         }
 
         return json;

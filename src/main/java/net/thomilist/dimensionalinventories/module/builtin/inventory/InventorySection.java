@@ -4,21 +4,16 @@ import java.util.List;
 
 public enum InventorySection
 {
-    ARMOR ("armor"),
-    MAIN ("main"),
-    OFF_HAND ("offHand"),
-    ENDER_CHEST ("enderChest");
+    ARMOR( "armor" ),
+    MAIN( "main" ),
+    OFF_HAND( "offHand" ),
+    ENDER_CHEST( "enderChest" );
 
     public final String label;
 
-    InventorySection(String label)
+    InventorySection( final String label )
     {
         this.label = label;
-    }
-
-    public String toString()
-    {
-        return this.label;
     }
 
     public static List<InventorySection> list()
@@ -29,5 +24,11 @@ public enum InventorySection
             InventorySection.OFF_HAND,
             InventorySection.ENDER_CHEST
         );
+    }
+
+    @Override
+    public String toString()
+    {
+        return this.label;
     }
 }
