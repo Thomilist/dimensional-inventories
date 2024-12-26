@@ -13,46 +13,45 @@ public class LostAndFoundScope
     private final LostAndFoundContext context;
     private final Collection<Object> layers;
 
-    public LostAndFoundScope(LostAndFoundContext context, Object... layers)
+    public LostAndFoundScope( final LostAndFoundContext context, final Object... layers )
     {
         this.context = context;
-        this.layers = List.of(layers);
+        this.layers = List.of( layers );
+    }
+
+    private static String formatLayer( final Object layer )
+    {
+        return switch ( layer )
+        {
+            case final LostAndFoundFormattable lostAndFoundFormattable ->
+                lostAndFoundFormattable.toLostAndFoundScopeString();
+            case final ServerPlayerEntity serverPlayerEntity ->
+                serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getUuidAsString() + ')';
+            default -> layer.toString();
+        };
     }
 
     public Collection<Object> layers()
     {
-        return layers;
+        return this.layers;
     }
 
     @Override
     public void close()
     {
-        context.pop();
+        this.context.pop();
     }
 
     @Override
     public String toString()
     {
-        Collection<String> formattedLayers = new ArrayList<>();
+        final Collection<String> formattedLayers = new ArrayList<>();
 
-        for (var layer : layers)
+        for ( final Object layer : this.layers )
         {
-            formattedLayers.add(LostAndFoundScope.formatLayer(layer));
+            formattedLayers.add( LostAndFoundScope.formatLayer( layer ) );
         }
 
-        return StringHelper.joinScopes(formattedLayers);
-    }
-
-    private static String formatLayer(Object layer)
-    {
-        return switch (layer)
-        {
-            case LostAndFoundFormattable lostAndFoundFormattable ->
-                lostAndFoundFormattable.toLostAndFoundScopeString();
-            case ServerPlayerEntity serverPlayerEntity ->
-                serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getUuidAsString() + ")";
-            default ->
-                layer.toString();
-        };
+        return StringHelper.joinScopes( formattedLayers );
     }
 }

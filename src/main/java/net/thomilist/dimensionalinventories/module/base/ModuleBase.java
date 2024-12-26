@@ -15,31 +15,40 @@ public abstract class ModuleBase
     private final String description;
     private final SortedSet<StorageVersion> storageVersions = new TreeSet<>();
 
-    protected ModuleBase(
-        StorageVersion[] storageVersions,
-        String groupId,
-        String moduleId,
-        String description)
+    protected ModuleBase( final StorageVersion[] storageVersions,
+                          final String groupId,
+                          final String moduleId,
+                          final String description )
     {
         this.groupId = groupId;
         this.moduleId = moduleId;
         this.description = description;
-        this.storageVersions.addAll(List.of(storageVersions));
+        this.storageVersions.addAll( List.of( storageVersions ) );
     }
 
-    public static <T extends Module> T createDerived(Class<T> moduleType, String groupId)
+    public static <T extends Module> T createDerived( final Class<T> moduleType, final String groupId )
         throws ModuleConstructionException
     {
         try
         {
-            return moduleType
-                .getConstructor(String.class)
-                .newInstance(groupId);
+            return moduleType.getConstructor( String.class ).newInstance( groupId );
         }
-        catch (Exception e)
+        catch ( final Exception e )
         {
-            throw new ModuleConstructionException(moduleType, groupId, e);
+            throw new ModuleConstructionException( moduleType, groupId, e );
         }
+    }
+
+    @Override
+    public String description()
+    {
+        return this.description;
+    }
+
+    @Override
+    public SortedSet<StorageVersion> storageVersions()
+    {
+        return this.storageVersions;
     }
 
     @Override
@@ -52,17 +61,5 @@ public abstract class ModuleBase
     public String moduleId()
     {
         return this.moduleId;
-    }
-
-    @Override
-    public String description()
-    {
-        return this.description;
-    }
-
-    @Override
-    public SortedSet<StorageVersion> storageVersions()
-    {
-        return storageVersions;
     }
 }

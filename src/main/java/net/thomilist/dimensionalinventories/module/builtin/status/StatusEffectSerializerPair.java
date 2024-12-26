@@ -15,21 +15,23 @@ public class StatusEffectSerializerPair
     implements SerializerPair<StatusEffectInstance>
 {
     @Override
-    public StatusEffectInstance fromJson(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public StatusEffectInstance fromJson( final JsonElement json,
+                                          final Type typeOfT,
+                                          final JsonDeserializationContext context )
         throws JsonParseException
     {
-        NbtCompound nbt = context.deserialize(json, NbtCompound.class);
+        final NbtCompound nbt = context.deserialize( json, NbtCompound.class );
 
-        if (nbt == null)
+        if ( nbt == null )
         {
             return null;
         }
 
-        StatusEffectInstance effect = StatusEffectInstance.fromNbt(nbt);
+        final StatusEffectInstance effect = StatusEffectInstance.fromNbt( nbt );
 
-        if (effect == null)
+        if ( effect == null )
         {
-            LostAndFound.log("Invalid NBT compound for status effect instance", nbt.toString());
+            LostAndFound.log( "Invalid NBT compound for status effect instance", nbt.toString() );
             return null;
         }
 
@@ -37,8 +39,10 @@ public class StatusEffectSerializerPair
     }
 
     @Override
-    public JsonElement toJson(StatusEffectInstance src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement toJson( final StatusEffectInstance src,
+                               final Type typeOfSrc,
+                               final JsonSerializationContext context )
     {
-        return context.serialize(src.writeNbt(new NbtCompound()), NbtCompound.class);
+        return context.serialize( src.writeNbt( new NbtCompound() ), NbtCompound.class );
     }
 }

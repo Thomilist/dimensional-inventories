@@ -15,42 +15,49 @@ public class StatusEffectCollectionSerializerPair
     public static final Type TYPE = new StatusEffectCollectionSerializerPair().type();
 
     @Override
-    public Collection<StatusEffectInstance> fromJson(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public Collection<StatusEffectInstance> fromJson( final JsonElement json,
+                                                      final Type typeOfT,
+                                                      final JsonDeserializationContext context )
         throws JsonParseException
     {
-        if (!json.isJsonArray())
+        if ( !json.isJsonArray() )
         {
-            LostAndFound.log("Unexpected JSON structure for collection of status effects (expected an array)",
-                json.getAsString());
+            LostAndFound.log(
+                "Unexpected JSON structure for collection of status effects (expected an array)",
+                json.getAsString()
+            );
+
             return new ArrayList<>();
         }
 
         final ArrayList<StatusEffectInstance> effects = new ArrayList<>();
         final JsonArray jsonArray = json.getAsJsonArray();
 
-        for (int i = 0; i < jsonArray.size(); i++)
+        for ( int i = 0; i < jsonArray.size(); i++ )
         {
-            StatusEffectInstance effect = context.deserialize(jsonArray.get(i), StatusEffectInstance.class);
+            final StatusEffectInstance effect = context.deserialize( jsonArray.get( i ), StatusEffectInstance.class );
 
-            if (effect == null)
+            if ( effect == null )
             {
                 continue;
             }
 
-            effects.add(effect);
+            effects.add( effect );
         }
 
         return effects;
     }
 
     @Override
-    public JsonElement toJson(Collection<StatusEffectInstance> src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement toJson( final Collection<StatusEffectInstance> src,
+                               final Type typeOfSrc,
+                               final JsonSerializationContext context )
     {
         final JsonArray json = new JsonArray();
 
-        for (StatusEffectInstance statusEffect : src)
+        for ( final StatusEffectInstance statusEffect : src )
         {
-            json.add(context.serialize(statusEffect, StatusEffectInstance.class));
+            json.add( context.serialize( statusEffect, StatusEffectInstance.class ) );
         }
 
         return json;

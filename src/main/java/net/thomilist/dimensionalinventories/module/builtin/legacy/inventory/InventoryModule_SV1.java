@@ -7,6 +7,7 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.collection.DefaultedList;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
+import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundScope;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.player.StatefulPlayerModule;
 import net.thomilist.dimensionalinventories.module.builtin.inventory.InventoryModule;
@@ -23,23 +24,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * @deprecated This is only intended for use during migration of old data of storage version 1. When loading or saving
+ * new data, use {@link InventoryModule} instead.
+ */
 @Deprecated
 public final class InventoryModule_SV1
     extends ModuleBase
     implements StatefulPlayerModule<InventoryModuleState>
 {
     private static final String MODULE_ID = "inventory";
-    private static final String DESCRIPTION =
-        "Items in inventory, hotbar, offhand & armour slots.";
+    private static final String DESCRIPTION = "Items in inventory, hotbar, offhand & armour slots.";
 
-    private static final StorageVersion[] STORAGE_VERSIONS =
-    {
+    private static final StorageVersion[] STORAGE_VERSIONS = {
         StorageVersion.V1
     };
 
     private final InventoryModuleState state = new InventoryModuleState();
 
-    public InventoryModule_SV1(String groupId)
+    public InventoryModule_SV1( final String groupId )
     {
         super(
             InventoryModule_SV1.STORAGE_VERSIONS,
@@ -50,7 +53,7 @@ public final class InventoryModule_SV1
     }
 
     @Override
-    public InventoryModuleState newInstance(ServerPlayerEntity player)
+    public InventoryModuleState newInstance( final ServerPlayerEntity player )
     {
         return new InventoryModuleState();
     }
@@ -58,7 +61,7 @@ public final class InventoryModule_SV1
     @Override
     public InventoryModuleState state()
     {
-        return InventoryModule_SV1.STATE;
+        return this.state;
     }
 
     @Override
@@ -68,18 +71,18 @@ public final class InventoryModule_SV1
     }
 
     @Override
-    public void load(ServerPlayerEntity player, DimensionPool dimensionPool)
+    public void load( final ServerPlayerEntity player, final DimensionPool dimensionPool )
     {
-        final Path saveFile = ModuleHelper_SV1.saveFile(dimensionPool, player);
-        List<String> lines;
+        final Path saveFile = ModuleHelper_SV1.saveFile( dimensionPool, player );
+        final List<String> lines;
 
         try
         {
-            lines = Files.readAllLines(saveFile);
+            lines = Files.readAllLines( saveFile );
         }
-        catch (IOException e)
+        catch ( final IOException e )
         {
-            LostAndFound.log("Failed to read inventory data file", e);
+            LostAndFound.log( "Failed to read inventory data file", e );
             return;
         }
 
@@ -87,44 +90,47 @@ public final class InventoryModule_SV1
 
         final InventoryModuleState inventoryModuleState = new InventoryModuleState();
 
-        for (InventorySection label : InventorySection.list())
+        for ( final InventorySection label : InventorySection.list() )
         {
-            try (var LAF = LostAndFound.push(label))
+            try ( final LostAndFoundScope LAF = LostAndFound.push( label ) )
             {
-                DefaultedList<ItemStack> items =
-                    DefaultedList.ofSize(inventoryModuleState.section(label).size(), ItemStack.EMPTY);
+                final DefaultedList<ItemStack> items = DefaultedList.ofSize(
+                    inventoryModuleState
+                        .section( label )
+                        .size(), ItemStack.EMPTY
+                );
 
-                for (int i = 0; i < items.size(); i++)
+                for ( int i = 0; i < items.size(); i++ )
                 {
-                    NbtCompound nbt;
+                    final NbtCompound nbt;
 
                     try
                     {
-                        nbt = NbtHelper.fromNbtProviderString(lines.get(lineIndex++));
+                        nbt = NbtHelper.fromNbtProviderString( lines.get( lineIndex++ ) );
                     }
-                    catch (CommandSyntaxException e)
+                    catch ( final CommandSyntaxException e )
                     {
-                        LostAndFound.log("Failed to parse NBT string for " + label + "[" + i + "]", e);
+                        LostAndFound.log( "Failed to parse NBT string for " + label + '[' + i + ']', e );
                         return;
                     }
 
-                    items.set(i, NbtConversionHelper.fromNbt(nbt));
+                    items.set( i, NbtConversionHelper.fromNbt( nbt ) );
                 }
 
-                if (!items.isEmpty())
+                if ( !items.isEmpty() )
                 {
-                    ItemStackListHelper.assignItemStacks(items, inventoryModuleState.section(label));
+                    ItemStackListHelper.assignItemStacks( items, inventoryModuleState.section( label ) );
                 }
             }
         }
 
-        inventoryModuleState.applyToPlayer(player);
+        inventoryModuleState.applyToPlayer( player );
     }
 
     @Override
-    public void save(ServerPlayerEntity player, DimensionPool dimensionPool)
+    public void save( final ServerPlayerEntity player, final DimensionPool dimensionPool )
     {
         // Intentionally not implemented
-        ModuleHelper_SV1.ThrowOnDeprecatedSave(InventoryModule.class);
+        ModuleHelper_SV1.ThrowOnDeprecatedSave( InventoryModule.class );
     }
 }

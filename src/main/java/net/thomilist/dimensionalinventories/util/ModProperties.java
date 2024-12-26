@@ -2,12 +2,12 @@ package net.thomilist.dimensionalinventories.util;
 
 import com.google.gson.stream.JsonReader;
 import net.fabricmc.loader.api.FabricLoader;
-import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.PropertyReadException;
-import org.slf4j.Logger;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,69 +17,63 @@ import java.util.Optional;
 public class ModProperties
 {
     private final String id;
+    private final List<String> authors = new ArrayList<>();
     private String namePretty = "<unknown mod name>";
     private String namePascal = "<unknown mod name>";
     private String version = "<unknown mod version>";
     private String description = "<unknown mod description>";
-    private final List<String> authors = new ArrayList<>();
 
-    public ModProperties(String modId, Logger logger)
+    public ModProperties( final String modId )
     {
         this.id = modId;
 
         try
         {
-            Optional<Path> fabricModJsonPath = FabricLoader
+            final Optional<Path> fabricModJsonPath = FabricLoader
                 .getInstance()
-                .getModContainer(this.id)
+                .getModContainer( this.id )
                 .orElseThrow()
-                .findPath("fabric.mod.json");
+                .findPath( "fabric.mod.json" );
 
-            if (fabricModJsonPath.isEmpty())
+            if ( fabricModJsonPath.isEmpty() )
             {
                 throw new PropertyReadException();
             }
 
-            try (InputStream stream = Files.newInputStream(fabricModJsonPath.get()))
+            try ( final InputStream stream = Files.newInputStream( fabricModJsonPath.get() ) )
             {
-                InputStreamReader reader = new InputStreamReader(stream);
+                final InputStreamReader reader = new InputStreamReader( stream, StandardCharsets.UTF_8 );
 
-                try (JsonReader jsonReader = new JsonReader(reader))
+                try ( final JsonReader jsonReader = new JsonReader( reader ) )
                 {
                     jsonReader.beginObject();
                     String name;
 
-                    while (jsonReader.hasNext())
+                    while ( jsonReader.hasNext() )
                     {
                         name = jsonReader.nextName();
 
-                        if (name.equals("version"))
+                        switch ( name )
                         {
-                            this.version = jsonReader.nextString();
-                        }
-                        else if (name.equals("name"))
-                        {
-                            this.namePretty = jsonReader.nextString();
-                            this.namePascal = StringHelper.toPascalCase(this.namePretty);
-                        }
-                        else if (name.equals("description"))
-                        {
-                            this.description = jsonReader.nextString();
-                        }
-                        else if (name.equals("authors"))
-                        {
-                            jsonReader.beginArray();
-
-                            while (jsonReader.hasNext())
+                            case "version" -> this.version = jsonReader.nextString();
+                            case "name" ->
                             {
-                                this.authors.add(jsonReader.nextString());
+                                this.namePretty = jsonReader.nextString();
+                                this.namePascal = StringHelper.toPascalCase( this.namePretty );
                             }
+                            case "description" -> this.description = jsonReader.nextString();
+                            case "authors" ->
+                            {
+                                jsonReader.beginArray();
 
-                            jsonReader.endArray();
-                        }
-                        else
-                        {
-                            jsonReader.skipValue();
+                                while ( jsonReader.hasNext() )
+                                {
+                                    this.authors.add( jsonReader.nextString() );
+                                }
+
+                                jsonReader.endArray();
+                            }
+                            default -> jsonReader.skipValue();
                         }
                     }
 
@@ -87,15 +81,10 @@ public class ModProperties
                 }
             }
         }
-        catch (Exception e)
+        catch ( final IOException e )
         {
-            logger.warn("Failed to read mod properties", e);
+            throw new PropertyReadException();
         }
-    }
-
-    public ModProperties(String modId)
-    {
-        this(modId, DimensionalInventories.LOGGER);
     }
 
     public String version()
@@ -130,17 +119,13 @@ public class ModProperties
 
     public String authorsPretty()
     {
-        if (this.authors.isEmpty())
+        if ( this.authors.isEmpty() )
         {
             return "<no authors found>";
         }
         else
         {
-            return StringHelper.joinLastDifferent(
-                ", ",
-                " & ",
-                this.authors
-            );
+            return StringHelper.joinLastDifferent( ", ", " & ", this.authors );
         }
     }
 }

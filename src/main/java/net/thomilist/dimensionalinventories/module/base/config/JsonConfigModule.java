@@ -7,26 +7,25 @@ import java.nio.file.Path;
 public interface JsonConfigModule<T extends ConfigModuleState>
     extends StatefulConfigModule<T>, JsonModule<T>
 {
-    void loadFromOther(T other);
+    void loadFromOther( T other );
 
     default Path saveFile()
     {
-        return saveDirectory()
-            .resolve(saveFileName());
+        return this.saveDirectory().resolve( this.saveFileName() );
     }
 
     @Override
     default void load()
     {
-        final Path saveFile = saveFile();
-        final T config = load(saveFile);
-        loadFromOther(config);
+        final Path saveFile = this.saveFile();
+        final T config = this.load( saveFile );
+        this.loadFromOther( config );
     }
 
     @Override
     default void save()
     {
-        final Path saveFile = saveFile();
-        save(saveFile, state());
+        final Path saveFile = this.saveFile();
+        this.save( saveFile, this.state() );
     }
 }

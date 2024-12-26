@@ -9,10 +9,9 @@ import java.nio.file.Path;
 public interface JsonPlayerModule<T extends PlayerModuleState>
     extends StatefulPlayerModule<T>, JsonModule<T>
 {
-    default Path saveFile(ServerPlayerEntity player, DimensionPool dimensionPool)
+    default Path saveFile( final ServerPlayerEntity player, final DimensionPool dimensionPool )
     {
-        return saveDirectory(player, dimensionPool)
-            .resolve(saveFileName());
+        return this.saveDirectory( player, dimensionPool ).resolve( this.saveFileName() );
     }
 
     @Override
@@ -22,18 +21,18 @@ public interface JsonPlayerModule<T extends PlayerModuleState>
     }
 
     @Override
-    default void load(ServerPlayerEntity player, DimensionPool dimensionPool)
+    default void load( final ServerPlayerEntity player, final DimensionPool dimensionPool )
     {
-        final Path saveFile = saveFile(player, dimensionPool);
-        final T data = load(saveFile);
-        data.applyToPlayer(player);
+        final Path saveFile = this.saveFile( player, dimensionPool );
+        final T data = this.load( saveFile );
+        data.applyToPlayer( player );
     }
 
     @Override
-    default void save(ServerPlayerEntity player, DimensionPool dimensionPool)
+    default void save( final ServerPlayerEntity player, final DimensionPool dimensionPool )
     {
-        final T data = newInstance(player);
-        final Path saveFile = saveFile(player, dimensionPool);
-        save(saveFile, data);
+        final T data = this.newInstance( player );
+        final Path saveFile = this.saveFile( player, dimensionPool );
+        this.save( saveFile, data );
     }
 }

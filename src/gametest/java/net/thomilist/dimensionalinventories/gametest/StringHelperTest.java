@@ -7,28 +7,25 @@ import net.thomilist.dimensionalinventories.util.StringHelper;
 
 public class StringHelperTest
 {
-    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-    public void joinScopes(TestContext context)
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    public void joinScopes( final TestContext context )
     {
-        final String[] scopes = {"one", "two", "three", "four", "five"};
-        final String joinedScopes = StringHelper.joinScopes(scopes);
+        final String[] scopes = { "one", "two", "three", "four", "five" };
+        final String joinedScopes = StringHelper.joinScopes( scopes );
 
-        context.assertTrue(
-            joinedScopes.equals("one :: two :: three :: four :: five"),
-            "Scopes joined incorrectly"
-        );
+        context.assertTrue( joinedScopes.equals( "one :: two :: three :: four :: five" ), "Scopes joined incorrectly" );
 
         context.complete();
     }
 
-    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-    public void joinAndWrapScopes(TestContext context)
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    public void joinAndWrapScopes( final TestContext context )
     {
-        final String[] scopes = {"one", "two", "three", "four", "five"};
-        final String joinedScopes = StringHelper.joinAndWrapScopes(scopes);
+        final String[] scopes = { "one", "two", "three", "four", "five" };
+        final String joinedScopes = StringHelper.joinAndWrapScopes( scopes );
 
         context.assertTrue(
-            joinedScopes.equals("[ one :: two :: three :: four :: five ]"),
+            joinedScopes.equals( "[ one :: two :: three :: four :: five ]" ),
             "Scopes joined or wrapped incorrectly"
         );
 

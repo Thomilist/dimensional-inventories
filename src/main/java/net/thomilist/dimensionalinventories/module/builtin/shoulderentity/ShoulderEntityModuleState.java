@@ -8,7 +8,8 @@ import net.thomilist.dimensionalinventories.module.base.player.PlayerModuleState
 
 import java.lang.reflect.Type;
 
-public class ShoulderEntityModuleState implements PlayerModuleState
+public class ShoulderEntityModuleState
+    implements PlayerModuleState
 {
     public static TrackedData<NbtCompound> LEFT_SHOULDER_ENTITY = PlayerEntityAccessor.getLeftShoulderEntity();
     public static TrackedData<NbtCompound> RIGHT_SHOULDER_ENTITY = PlayerEntityAccessor.getRightShoulderEntity();
@@ -20,25 +21,25 @@ public class ShoulderEntityModuleState implements PlayerModuleState
     public ShoulderEntityModuleState()
     { }
 
-    public ShoulderEntityModuleState(ServerPlayerEntity player)
+    public ShoulderEntityModuleState( final ServerPlayerEntity player )
     {
-        loadFromPlayer(player);
+        this.loadFromPlayer( player );
     }
 
     @Override
-    public void applyToPlayer(ServerPlayerEntity player)
+    public void applyToPlayer( final ServerPlayerEntity player )
     {
-        player.getDataTracker().set(ShoulderEntityModuleState.LEFT_SHOULDER_ENTITY, leftShoulderEntity);
-        player.getDataTracker().set(ShoulderEntityModuleState.RIGHT_SHOULDER_ENTITY, rightShoulderEntity);
-        ((PlayerEntityAccessor) player).setShoulderEntityAddedTime(shoulderEntityAddedTime);
+        player.getDataTracker().set( ShoulderEntityModuleState.LEFT_SHOULDER_ENTITY, this.leftShoulderEntity );
+        player.getDataTracker().set( ShoulderEntityModuleState.RIGHT_SHOULDER_ENTITY, this.rightShoulderEntity );
+        ((PlayerEntityAccessor) player).setShoulderEntityAddedTime( this.shoulderEntityAddedTime );
     }
 
     @Override
-    public void loadFromPlayer(ServerPlayerEntity player)
+    public void loadFromPlayer( final ServerPlayerEntity player )
     {
-        leftShoulderEntity = player.getShoulderEntityLeft();
-        rightShoulderEntity = player.getShoulderEntityRight();
-        shoulderEntityAddedTime = ((PlayerEntityAccessor) player).getShoulderEntityAddedTime();
+        this.leftShoulderEntity = player.getShoulderEntityLeft();
+        this.rightShoulderEntity = player.getShoulderEntityRight();
+        this.shoulderEntityAddedTime = ((PlayerEntityAccessor) player).getShoulderEntityAddedTime();
     }
 
     @Override
