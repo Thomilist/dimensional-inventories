@@ -4,8 +4,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.base.Module;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
-import net.thomilist.dimensionalinventories.util.StringHelper;
 import net.thomilist.dimensionalinventories.util.SavePaths;
+import net.thomilist.dimensionalinventories.util.StringHelper;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -21,115 +21,116 @@ public class LostAndFoundContext
     private LostAndFoundContext()
     { }
 
-    public static LostAndFoundContext create(Object... scopes)
+    public static LostAndFoundContext create( final Object... scopes )
     {
-        LostAndFoundContext context = new LostAndFoundContext();
+        final LostAndFoundContext context = new LostAndFoundContext();
 
-        for (Object layer : scopes)
+        for ( final Object layer : scopes )
         {
-            context.push(layer);
+            context.push( layer );
         }
 
         return context;
     }
 
-    @Override
-    public String toString()
+    public LostAndFoundScope push( final Object... layers )
     {
-        return StringHelper.joinAndWrapScopes(scopes.stream().map(LostAndFoundScope::toString).toList());
-    }
-
-    public LostAndFoundScope push(Object... layers)
-    {
-        LostAndFoundScope wrappedLayer = new LostAndFoundScope(this, layers);
-        this.scopes.add(wrappedLayer);
+        final LostAndFoundScope wrappedLayer = new LostAndFoundScope( this, layers );
+        this.scopes.add( wrappedLayer );
         return wrappedLayer;
     }
 
+    @Override
+    public String toString()
+    {
+        return StringHelper.joinAndWrapScopes( this.scopes.stream().map( LostAndFoundScope::toString ).toList() );
+    }
+
+    @SuppressWarnings( "resource" )
     public void pop()
     {
-        if (!scopes.isEmpty())
+        if ( !this.scopes.isEmpty() )
         {
-            scopes.removeLast();
+            this.scopes.removeLast();
         }
     }
 
     public boolean isEmpty()
     {
-        return scopes.isEmpty();
+        return this.scopes.isEmpty();
     }
-
 
     public LostAndFoundScope head()
     {
-        return scopes.isEmpty() ? null : scopes.getLast();
+        return this.scopes.isEmpty() ? null : this.scopes.getLast();
     }
 
     public Collection<LostAndFoundScope> scopes()
     {
-        return scopes;
-    }
-
-    public Collection<Object> layers()
-    {
-        return scopes.stream().flatMap(scope -> scope.layers().stream()).toList();
+        return this.scopes;
     }
 
     public Path outputDirectory()
     {
-        final List<Class<?>> specialTypes = List.of(DimensionPool.class, ServerPlayerEntity.class, Module.class);
+        final List<Class<?>> specialTypes = List.of( DimensionPool.class, ServerPlayerEntity.class, Module.class );
         final List<Object> specialObjects = new ArrayList<>();
 
-        for (var layer : layers())
+        for ( final Object layer : this.layers() )
         {
-            if (specialObjects.size() >= specialTypes.size())
+            if ( specialObjects.size() >= specialTypes.size() )
             {
                 break;
             }
 
-            if (specialTypes.get(specialObjects.size()).isInstance(layer))
+            if ( specialTypes.get( specialObjects.size() ).isInstance( layer ) )
             {
-                specialObjects.add(layer);
+                specialObjects.add( layer );
             }
         }
 
-        return switch (specialObjects.size())
+        return switch ( specialObjects.size() )
         {
             case 1 -> SavePaths.lostAndFoundDirectory(
                 DimensionalInventories.INSTANCE.storageVersion,
-                (DimensionPool) specialObjects.get(0)
+                (DimensionPool) specialObjects.get( 0 )
             );
             case 2 -> SavePaths.lostAndFoundDirectory(
                 DimensionalInventories.INSTANCE.storageVersion,
-                (DimensionPool) specialObjects.get(0),
-                (ServerPlayerEntity) specialObjects.get(1)
+                (DimensionPool) specialObjects.get( 0 ),
+                (ServerPlayerEntity) specialObjects.get( 1 )
             );
             case 3 -> SavePaths.lostAndFoundDirectory(
                 DimensionalInventories.INSTANCE.storageVersion,
-                (DimensionPool) specialObjects.get(0),
-                (ServerPlayerEntity) specialObjects.get(1),
-                (Module) specialObjects.get(2)
+                (DimensionPool) specialObjects.get( 0 ),
+                (ServerPlayerEntity) specialObjects.get( 1 ),
+                (Module) specialObjects.get( 2 )
             );
-            default -> SavePaths.lostAndFoundDirectory(DimensionalInventories.INSTANCE.storageVersion);
+            default -> SavePaths.lostAndFoundDirectory( DimensionalInventories.INSTANCE.storageVersion );
         };
+    }
+
+    public Collection<Object> layers()
+    {
+        return this.scopes.stream().flatMap( scope -> scope.layers().stream() ).toList();
     }
 
     @Override
     public void close()
     {
-        scopes.clear();
+        this.scopes.clear();
     }
 
-    public ServerPlayerEntity getPlayer() throws NoSuchElementException
+    public ServerPlayerEntity getPlayer()
+        throws NoSuchElementException
     {
-        for (var layer : layers())
+        for ( final Object layer : this.layers() )
         {
-            if (layer instanceof ServerPlayerEntity)
+            if ( layer instanceof ServerPlayerEntity )
             {
                 return (ServerPlayerEntity) layer;
             }
         }
 
-        throw new NoSuchElementException("No player in this lost+found context");
+        throw new NoSuchElementException( "No player in this lost+found context" );
     }
 }

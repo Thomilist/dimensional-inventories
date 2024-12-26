@@ -2,86 +2,88 @@ package net.thomilist.dimensionalinventories.module.builtin.pool;
 
 import net.minecraft.world.GameMode;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
-import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPoolConfigModuleState_SV1;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModuleState;
+import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPoolConfigModuleState_SV1;
+import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPool_SV1;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Optional;
 
 public class DimensionPoolConfigModuleState
     implements ConfigModuleState
 {
+    public final HashMap<String, DimensionPool> dimensionPools = new HashMap<>();
+
+    public static DimensionPoolConfigModuleState createDefault()
+    {
+        final DimensionPoolConfigModuleState config = new DimensionPoolConfigModuleState();
+        final DimensionPool dimensionPool = DimensionPool.createDefault();
+        config.dimensionPools.put( dimensionPool.getId(), dimensionPool );
+        return config;
+    }
+
+    @SuppressWarnings( "deprecation" )
+    public static DimensionPoolConfigModuleState fromLegacy( final DimensionPoolConfigModuleState_SV1 legacyConfigData )
+    {
+        final DimensionPoolConfigModuleState newConfigData = new DimensionPoolConfigModuleState();
+
+        for ( final DimensionPool_SV1 legacyPool : legacyConfigData.dimensionPools )
+        {
+            final DimensionPool newPool = DimensionPool.fromLegacy( legacyPool );
+            newConfigData.dimensionPools.put( newPool.getId(), newPool );
+        }
+
+        return newConfigData;
+    }
+
     @Override
     public Type type()
     {
         return DimensionPoolConfigModuleState.class;
     }
 
-    public final HashMap<String, DimensionPool> dimensionPools = new HashMap<>();
-
-    public static DimensionPoolConfigModuleState createDefault()
+    public boolean poolExists( final String dimensionPoolId )
     {
-        DimensionPoolConfigModuleState config = new DimensionPoolConfigModuleState();
-        DimensionPool dimensionPool = DimensionPool.createDefault();
-        config.dimensionPools.put(dimensionPool.getId(), dimensionPool);
-        return config;
+        return this.dimensionPools.containsKey( dimensionPoolId );
     }
 
-    @SuppressWarnings("deprecation")
-    public static DimensionPoolConfigModuleState fromLegacy(DimensionPoolConfigModuleState_SV1 legacyConfigData)
+    public Optional<DimensionPool> poolWithId( final String dimensionPoolId )
     {
-        var newConfigData = new DimensionPoolConfigModuleState();
+        return Optional.ofNullable( this.dimensionPools.get( dimensionPoolId ) );
+    }
 
-        for (var legacyPool : legacyConfigData.dimensionPools)
+    public Optional<DimensionPool> poolWithDimension( final String dimension )
+    {
+        return this.poolWithDimension( dimension, false );
+    }
+
+    public Optional<DimensionPool> poolWithDimension( final String dimension, final boolean logging )
+    {
+        for ( final DimensionPool dimensionPool : this.dimensionPools.values() )
         {
-            var newPool = DimensionPool.fromLegacy(legacyPool);
-            newConfigData.dimensionPools.put(newPool.getId(), newPool);
-        }
-
-        return newConfigData;
-    }
-
-    public boolean poolExists(String dimensionPoolId)
-    {
-        return dimensionPools.containsKey(dimensionPoolId);
-    }
-
-    public Optional<DimensionPool> poolWithId(String dimensionPoolId)
-    {
-        return Optional.ofNullable(dimensionPools.get(dimensionPoolId));
-    }
-
-    public Optional<DimensionPool> poolWithDimension(String dimension)
-    {
-        return poolWithDimension(dimension, false);
-    }
-
-    public Optional<DimensionPool> poolWithDimension(String dimension, boolean logging)
-    {
-        for (DimensionPool dimensionPool : dimensionPools.values())
-        {
-            if (dimensionPool.hasDimensions(dimension))
+            if ( dimensionPool.hasDimensions( dimension ) )
             {
-                return Optional.of(dimensionPool);
+                return Optional.of( dimensionPool );
             }
         }
 
-        if (logging)
+        if ( logging )
         {
-            DimensionalInventories.LOGGER.warn("No dimension pool contains the dimension '{}'", dimension);
+            DimensionalInventories.LOGGER.warn( "No dimension pool contains the dimension '{}'", dimension );
         }
 
         return Optional.empty();
     }
 
-    public DimensionPoolOperationResult createPool(String dimensionPoolId, GameMode gameMode)
+    public DimensionPoolOperationResult createPool( final String dimensionPoolId, final GameMode gameMode )
     {
-        boolean exists = poolExists(dimensionPoolId);
+        final boolean exists = this.poolExists( dimensionPoolId );
 
-        if (!exists)
+        if ( !exists )
         {
-            DimensionPool dimensionPool = new DimensionPool(dimensionPoolId, gameMode);
-            dimensionPools.put(dimensionPool.getId(), dimensionPool);
+            final DimensionPool dimensionPool = new DimensionPool( dimensionPoolId, gameMode );
+            this.dimensionPools.put( dimensionPool.getId(), dimensionPool );
         }
 
         return new DimensionPoolOperationResult(
@@ -94,10 +96,10 @@ public class DimensionPoolConfigModuleState
         );
     }
 
-    public DimensionPoolOperationResult deletePool(String dimensionPoolId)
+    public DimensionPoolOperationResult deletePool( final String dimensionPoolId )
     {
-        boolean exists = poolExists(dimensionPoolId);
-        dimensionPools.remove(dimensionPoolId);
+        final boolean exists = this.poolExists( dimensionPoolId );
+        this.dimensionPools.remove( dimensionPoolId );
 
         return new DimensionPoolOperationResult(
             DimensionPoolOperation.DELETE_POOL,
@@ -109,9 +111,9 @@ public class DimensionPoolConfigModuleState
         );
     }
 
-    public DimensionPoolOperationResult assignDimensionToPool(String dimension, String dimensionPoolId)
+    public DimensionPoolOperationResult assignDimensionToPool( final String dimension, final String dimensionPoolId )
     {
-        if (!poolExists(dimensionPoolId))
+        if ( !this.poolExists( dimensionPoolId ) )
         {
             return new DimensionPoolOperationResult(
                 DimensionPoolOperation.ADD_DIMENSION,
@@ -123,46 +125,47 @@ public class DimensionPoolConfigModuleState
             );
         }
 
-        DimensionPool dimensionPool = dimensionPools.get(dimensionPoolId);
-        return assignDimensionToPool(dimension, dimensionPool);
+        final DimensionPool dimensionPool = this.dimensionPools.get( dimensionPoolId );
+        return this.assignDimensionToPool( dimension, dimensionPool );
     }
 
-    public DimensionPoolOperationResult assignDimensionToPool(String dimension, DimensionPool dimensionPool)
+    public DimensionPoolOperationResult assignDimensionToPool( final String dimension,
+                                                               final DimensionPool dimensionPool )
     {
-        DimensionPoolOperation operation;
-        Optional<DimensionPool> currentDimensionPool = poolWithDimension(dimension);
+        final DimensionPoolOperation operation;
+        final Optional<DimensionPool> currentDimensionPool = this.poolWithDimension( dimension );
 
-        if (currentDimensionPool.isEmpty())
+        if ( currentDimensionPool.isEmpty() )
         {
             operation = DimensionPoolOperation.ADD_DIMENSION;
         }
-        else if (currentDimensionPool.get() == dimensionPool)
+        else if ( currentDimensionPool.get() == dimensionPool )
         {
             operation = DimensionPoolOperation.NO_OP;
         }
         else
         {
             operation = DimensionPoolOperation.MOVE_DIMENSION;
-            currentDimensionPool.get().removeDimension(dimension);
+            currentDimensionPool.get().removeDimension( dimension );
         }
 
-        dimensionPool.addDimension(dimension);
+        dimensionPool.addDimension( dimension );
 
         return new DimensionPoolOperationResult(
             DimensionPoolOperation.ADD_DIMENSION,
             operation,
             dimension,
-            operation == DimensionPoolOperation.MOVE_DIMENSION ? currentDimensionPool.get().getId() : null,
+            (operation == DimensionPoolOperation.MOVE_DIMENSION) ? currentDimensionPool.get().getId() : null,
             dimensionPool.getId(),
             true
         );
     }
 
-    public DimensionPoolOperationResult removeDimensionFromPool(String dimension)
+    public DimensionPoolOperationResult removeDimensionFromPool( final String dimension )
     {
-        Optional<DimensionPool> currentDimensionPool = poolWithDimension(dimension);
+        final Optional<DimensionPool> currentDimensionPool = this.poolWithDimension( dimension );
 
-        if (currentDimensionPool.isEmpty())
+        if ( currentDimensionPool.isEmpty() )
         {
             return new DimensionPoolOperationResult(
                 DimensionPoolOperation.REMOVE_DIMENSION,
@@ -174,12 +177,12 @@ public class DimensionPoolConfigModuleState
             );
         }
 
-        return removeDimensionFromPool(dimension, currentDimensionPool.get());
+        return this.removeDimensionFromPool( dimension, currentDimensionPool.get() );
     }
 
-    public DimensionPoolOperationResult removeDimensionFromPool(String dimension, String dimensionPoolId)
+    public DimensionPoolOperationResult removeDimensionFromPool( final String dimension, final String dimensionPoolId )
     {
-        if (!poolExists(dimensionPoolId))
+        if ( !this.poolExists( dimensionPoolId ) )
         {
             return new DimensionPoolOperationResult(
                 DimensionPoolOperation.REMOVE_DIMENSION,
@@ -191,18 +194,19 @@ public class DimensionPoolConfigModuleState
             );
         }
 
-        DimensionPool dimensionPool = dimensionPools.get(dimensionPoolId);
-        return removeDimensionFromPool(dimension, dimensionPool);
+        final DimensionPool dimensionPool = this.dimensionPools.get( dimensionPoolId );
+        return this.removeDimensionFromPool( dimension, dimensionPool );
     }
 
-    public DimensionPoolOperationResult removeDimensionFromPool(String dimension, DimensionPool dimensionPool)
+    public DimensionPoolOperationResult removeDimensionFromPool( final String dimension,
+                                                                 final DimensionPool dimensionPool )
     {
-        DimensionPoolOperation operation;
+        final DimensionPoolOperation operation;
 
-        if (dimensionPool.hasDimensions(dimension))
+        if ( dimensionPool.hasDimensions( dimension ) )
         {
             operation = DimensionPoolOperation.REMOVE_DIMENSION;
-            dimensionPool.removeDimension(dimension);
+            dimensionPool.removeDimension( dimension );
         }
         else
         {
@@ -219,11 +223,11 @@ public class DimensionPoolConfigModuleState
         );
     }
 
-    public boolean dimensionsAreInSamePool(String... dimensions)
+    public boolean dimensionsAreInSamePool( final String... dimensions )
     {
-        for (DimensionPool dimensionPool : dimensionPools.values())
+        for ( final DimensionPool dimensionPool : this.dimensionPools.values() )
         {
-            if (dimensionPool.hasDimensions(dimensions))
+            if ( dimensionPool.hasDimensions( dimensions ) )
             {
                 return true;
             }
@@ -234,12 +238,12 @@ public class DimensionPoolConfigModuleState
 
     public String asString()
     {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Dimension pools:");
+        final StringBuilder builder = new StringBuilder();
+        builder.append( "Dimension pools:" );
 
-        for (DimensionPool dimensionPool : dimensionPools.values())
+        for ( final DimensionPool dimensionPool : this.dimensionPools.values() )
         {
-            builder.append(dimensionPool.asString());
+            builder.append( dimensionPool.asString() );
         }
 
         return builder.toString();

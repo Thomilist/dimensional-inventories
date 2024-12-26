@@ -7,29 +7,29 @@ import net.thomilist.dimensionalinventories.module.base.config.JsonConfigModule;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.ModuleHelper_SV1;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
-import net.thomilist.dimensionalinventories.module.base.config.JsonConfigModule;
 
+/**
+ * @deprecated This is only intended for use during migration of old data of storage version 1. When loading or saving
+ * new data, use {@link DimensionPoolConfigModule} instead.
+ */
 @Deprecated
 public final class DimensionPoolConfigModule_SV1
     extends ModuleBase
     implements JsonConfigModule<DimensionPoolConfigModuleState_SV1>
 {
     private static final String MODULE_ID = "dimension-pools";
-    private static final String DESCRIPTION =
-        "Configuration of dimension pools, including assigned dimensions, game modes & more.";
+    private static final String DESCRIPTION
+        = "Configuration of dimension pools, including assigned dimensions, game modes & more.";
 
-    private static final StorageVersion[] STORAGE_VERSIONS =
-    {
+    private static final StorageVersion[] STORAGE_VERSIONS = {
         StorageVersion.V1
     };
-
+    private static final Gson GSON = JsonModule.GSON_BUILDER
+        .registerTypeAdapter( DimensionPoolListSerializerPair_SV1.TYPE, new DimensionPoolListSerializerPair_SV1() )
+        .create();
     private final DimensionPoolConfigModuleState_SV1 state = new DimensionPoolConfigModuleState_SV1();
 
-    private static final Gson GSON = JsonModule.GSON_BUILDER
-        .registerTypeAdapter(DimensionPoolListSerializerPair_SV1.TYPE, new DimensionPoolListSerializerPair_SV1())
-        .create();
-
-    public DimensionPoolConfigModule_SV1(String groupId)
+    public DimensionPoolConfigModule_SV1( final String groupId )
     {
         super(
             DimensionPoolConfigModule_SV1.STORAGE_VERSIONS,
@@ -48,7 +48,7 @@ public final class DimensionPoolConfigModule_SV1
     @Override
     public DimensionPoolConfigModuleState_SV1 state()
     {
-        return DimensionPoolConfigModule_SV1.STATE;
+        return this.state;
     }
 
     @Override
@@ -64,24 +64,24 @@ public final class DimensionPoolConfigModule_SV1
     }
 
     @Override
-    public void loadFromOther(DimensionPoolConfigModuleState_SV1 other)
+    public DimensionPoolConfigModuleState_SV1 loadFromJsonString( final String json )
     {
-        DimensionPoolConfigModule_SV1.STATE.dimensionPools.clear();
-        DimensionPoolConfigModule_SV1.STATE.dimensionPools.addAll(other.dimensionPools);
+        final DimensionPoolConfigModuleState_SV1 data = new DimensionPoolConfigModuleState_SV1();
+        data.dimensionPools = this.gson().fromJson( json, DimensionPoolListSerializerPair_SV1.TYPE );
+        return data;
     }
 
     @Override
-    public DimensionPoolConfigModuleState_SV1 loadFromJsonString(String json)
+    public void loadFromOther( final DimensionPoolConfigModuleState_SV1 other )
     {
-        final var data = new DimensionPoolConfigModuleState_SV1();
-        data.dimensionPools = gson().fromJson(json, DimensionPoolListSerializerPair_SV1.TYPE);
-        return data;
+        this.state.dimensionPools.clear();
+        this.state.dimensionPools.addAll( other.dimensionPools );
     }
 
     @Override
     public void save()
     {
         // Intentionally not implemented
-        ModuleHelper_SV1.ThrowOnDeprecatedSave(DimensionPoolConfigModule.class);
+        ModuleHelper_SV1.ThrowOnDeprecatedSave( DimensionPoolConfigModule.class );
     }
 }

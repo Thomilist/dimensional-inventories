@@ -15,37 +15,48 @@ public class ItemStackListSerializerPair
     public static final Type TYPE = new ItemStackListSerializerPair().type();
 
     @Override
-    public DefaultedList<ItemStack> fromJson(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public DefaultedList<ItemStack> fromJson( final JsonElement json,
+                                              final Type typeOfT,
+                                              final JsonDeserializationContext context )
         throws JsonParseException
     {
-        if (!json.isJsonArray())
+        if ( !json.isJsonArray() )
         {
-            LostAndFound.log("Unexpected JSON structure for list of item stacks (expected an array)",
-                json.getAsString());
-            return DefaultedList.ofSize(0);
+            LostAndFound.log(
+                "Unexpected JSON structure for list of item stacks (expected an array)",
+                json.getAsString()
+            );
+
+            return DefaultedList.ofSize( 0 );
         }
 
         final JsonArray jsonArray = json.getAsJsonArray();
-        final DefaultedList<ItemStack> items = DefaultedList.ofSize(jsonArray.size(), ItemStack.EMPTY);
+        final DefaultedList<ItemStack> items = DefaultedList.ofSize( jsonArray.size(), ItemStack.EMPTY );
 
-        for (int i = 0; i < jsonArray.size(); i++)
+        for ( int i = 0; i < jsonArray.size(); i++ )
         {
-            items.set(i, Objects.requireNonNullElse(
-                context.deserialize(jsonArray.get(i), ItemStack.class),
-                ItemStack.EMPTY));
+            items.set(
+                i,
+                Objects.requireNonNullElse(
+                    context.deserialize( jsonArray.get( i ), ItemStack.class ),
+                    ItemStack.EMPTY
+                )
+            );
         }
 
         return items;
     }
 
     @Override
-    public JsonElement toJson(DefaultedList<ItemStack> src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement toJson( final DefaultedList<ItemStack> src,
+                               final Type typeOfSrc,
+                               final JsonSerializationContext context )
     {
         final JsonArray json = new JsonArray();
 
-        for (ItemStack itemStack : src)
+        for ( final ItemStack itemStack : src )
         {
-            json.add(context.serialize(itemStack, ItemStack.class));
+            json.add( context.serialize( itemStack, ItemStack.class ) );
         }
 
         return json;

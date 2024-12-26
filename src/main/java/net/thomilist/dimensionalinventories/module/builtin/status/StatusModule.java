@@ -5,49 +5,42 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.module.base.JsonModule;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
-import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
+import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 
 public final class StatusModule
     extends ModuleBase
     implements JsonPlayerModule<StatusModuleState>
 {
     private static final String MODULE_ID = "status";
-    private static final String DESCRIPTION =
-        "Health, hunger, experience, score & status effects.";
+    private static final String DESCRIPTION = "Health, hunger, experience, score & status effects.";
 
-    private static final StorageVersion[] STORAGE_VERSIONS =
-    {
+    private static final StorageVersion[] STORAGE_VERSIONS = {
         StorageVersion.V2
     };
 
     private static final Gson GSON = JsonModule.GSON_BUILDER
-        .registerTypeAdapter(StatusEffectInstance.class, new StatusEffectSerializerPair())
-        .registerTypeAdapter(StatusEffectCollectionSerializerPair.TYPE, new StatusEffectCollectionSerializerPair())
+        .registerTypeAdapter( StatusEffectInstance.class, new StatusEffectSerializerPair() )
+        .registerTypeAdapter( StatusEffectCollectionSerializerPair.TYPE, new StatusEffectCollectionSerializerPair() )
         .create();
 
     private final StatusModuleState state = new StatusModuleState();
 
-    public StatusModule(String groupId)
+    public StatusModule( final String groupId )
     {
-        super(
-            StatusModule.STORAGE_VERSIONS,
-            groupId,
-            StatusModule.MODULE_ID,
-            StatusModule.DESCRIPTION
-        );
+        super( StatusModule.STORAGE_VERSIONS, groupId, StatusModule.MODULE_ID, StatusModule.DESCRIPTION );
     }
 
     @Override
-    public StatusModuleState newInstance(ServerPlayerEntity player)
+    public StatusModuleState newInstance( final ServerPlayerEntity player )
     {
-        return new StatusModuleState(player);
+        return new StatusModuleState( player );
     }
 
     @Override
     public StatusModuleState state()
     {
-        return StatusModule.STATE;
+        return this.state;
     }
 
     @Override

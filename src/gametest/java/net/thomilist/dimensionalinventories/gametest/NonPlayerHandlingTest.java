@@ -1,8 +1,12 @@
 package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.mob.CreeperEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
@@ -17,16 +21,19 @@ import java.util.Set;
 public class NonPlayerHandlingTest
 {
     // When an item entity crosses dimension pools, it should be deleted
-    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-    public void transitionDeletesItemEntity(TestContext context)
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    public void transitionDeletesItemEntity( final TestContext context )
     {
-        BlockPlacement.PlaceFloor(context);
-        var setup = new BasicModSetup();
+        BlockPlacement.PlaceFloor( context );
+        final BasicModSetup setup = new BasicModSetup();
 
-        for (var item : Registries.ITEM)
+        for ( final Item item : Registries.ITEM )
         {
-            DimensionalInventoriesGameTest.LOGGER.debug("transitionDeletesItemEntity: {}", item.getName().getString());
-            var itemEntity = context.spawnItem(item, 0.5f, 2.5f, 0.5f);
+            DimensionalInventoriesGameTest.LOGGER.debug(
+                "transitionDeletesItemEntity: {}",
+                item.getName().getString()
+            );
+            final ItemEntity itemEntity = context.spawnItem( item, 0.5f, 2.5f, 0.5f );
 
             setup.instance.transitionHandler.handleEntityDimensionChange(
                 itemEntity,
@@ -34,7 +41,7 @@ public class NonPlayerHandlingTest
                 BasicModSetup.DESTINATION_DIMENSION
             );
 
-            context.dontExpectEntity(EntityType.ITEM);
+            context.dontExpectEntity( EntityType.ITEM );
         }
 
         context.complete();
@@ -42,13 +49,13 @@ public class NonPlayerHandlingTest
 
     // When an item entity crosses dimension pools, but one or both of the dimensions are not
     // assigned to any dimension pool, the item entity should be unaffected
-    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-    public void unconfiguredTransitionDoesNotDeleteItemEntity(TestContext context)
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    public void unconfiguredTransitionDoesNotDeleteItemEntity( final TestContext context )
     {
-        BlockPlacement.PlaceFloor(context);
-        var setup = new BasicModSetup();
+        BlockPlacement.PlaceFloor( context );
+        final BasicModSetup setup = new BasicModSetup();
 
-        var itemEntity = context.spawnItem(Items.STONE, 0.5f, 2.5f, 0.5f);
+        final ItemEntity itemEntity = context.spawnItem( Items.STONE, 0.5f, 2.5f, 0.5f );
 
         setup.instance.transitionHandler.handleEntityDimensionChange(
             itemEntity,
@@ -56,18 +63,18 @@ public class NonPlayerHandlingTest
             BasicModSetup.UNCONFIGURED_DIMENSION
         );
 
-        context.expectEntity(EntityType.ITEM);
+        context.expectEntity( EntityType.ITEM );
         context.complete();
     }
 
     // When a mob entity crosses dimension pools, it should be deleted
-    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-    public void transitionDeletesMobEntity(TestContext context)
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    public void transitionDeletesMobEntity( final TestContext context )
     {
-        BlockPlacement.PlaceFloor(context);
-        var setup = new BasicModSetup();
+        BlockPlacement.PlaceFloor( context );
+        final BasicModSetup setup = new BasicModSetup();
 
-        Set<SpawnGroup> mobSpawnGroups = Set.of(
+        final Set<SpawnGroup> mobSpawnGroups = Set.of(
             SpawnGroup.AMBIENT,
             SpawnGroup.AXOLOTLS,
             SpawnGroup.CREATURE,
@@ -77,20 +84,23 @@ public class NonPlayerHandlingTest
             SpawnGroup.WATER_CREATURE
         );
 
-        for (var entityType : Registries.ENTITY_TYPE)
+        for ( final EntityType<?> entityType : Registries.ENTITY_TYPE )
         {
-            if (!entityType.isEnabled(context.getWorld().getEnabledFeatures()))
+            if ( !entityType.isEnabled( context.getWorld().getEnabledFeatures() ) )
             {
                 continue;
             }
 
-            if (!mobSpawnGroups.contains(entityType.getSpawnGroup()))
+            if ( !mobSpawnGroups.contains( entityType.getSpawnGroup() ) )
             {
                 continue;
             }
 
-            DimensionalInventoriesGameTest.LOGGER.debug("transitionDeletesMobEntity: {}", entityType.getName().getString());
-            var entity = context.spawnEntity(entityType, 4, 4, 4);
+            DimensionalInventoriesGameTest.LOGGER.debug(
+                "transitionDeletesMobEntity: {}",
+                entityType.getName().getString()
+            );
+            final Entity entity = context.spawnEntity( entityType, 4, 4, 4 );
 
             setup.instance.transitionHandler.handleEntityDimensionChange(
                 entity,
@@ -98,7 +108,7 @@ public class NonPlayerHandlingTest
                 BasicModSetup.DESTINATION_DIMENSION
             );
 
-            context.dontExpectEntity(entityType);
+            context.dontExpectEntity( entityType );
         }
 
         context.complete();
@@ -106,14 +116,14 @@ public class NonPlayerHandlingTest
 
     // When a mob entity crosses dimension pools, but one or both of the dimensions are not
     // assigned to any dimension pool, the mob entity should be unaffected
-    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-    public void unconfiguredTransitionDoesNotDeleteMobEntity(TestContext context)
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    public void unconfiguredTransitionDoesNotDeleteMobEntity( final TestContext context )
     {
-        BlockPlacement.PlaceFloor(context);
-        var setup = new BasicModSetup();
+        BlockPlacement.PlaceFloor( context );
+        final BasicModSetup setup = new BasicModSetup();
 
-        var entityType = EntityType.CREEPER;
-        var entity = context.spawnEntity(entityType, 4, 4, 4);
+        final EntityType<CreeperEntity> entityType = EntityType.CREEPER;
+        final CreeperEntity entity = context.spawnEntity( entityType, 4, 4, 4 );
 
         setup.instance.transitionHandler.handleEntityDimensionChange(
             entity,
@@ -121,19 +131,19 @@ public class NonPlayerHandlingTest
             BasicModSetup.UNCONFIGURED_DIMENSION
         );
 
-        context.expectEntity(entityType);
+        context.expectEntity( entityType );
         context.complete();
     }
 
     // Ensure chest boats, chest minecarts and hopper minecarts don't drop their contents on transition,
     // i.e. not bringing back https://github.com/Thomilist/dimensional-inventories/issues/15
-    @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-    public void transitionHandlesClearableEntity(TestContext context)
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    public void transitionHandlesClearableEntity( final TestContext context )
     {
-        BlockPlacement.PlaceFloor(context);
-        var setup = new BasicModSetup();
+        BlockPlacement.PlaceFloor( context );
+        final BasicModSetup setup = new BasicModSetup();
 
-        var clearableEntityTypes = List.of(
+        final var clearableEntityTypes = List.of(
             // Minecarts
             EntityType.HOPPER_MINECART,
             EntityType.CHEST_MINECART,
@@ -142,16 +152,16 @@ public class NonPlayerHandlingTest
             EntityType.CHEST_BOAT
         );
 
-        for (var entityType : clearableEntityTypes)
+        for ( final var entityType : clearableEntityTypes )
         {
-            if (!entityType.isEnabled(context.getWorld().getEnabledFeatures()))
+            if ( !entityType.isEnabled( context.getWorld().getEnabledFeatures() ) )
             {
                 continue;
             }
 
-            var entity = context.spawnEntity(entityType, 4, 4, 4);
+            final var entity = context.spawnEntity( entityType, 4, 4, 4 );
 
-            entity.getInventory().replaceAll(ignored -> new ItemStack(Items.STONE, Items.STONE.getMaxCount()));
+            entity.getInventory().replaceAll( ignored -> new ItemStack( Items.STONE, Items.STONE.getMaxCount() ) );
 
             setup.instance.transitionHandler.handleEntityDimensionChange(
                 entity,
@@ -159,7 +169,7 @@ public class NonPlayerHandlingTest
                 BasicModSetup.DESTINATION_DIMENSION
             );
 
-            context.dontExpectEntity(EntityType.ITEM);
+            context.dontExpectEntity( EntityType.ITEM );
             context.killAllEntities();
         }
 

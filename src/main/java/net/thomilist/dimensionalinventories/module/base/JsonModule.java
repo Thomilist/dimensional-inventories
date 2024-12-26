@@ -22,9 +22,9 @@ public interface JsonModule<T extends ModuleState>
     extends StatefulModule<T>
 {
     GsonBuilder GSON_BUILDER = new GsonBuilder()
-        .registerTypeAdapter(VersionedJsonData.class, new VersionedJsonDataSerializerPair())
-        .registerTypeAdapter(Optional.class, new OptionalSerializerPair<>())
-        .registerTypeAdapter(NbtCompound.class, new NbtCompoundSerializerPair())
+        .registerTypeAdapter( VersionedJsonData.class, new VersionedJsonDataSerializerPair() )
+        .registerTypeAdapter( Optional.class, new OptionalSerializerPair<>() )
+        .registerTypeAdapter( NbtCompound.class, new NbtCompoundSerializerPair() )
         .setPrettyPrinting();
 
     Gson gson();
@@ -36,74 +36,77 @@ public interface JsonModule<T extends ModuleState>
 
     default String saveFileName()
     {
-        return moduleId() + ".json";
+        return this.moduleId() + ".json";
     }
 
-    default T load(Path saveFile)
+    default T load( final Path saveFile )
     {
-        String json;
+        final String json;
 
         try
         {
-            json = Files.readString(saveFile);
+            json = Files.readString( saveFile );
         }
-        catch (NoSuchFileException e)
+        catch ( final NoSuchFileException e )
         {
-            DimensionalInventories.LOGGER.warn(noSuchFileWarning());
-            DimensionalInventories.LOGGER.warn("Context: {}", LostAndFound.CONTEXT);
-            return defaultState();
+            DimensionalInventories.LOGGER.warn( this.noSuchFileWarning() );
+            DimensionalInventories.LOGGER.warn( "Context: {}", LostAndFound.CONTEXT );
+            return this.defaultState();
         }
-        catch (IOException e)
+        catch ( final IOException e )
         {
-            LostAndFound.log("Failed to load data", saveFile.toString(), e);
-            return state();
+            LostAndFound.log( "Failed to load data", saveFile.toString(), e );
+            return this.state();
         }
 
-        T data;
+        final T data;
 
         try
         {
-            data = loadFromJsonString(json);
+            data = this.loadFromJsonString( json );
         }
-        catch (JsonParseException e)
+        catch ( final JsonParseException e )
         {
-            LostAndFound.log("Failed to parse JSON data", json, e);
-            return state();
+            LostAndFound.log( "Failed to parse JSON data", json, e );
+            return this.state();
         }
 
         return data;
     }
 
-    default T loadFromJsonString(String json) throws JsonParseException
+    default T loadFromJsonString( final String json )
+        throws JsonParseException
     {
-        var versionedData = gson().fromJson(json, VersionedJsonData.class);
-        return loadVersionedData(versionedData);
+        final VersionedJsonData versionedData = this.gson().fromJson( json, VersionedJsonData.class );
+        return this.loadVersionedData( versionedData );
     }
 
-    default T loadVersionedData(VersionedJsonData versionedData) throws JsonParseException
+    default T loadVersionedData( final VersionedJsonData versionedData )
+        throws JsonParseException
     {
-        return loadAsCurrentVersion(versionedData.data());
+        return this.loadAsCurrentVersion( versionedData.data() );
     }
 
-    default T loadAsCurrentVersion(JsonElement data) throws JsonParseException
+    default T loadAsCurrentVersion( final JsonElement data )
+        throws JsonParseException
     {
-        return gson().fromJson(data, state().type());
+        return this.gson().fromJson( data, this.state().type() );
     }
 
-    default void save(Path saveFile, T data)
+    default void save( final Path saveFile, final T data )
     {
-        final JsonElement dataJson = gson().toJsonTree(data);
-        final var versionedData = new VersionedJsonData(moduleVersion(), dataJson);
-        final String json = gson().toJson(versionedData);
+        final JsonElement dataJson = this.gson().toJsonTree( data );
+        final VersionedJsonData versionedData = new VersionedJsonData( this.moduleVersion(), dataJson );
+        final String json = this.gson().toJson( versionedData );
 
         try
         {
-            Files.createDirectories(saveFile.getParent());
-            Files.writeString(saveFile, json);
+            Files.createDirectories( saveFile.getParent() );
+            Files.writeString( saveFile, json );
         }
-        catch (IOException e)
+        catch ( final IOException e )
         {
-            LostAndFound.log("Unable to save data", json, e);
+            LostAndFound.log( "Unable to save data", json, e );
         }
     }
 }

@@ -4,28 +4,28 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.WorldSavePath;
 import net.thomilist.dimensionalinventories.module.base.Module;
-import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
+import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 
 import java.nio.file.Path;
 
 public final class SavePaths
 {
-    private SavePaths()
-    { }
-
     private static final String BASE_SAVE_DIRECTORY_NAME = "dimensional-inventories";
     private static final String DATA_DIRECTORY_NAME = "data";
     private static final String CONFIG_DIRECTORY_NAME = "config";
     private static final String LOST_AND_FOUND_DIRECTORY_NAME = "lost+found";
     private static final String DELETED_DIRECTORY_NAME = "deleted";
-
     private static Path baseSaveDirectory;
 
-    public static void onServerStarted(MinecraftServer server)
+    private SavePaths()
+    { }
+
+    public static void onServerStarted( final MinecraftServer server )
     {
-        SavePaths.baseSaveDirectory = server.getSavePath(WorldSavePath.ROOT)
-            .resolve(SavePaths.BASE_SAVE_DIRECTORY_NAME);
+        SavePaths.baseSaveDirectory = server
+            .getSavePath( WorldSavePath.ROOT )
+            .resolve( SavePaths.BASE_SAVE_DIRECTORY_NAME );
     }
 
     public static Path saveDirectory()
@@ -33,99 +33,92 @@ public final class SavePaths
         return SavePaths.baseSaveDirectory;
     }
 
-    public static Path saveDirectory(StorageVersion storageVersion)
+    public static Path saveDirectory( final StorageVersion storageVersion )
     {
-        return SavePaths.saveDirectory()
-            .resolve(storageVersion.toString());
+        return SavePaths.saveDirectory().resolve( storageVersion.toString() );
     }
 
-    public static Path saveDirectory(StorageVersion storageVersion, DimensionPool dimensionPool)
+    public static Path saveDirectory( final StorageVersion storageVersion, final DimensionPool dimensionPool )
     {
-        return switch (storageVersion)
+        return switch ( storageVersion )
         {
-            case V1 -> SavePaths.saveDirectory(storageVersion)
-                .resolve(dimensionPool.getId());
-            case V2 -> SavePaths.saveDirectory(storageVersion)
-                .resolve(SavePaths.DATA_DIRECTORY_NAME)
-                .resolve(dimensionPool.getId());
+            case V1 -> SavePaths.saveDirectory( storageVersion ).resolve( dimensionPool.getId() );
+            case V2 -> SavePaths
+                .saveDirectory( storageVersion )
+                .resolve( SavePaths.DATA_DIRECTORY_NAME )
+                .resolve( dimensionPool.getId() );
         };
     }
 
-    public static Path saveDirectory(
-        StorageVersion storageVersion,
-        DimensionPool dimensionPool,
-        ServerPlayerEntity player)
+    public static Path saveDirectory( final StorageVersion storageVersion,
+                                      final DimensionPool dimensionPool,
+                                      final ServerPlayerEntity player )
     {
-        return switch (storageVersion)
+        return switch ( storageVersion )
         {
-            case V1 -> SavePaths.saveDirectory(storageVersion, dimensionPool);
-            case V2 -> SavePaths.saveDirectory(storageVersion, dimensionPool)
-                .resolve(player.getUuidAsString());
+            case V1 -> SavePaths.saveDirectory( storageVersion, dimensionPool );
+            case V2 -> SavePaths.saveDirectory( storageVersion, dimensionPool ).resolve( player.getUuidAsString() );
         };
     }
 
-    public static Path saveDirectory(
-        StorageVersion storageVersion,
-        DimensionPool dimensionPool,
-        ServerPlayerEntity player,
-        String namespace)
+    public static Path saveDirectory( final StorageVersion storageVersion,
+                                      final DimensionPool dimensionPool,
+                                      final ServerPlayerEntity player,
+                                      final String namespace )
     {
-        return switch (storageVersion)
+        return switch ( storageVersion )
         {
-            case V1 -> SavePaths.saveDirectory(storageVersion, dimensionPool);
-            case V2 -> SavePaths.saveDirectory(storageVersion, dimensionPool, player)
-                .resolve(namespace);
+            case V1 -> SavePaths.saveDirectory( storageVersion, dimensionPool );
+            case V2 -> SavePaths.saveDirectory( storageVersion, dimensionPool, player ).resolve( namespace );
         };
     }
 
-    public static Path configDirectory(StorageVersion storageVersion)
+    public static Path configDirectory( final StorageVersion storageVersion )
     {
-        return switch (storageVersion)
+        return switch ( storageVersion )
         {
-            case V1 -> SavePaths.saveDirectory(storageVersion);
-            case V2 -> SavePaths.saveDirectory(storageVersion)
-                .resolve(SavePaths.CONFIG_DIRECTORY_NAME);
+            case V1 -> SavePaths.saveDirectory( storageVersion );
+            case V2 -> SavePaths.saveDirectory( storageVersion ).resolve( SavePaths.CONFIG_DIRECTORY_NAME );
         };
     }
 
-    public static Path configDirectory(StorageVersion storageVersion, String namespace)
+    public static Path configDirectory( final StorageVersion storageVersion, final String namespace )
     {
-        return switch (storageVersion)
+        return switch ( storageVersion )
         {
-            case V1 -> SavePaths.saveDirectory(storageVersion);
-            case V2 -> configDirectory(storageVersion)
-                .resolve(namespace);
+            case V1 -> SavePaths.saveDirectory( storageVersion );
+            case V2 -> SavePaths.configDirectory( storageVersion ).resolve( namespace );
         };
     }
 
-    public static Path lostAndFoundDirectory(StorageVersion storageVersion)
+    public static Path lostAndFoundDirectory( final StorageVersion storageVersion )
     {
-        return SavePaths.saveDirectory(storageVersion)
-            .resolve(SavePaths.LOST_AND_FOUND_DIRECTORY_NAME);
+        return SavePaths.saveDirectory( storageVersion ).resolve( SavePaths.LOST_AND_FOUND_DIRECTORY_NAME );
     }
 
-    public static Path lostAndFoundDirectory(StorageVersion storageVersion, DimensionPool dimensionPool)
+    public static Path lostAndFoundDirectory( final StorageVersion storageVersion, final DimensionPool dimensionPool )
     {
-        return SavePaths.saveDirectory(storageVersion, dimensionPool)
-            .resolve(SavePaths.LOST_AND_FOUND_DIRECTORY_NAME);
+        return SavePaths
+            .saveDirectory( storageVersion, dimensionPool )
+            .resolve( SavePaths.LOST_AND_FOUND_DIRECTORY_NAME );
     }
 
-    public static Path lostAndFoundDirectory(
-        StorageVersion storageVersion,
-        DimensionPool dimensionPool,
-        ServerPlayerEntity player)
+    public static Path lostAndFoundDirectory( final StorageVersion storageVersion,
+                                              final DimensionPool dimensionPool,
+                                              final ServerPlayerEntity player )
     {
-        return SavePaths.saveDirectory(storageVersion, dimensionPool, player)
-            .resolve(SavePaths.LOST_AND_FOUND_DIRECTORY_NAME);
+        return SavePaths
+            .saveDirectory( storageVersion, dimensionPool, player )
+            .resolve( SavePaths.LOST_AND_FOUND_DIRECTORY_NAME );
     }
 
-    public static Path lostAndFoundDirectory(
-        StorageVersion storageVersion,
-        DimensionPool dimensionPool,
-        ServerPlayerEntity player,
-        Module module)
+    public static Path lostAndFoundDirectory( final StorageVersion storageVersion,
+                                              final DimensionPool dimensionPool,
+                                              final ServerPlayerEntity player,
+                                              final Module module )
     {
-        return SavePaths.saveDirectory(storageVersion, dimensionPool, player, module.groupId())
-            .resolve(SavePaths.LOST_AND_FOUND_DIRECTORY_NAME);
+        return SavePaths
+            .saveDirectory( storageVersion, dimensionPool, player, module.groupId() )
+            .resolve( SavePaths.LOST_AND_FOUND_DIRECTORY_NAME );
     }
 }

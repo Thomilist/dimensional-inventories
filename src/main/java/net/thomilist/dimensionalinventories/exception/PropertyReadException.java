@@ -1,26 +1,27 @@
 package net.thomilist.dimensionalinventories.exception;
 
-public class PropertyReadException extends Exception
+public class PropertyReadException
+    extends RuntimeException
 {
     private static final String DEFAULT_MESSAGE = "Failed to read mod properties";
 
     public PropertyReadException()
     {
-        this(PropertyReadException.DEFAULT_MESSAGE);
+        this( PropertyReadException.DEFAULT_MESSAGE );
     }
 
-    public PropertyReadException(Throwable cause)
+    public PropertyReadException( final String message )
     {
-        this(PropertyReadException.DEFAULT_MESSAGE, cause);
+        super( message );
     }
 
-    public PropertyReadException(String message)
+    public PropertyReadException( final Throwable cause )
     {
-        super(message);
+        this( PropertyReadException.DEFAULT_MESSAGE, cause );
     }
 
-    public PropertyReadException(String message, Throwable cause)
+    public PropertyReadException( final String message, final Throwable cause )
     {
-        super(message, cause);
+        super( message, cause );
     }
 }

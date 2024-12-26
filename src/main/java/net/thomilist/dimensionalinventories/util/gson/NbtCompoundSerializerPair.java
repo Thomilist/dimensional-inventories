@@ -12,13 +12,12 @@ public class NbtCompoundSerializerPair
     implements SerializerPair<NbtCompound>
 {
     @Override
-    public NbtCompound fromJson(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    public NbtCompound fromJson( final JsonElement json, final Type typeOfT, final JsonDeserializationContext context )
         throws JsonParseException
     {
-        if (!json.isJsonPrimitive())
+        if ( !json.isJsonPrimitive() )
         {
-            LostAndFound.log("Unexpected JSON structure for NBT compound (expected a string)",
-                json.toString());
+            LostAndFound.log( "Unexpected JSON structure for NBT compound (expected a string)", json.toString() );
             return null;
         }
 
@@ -26,23 +25,23 @@ public class NbtCompoundSerializerPair
 
         try
         {
-            return NbtHelper.fromNbtProviderString(nbtString);
+            return NbtHelper.fromNbtProviderString( nbtString );
         }
-        catch (CommandSyntaxException e)
+        catch ( final CommandSyntaxException e )
         {
-            LostAndFound.log("Invalid NBT string", nbtString, e);
+            LostAndFound.log( "Invalid NBT string", nbtString, e );
             return null;
         }
     }
 
     @Override
-    public JsonElement toJson(NbtCompound src, Type typeOfSrc, JsonSerializationContext context)
+    public JsonElement toJson( final NbtCompound src, final Type typeOfSrc, final JsonSerializationContext context )
     {
-        if (src == null)
+        if ( src == null )
         {
             return null;
         }
 
-        return new JsonPrimitive(NbtHelper.toNbtProviderString(src));
+        return new JsonPrimitive( NbtHelper.toNbtProviderString( src ) );
     }
 }
