@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
@@ -22,8 +21,7 @@ public class StatusEffectModuleTest
 
         for ( final StatusEffect effect : Registries.STATUS_EFFECT )
         {
-            final RegistryEntry<StatusEffect> effectEntry = Registries.STATUS_EFFECT.getEntry( effect );
-            final StatusEffectInstance effectInstance = new StatusEffectInstance( effectEntry );
+            final StatusEffectInstance effectInstance = new StatusEffectInstance( effect );
             DimensionalInventoriesGameTest.LOGGER.debug(
                 "transitionSwapsStatusEffects: {}",
                 effect.getName().getString()
@@ -46,7 +44,7 @@ public class StatusEffectModuleTest
             );
 
             context.assertTrue(
-                player.hasStatusEffect( effectEntry ),
+                player.hasStatusEffect( effect ),
                 "Player regained status effect after return transition"
             );
 

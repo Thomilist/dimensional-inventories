@@ -1,6 +1,8 @@
 package net.thomilist.dimensionalinventories.lostandfound;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
 import net.thomilist.dimensionalinventories.util.StringHelper;
 
 import java.util.ArrayList;
@@ -19,16 +21,24 @@ public class LostAndFoundScope
         this.layers = List.of( layers );
     }
 
+    // >=21: switch ( layer )
+    //  <21: if ( layer instanceof <type> )
+    @LimitedCompatibility( target = "Java",
+                           versions = "<21" )
     private static String formatLayer( final Object layer )
     {
-        return switch ( layer )
+        if ( layer instanceof LostAndFoundFormattable lostAndFoundFormattable )
         {
-            case final LostAndFoundFormattable lostAndFoundFormattable ->
-                lostAndFoundFormattable.toLostAndFoundScopeString();
-            case final ServerPlayerEntity serverPlayerEntity ->
-                serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getUuidAsString() + ')';
-            default -> layer.toString();
-        };
+            return lostAndFoundFormattable.toLostAndFoundScopeString();
+        }
+        else if ( layer instanceof ServerPlayerEntity serverPlayerEntity )
+        {
+            return serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getUuidAsString() + ')';
+        }
+        else
+        {
+            return layer.toString();
+        }
     }
 
     public Collection<Object> layers()

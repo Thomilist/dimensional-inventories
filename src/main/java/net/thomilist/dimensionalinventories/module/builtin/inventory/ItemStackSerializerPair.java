@@ -6,8 +6,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
-import net.thomilist.dimensionalinventories.util.NbtConversionHelper;
 import net.thomilist.dimensionalinventories.util.gson.SerializerPair;
 
 import java.lang.reflect.Type;
@@ -26,7 +26,7 @@ public class ItemStackSerializerPair
             return null;
         }
 
-        final ItemStack itemStack = NbtConversionHelper.fromNbt( nbt );
+        final ItemStack itemStack = Compat.NBT.toItemStack( nbt );
 
         if ( itemStack == null )
         {
@@ -45,6 +45,6 @@ public class ItemStackSerializerPair
             return null;
         }
 
-        return context.serialize( NbtConversionHelper.toNbt( src ), NbtCompound.class );
+        return context.serialize( Compat.NBT.fromItemStack( src ), NbtCompound.class );
     }
 }

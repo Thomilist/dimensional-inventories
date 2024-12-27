@@ -1,5 +1,7 @@
 package net.thomilist.dimensionalinventories.module.version;
 
+import net.thomilist.dimensionalinventories.compatibility.Compat;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
@@ -33,12 +35,9 @@ public enum StorageVersion
         return StorageVersion.ALL;
     }
 
-    // Can be replaced with SortedSet.reversed() in Java 21
     public static SortedSet<StorageVersion> reversed()
     {
-        final var reversedSet = new TreeSet<StorageVersion>(Collections.reverseOrder());
-        reversedSet.addAll(StorageVersion.all());
-        return reversedSet;
+        return Compat.SORTED_SET.reversed( StorageVersion.all() );
     }
 
     public static int compareSets( final SortedSet<StorageVersion> a, final SortedSet<StorageVersion> b )
