@@ -6,6 +6,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.collection.DefaultedList;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundScope;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
@@ -17,7 +18,6 @@ import net.thomilist.dimensionalinventories.module.builtin.legacy.ModuleHelper_S
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.util.ItemStackListHelper;
-import net.thomilist.dimensionalinventories.util.NbtConversionHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -114,7 +114,7 @@ public final class InventoryModule_SV1
                         return;
                     }
 
-                    items.set( i, NbtConversionHelper.fromNbt( nbt ) );
+                    items.set( i, Compat.NBT.toItemStack( nbt ) );
                 }
 
                 if ( !items.isEmpty() )

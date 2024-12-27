@@ -1,10 +1,12 @@
 package net.thomilist.dimensionalinventories.mixin;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
+import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterionConditions;
+import net.minecraft.advancement.criterion.Criterion;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
+import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
+import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.util.LogThrottler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,12 +15,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.advancement.criterion.AbstractCriterion;
-import net.minecraft.advancement.criterion.Criterion;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
+import java.util.Optional;
+import java.util.function.Predicate;
 
-@Mixin(AbstractCriterion.class)
+// >=1.20.3: T extends AbstractCriterion.Conditions
+//  <1.20.3: T extends AbstractCriterionConditions
+@LimitedCompatibility( target = "Minecraft",
+                       versions = "<1.20.3" )
+@Mixin( AbstractCriterion.class )
 public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterionConditions>
     implements Criterion<T>
 {

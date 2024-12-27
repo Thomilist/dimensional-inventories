@@ -5,6 +5,7 @@ import net.minecraft.inventory.EnderChestInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.collection.DefaultedList;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModuleState;
 import net.thomilist.dimensionalinventories.util.ItemStackListHelper;
 
@@ -55,7 +56,7 @@ public class InventoryModuleState
         ItemStackListHelper.assignItemStacks( this.armor, player.getInventory().armor );
         ItemStackListHelper.assignItemStacks( this.main, player.getInventory().main );
         ItemStackListHelper.assignItemStacks( this.offHand, player.getInventory().offHand );
-        ItemStackListHelper.assignItemStacks( this.enderChest, player.getEnderChestInventory().stacks );
+        ItemStackListHelper.assignItemStacks( this.enderChest, Compat.SIMPLE_INVENTORY.getHeldStacks(player.getEnderChestInventory()) );
     }
 
     @Override
@@ -64,7 +65,7 @@ public class InventoryModuleState
         ItemStackListHelper.assignItemStacks( player.getInventory().armor, this.armor );
         ItemStackListHelper.assignItemStacks( player.getInventory().main, this.main );
         ItemStackListHelper.assignItemStacks( player.getInventory().offHand, this.offHand );
-        ItemStackListHelper.assignItemStacks( player.getEnderChestInventory().stacks, this.enderChest );
+        ItemStackListHelper.assignItemStacks( Compat.SIMPLE_INVENTORY.getHeldStacks(player.getEnderChestInventory()), this.enderChest );
     }
 
     public DefaultedList<ItemStack> section( final InventorySection label )

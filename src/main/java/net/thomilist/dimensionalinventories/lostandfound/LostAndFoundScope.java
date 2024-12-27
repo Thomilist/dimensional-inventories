@@ -1,6 +1,7 @@
 package net.thomilist.dimensionalinventories.lostandfound;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
 import net.thomilist.dimensionalinventories.util.StringHelper;
 
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ public class LostAndFoundScope
         this.layers = List.of( layers );
     }
 
+    // >=21: switch ( layer )
+    //  <21: if ( layer instanceof <type> )
+    @LimitedCompatibility( target = "Java",
+                           versions = ">=21" )
     private static String formatLayer( final Object layer )
     {
         if ( layer instanceof final LostAndFoundFormattable lostAndFoundFormattable )

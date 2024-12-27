@@ -1,5 +1,7 @@
 package net.thomilist.dimensionalinventories.util;
 
+import net.thomilist.dimensionalinventories.compatibility.Compat;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -70,11 +72,11 @@ public final class StringHelper
         return switch ( strings.size() )
         {
             case 0 -> "";
-            case 1 -> strings.get( 0 );
+            case 1 -> Compat.LIST.getFirst( strings );
             default -> String.join(
                 lastDelimiter,
                 String.join( mainDelimiter, strings.subList( 0, strings.size() - 1 ) ),
-                strings.get( strings.size() - 1 )
+                Compat.LIST.getLast( strings )
             );
         };
     }
