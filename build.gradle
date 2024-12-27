@@ -140,10 +140,10 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Google Gson for JSON parsing and writing
-	api "com.google.code.gson:gson:2.11.0"
+	api "com.google.code.gson:gson:${project.gson_version}"
 
 	// Apache Commons IO to move entire directories
-	implementation "commons-io:commons-io:2.17.0"
+	implementation "commons-io:commons-io:${project.apache_commons_io_version}"
 
 	gametestImplementation sourceSets.main.output
 	gametestClientImplementation sourceSets.main.output
