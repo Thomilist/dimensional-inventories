@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.thomilist.dimensionalinventories.command.Commands;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundContext;
 import net.thomilist.dimensionalinventories.module.ModuleGroup;
@@ -16,7 +17,6 @@ import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolTra
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.version.StorageVersionMigration;
 import net.thomilist.dimensionalinventories.util.ModProperties;
-import net.thomilist.dimensionalinventories.util.NbtConversionHelper;
 import net.thomilist.dimensionalinventories.util.SavePaths;
 import net.thomilist.dimensionalinventories.util.StringHelper;
 import org.slf4j.Logger;
@@ -90,7 +90,7 @@ public class DimensionalInventories
         ServerLifecycleEvents.SERVER_STARTED.register( server -> {
             try ( final LostAndFoundContext LAF = LostAndFound.init( "server started" ) )
             {
-                NbtConversionHelper.onServerStarted( server );
+                Compat.onServerStarted( server );
                 SavePaths.onServerStarted( server );
                 this.storageVersionMigration.tryMigrate( server );
 

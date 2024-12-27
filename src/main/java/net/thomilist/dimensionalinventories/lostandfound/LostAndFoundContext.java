@@ -2,6 +2,7 @@ package net.thomilist.dimensionalinventories.lostandfound;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.module.base.Module;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.util.SavePaths;
@@ -51,7 +52,7 @@ public class LostAndFoundContext
     {
         if ( !this.scopes.isEmpty() )
         {
-            this.scopes.removeLast();
+            Compat.LIST.removeLast( this.scopes );
         }
     }
 
@@ -62,7 +63,7 @@ public class LostAndFoundContext
 
     public LostAndFoundScope head()
     {
-        return this.scopes.isEmpty() ? null : this.scopes.getLast();
+        return this.scopes.isEmpty() ? null : Compat.LIST.getLast( this.scopes );
     }
 
     public Collection<LostAndFoundScope> scopes()
