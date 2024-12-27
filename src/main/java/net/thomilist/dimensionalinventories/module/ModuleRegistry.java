@@ -45,7 +45,7 @@ public final class ModuleRegistry<T extends Module>
             DimensionalInventories.LOGGER.info(
                 "Registered {} module {}",
                 module.category(),
-                StringHelper.joinAndWrapScopes( storageVersion.toString(), module.groupId(), module.moduleId() )
+                StringHelper.joinAndWrapScopes( module.groupId(), "%s (%s)".formatted(module.moduleId(), storageVersion.toString()) )
             );
         }
     }
