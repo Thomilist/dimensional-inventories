@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.util.gson.SerializerPair;
 
@@ -27,7 +28,7 @@ public class StatusEffectSerializerPair
             return null;
         }
 
-        final StatusEffectInstance effect = StatusEffectInstance.fromNbt( nbt );
+        final StatusEffectInstance effect = Compat.NBT.toStatusEffectInstance( nbt );
 
         if ( effect == null )
         {
@@ -43,6 +44,6 @@ public class StatusEffectSerializerPair
                                final Type typeOfSrc,
                                final JsonSerializationContext context )
     {
-        return context.serialize( src.writeNbt(), NbtCompound.class );
+        return context.serialize( Compat.NBT.fromStatusEffectInstance( src ), NbtCompound.class );
     }
 }

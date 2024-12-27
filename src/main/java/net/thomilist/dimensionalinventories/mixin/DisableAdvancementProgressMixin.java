@@ -4,6 +4,7 @@ import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
+import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.util.LogThrottler;
@@ -16,6 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+// >=1.20.3: T extends AbstractCriterion.Conditions
+//  <1.20.3: T extends AbstractCriterionConditions
+@LimitedCompatibility( target = "Minecraft", versions = ">=1.20.3")
 @Mixin( AbstractCriterion.class )
 public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterion.Conditions>
     implements Criterion<T>

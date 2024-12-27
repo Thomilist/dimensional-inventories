@@ -1,5 +1,7 @@
 package net.thomilist.dimensionalinventories.module.version;
 
+import net.thomilist.dimensionalinventories.compatibility.Compat;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
@@ -35,7 +37,7 @@ public enum StorageVersion
 
     public static SortedSet<StorageVersion> reversed()
     {
-        return StorageVersion.all().reversed();
+        return Compat.SORTED_SET.reversed( StorageVersion.all() );
     }
 
     public static int compareSets( final SortedSet<StorageVersion> a, final SortedSet<StorageVersion> b )
