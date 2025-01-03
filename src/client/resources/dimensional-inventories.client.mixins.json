@@ -2,7 +2,7 @@
   "required": false,
   "minVersion": "0.8",
   "package": "net.thomilist.dimensionalinventories.client.mixin",
-  "compatibilityLevel": "${javaVersion}",
+  "compatibilityLevel": "${java_version}",
   "client": [
   ],
   "injectors": {
