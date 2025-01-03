@@ -30,6 +30,9 @@ public interface Module
         return this.storageVersions().last();
     }
 
+    default void registerCommands()
+    { }
+
     @Override
     default int compareTo( @NotNull final Module other )
     {
