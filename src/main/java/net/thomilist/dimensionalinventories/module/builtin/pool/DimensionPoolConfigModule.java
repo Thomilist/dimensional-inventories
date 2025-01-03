@@ -1,6 +1,7 @@
 package net.thomilist.dimensionalinventories.module.builtin.pool;
 
 import com.google.gson.Gson;
+import net.thomilist.dimensionalinventories.command.Commands;
 import net.thomilist.dimensionalinventories.module.base.JsonModule;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.config.JsonConfigModule;
@@ -23,6 +24,7 @@ public final class DimensionPoolConfigModule
         .create();
 
     private final DimensionPoolConfigModuleState state = new DimensionPoolConfigModuleState();
+    private final Commands commands = new Commands();
 
     public DimensionPoolConfigModule( final String groupId )
     {
@@ -63,5 +65,11 @@ public final class DimensionPoolConfigModule
     {
         this.state().dimensionPools.clear();
         this.state().dimensionPools.putAll( other.dimensionPools );
+    }
+
+    @Override
+    public void registerCommands()
+    {
+        this.commands.register( this );
     }
 }

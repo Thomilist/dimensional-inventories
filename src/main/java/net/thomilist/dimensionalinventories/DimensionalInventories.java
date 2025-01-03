@@ -4,7 +4,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.thomilist.dimensionalinventories.command.Commands;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundContext;
@@ -12,7 +11,6 @@ import net.thomilist.dimensionalinventories.module.ModuleGroup;
 import net.thomilist.dimensionalinventories.module.ModuleRegistry;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
-import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolTransitionHandler;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.version.StorageVersionMigration;
@@ -33,7 +31,6 @@ public class DimensionalInventories
     public final ModuleRegistry<ConfigModule> configModules = new ModuleRegistry<>( ConfigModule.class );
     public final ModuleRegistry<PlayerModule> playerModules = new ModuleRegistry<>( PlayerModule.class );
     public final DimensionPoolTransitionHandler transitionHandler;
-    public final Commands commands = new Commands();
 
     public DimensionalInventories( final StorageVersion storageVersion )
     {
@@ -70,7 +67,6 @@ public class DimensionalInventories
             DimensionalInventories.INSTANCE.registerPlayerTravelHandler();
             DimensionalInventories.INSTANCE.registerPlayerRespawnHandler();
             DimensionalInventories.INSTANCE.registerEntityTravelHandler();
-            DimensionalInventories.INSTANCE.registerCommands();
         }
     }
 
@@ -158,16 +154,5 @@ public class DimensionalInventories
                 );
             }
         } );
-    }
-
-    private void registerCommands()
-    {
-        for ( final ConfigModule module : this.configModules.get( this.storageVersion ) )
-        {
-            if ( module instanceof DimensionPoolConfigModule )
-            {
-                this.commands.register( (DimensionPoolConfigModule) module );
-            }
-        }
     }
 }
