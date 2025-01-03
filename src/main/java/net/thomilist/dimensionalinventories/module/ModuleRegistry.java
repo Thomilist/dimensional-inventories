@@ -42,6 +42,11 @@ public final class ModuleRegistry<T extends Module>
                 continue;
             }
 
+            if (module.latestStorageVersion() == StorageVersion.latest())
+            {
+                module.registerCommands();
+            }
+
             DimensionalInventories.LOGGER.info(
                 "Registered {} module {}",
                 module.category(),
