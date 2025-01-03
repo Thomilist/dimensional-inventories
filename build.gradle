@@ -3,7 +3,7 @@ plugins {
 	id 'maven-publish'
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = Integer.parseInt(target_java_version)
 def javaVersionString = "JAVA_" + targetJavaVersion.toString()
 
 version = project.mod_version
@@ -152,20 +152,21 @@ dependencies {
 }
 
 tasks.withType(ProcessResources).configureEach {
+	inputs.property("java_version", project.target_java_version)
 	inputs.property("version", project.version)
 	inputs.property("minecraft_version", project.minecraft_version)
 	inputs.property("loader_version", project.loader_version)
-	inputs.property("javaVersion", javaVersionString)
 	filteringCharset = "UTF-8"
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version,
+		expand "java_version": project.target_java_version,
+				"version": project.version,
 				"minecraft_version": project.minecraft_version,
 				"loader_version": project.loader_version
 	}
 
 	filesMatching("*.mixins.json") {
-		expand "javaVersion": javaVersionString
+		expand "java_version": javaVersionString
 	}
 }
 
