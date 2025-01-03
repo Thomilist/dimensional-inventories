@@ -2,12 +2,12 @@
   "required": true,
   "minVersion": "0.8",
   "package": "net.thomilist.dimensionalinventories.mixin",
-  "compatibilityLevel": "${javaVersion}",
+  "compatibilityLevel": "${java_version}",
   "mixins": [
     "DisableAdvancementProgressMixin",
     "DisableStatisticIncrementMixin",
-    "PlayerEntityAccessor",
-    "HungerManagerAccessor"
+    "HungerManagerAccessor",
+    "PlayerEntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
