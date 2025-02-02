@@ -3,10 +3,8 @@ package net.thomilist.dimensionalinventories.gametest;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.MinecraftVersion;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.BeforeBatch;
@@ -15,6 +13,8 @@ import net.minecraft.test.TestContext;
 import net.minecraft.util.WorldSavePath;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.gametest.util.TestState;
+import net.thomilist.dimensionalinventories.gametest.util.assertion.InventoryAsserter;
+import net.thomilist.dimensionalinventories.gametest.util.assertion.StatusAsserter;
 import net.thomilist.dimensionalinventories.module.ModuleGroup;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
@@ -44,6 +44,12 @@ public class StorageVersionMigrationTest
 {
     public static final String MIGRATION_BATCH = "migration";
 
+    @BeforeBatch( batchId = StorageVersionMigrationTest.MIGRATION_BATCH )
+    public void stashExistingData( final ServerWorld unused )
+    {
+        TestState.stashModData( StorageVersionMigrationTest.MIGRATION_BATCH );
+    }
+
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
                batchId = StorageVersionMigrationTest.MIGRATION_BATCH )
     public void migrateLegacyToV2( final TestContext context )
@@ -65,10 +71,7 @@ public class StorageVersionMigrationTest
 
         // Load config modules
 
-        for ( final ConfigModule config : instance.configModules.get( StorageVersion.latest() ) )
-        {
-            config.loadWithContext();
-        }
+        instance.configModules.get( StorageVersion.latest() ).forEach( ConfigModule::loadWithContext );
 
         // Verify success...
 
@@ -129,54 +132,14 @@ public class StorageVersionMigrationTest
         // Switching game mode requires the player to have a non-null network handler, so create a mod instance
         // without the game mode module:
 
-        class MainModuleGroupWithoutGameMode
-            extends ModuleGroup
-        {
-            @SuppressWarnings( "deprecation" )
-            public MainModuleGroupWithoutGameMode()
-            {
-                super( "main" );
-
-                this.register(
-                    DimensionPoolConfigModule.class,
-                    InventoryModule.class,
-                    StatusModule.class,
-                    ShoulderEntityModule.class,
-                    DimensionPoolConfigModule_SV1.class,
-                    InventoryModule_SV1.class,
-                    StatusModule_SV1.class
-                );
-            }
-        }
-
-        final DimensionalInventories instanceWithoutGameMode = new DimensionalInventories();
-        instanceWithoutGameMode.registerModules( new MainModuleGroupWithoutGameMode() );
+        final DimensionalInventories instanceWithoutGameMode = this.getInstanceWithoutGameModeModule();
 
         // Player data migrated correctly?
 
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld(), playerUuids.get( 4 ) );
-
-        @FunctionalInterface
-        interface ExpectItemStack
-        {
-            void expectItem( int index, Item item );
-        }
-
-        final ExpectItemStack combinedInventory = ( final int index, final Item item ) -> {
-            final ItemStack itemStack = player.getInventory().getStack( index );
-            context.assertTrue(
-                itemStack.isOf( item ),
-                "Expected %s; found %s".formatted( item, itemStack.getItem() )
-            );
-        };
-
-        final ExpectItemStack enderChest = ( final int index, final Item item ) -> {
-            final ItemStack itemStack = player.getEnderChestInventory().getStack( index );
-            context.assertTrue(
-                itemStack.isOf( item ),
-                "Expected %s; found %s".formatted( item, itemStack.getItem() )
-            );
-        };
+        final InventoryAsserter combinedInventory = new InventoryAsserter( context, player.getInventory() );
+        final InventoryAsserter enderChest = new InventoryAsserter( context, player.getEnderChestInventory() );
+        final StatusAsserter status = new StatusAsserter( context, player );
 
         // ... for dimension pool 'creative'?
 
@@ -196,101 +159,88 @@ public class StorageVersionMigrationTest
 
         for ( int index = 0; index < expectedItems.size(); ++index )
         {
-            combinedInventory.expectItem( index, expectedItems.get( index ) );
+            combinedInventory.assertItemTypeAt( index, expectedItems.get( index ) );
         }
 
-        context.assertTrue( player.totalExperience == 1712, "total experience" );
-
-        context.assertTrue( player.getScore() == 120754, "score" );
-
-        context.assertTrue( player.getHungerManager().getFoodLevel() == 20, "food level" );
-
-        context.assertTrue( player.getHungerManager().getSaturationLevel() == 9.8f, "saturation level" );
-
-        context.assertTrue( player.getHungerManager().getExhaustion() == 0.2372941f, "exhaustion" );
-
-        context.assertTrue( player.getHealth() == 20.0f, "health" );
+        status.assertTotalExperience( 1712 );
+        status.assertScore( 120754 );
+        status.assertFoodLevel( 20 );
+        status.assertSaturationLevel( 9.8f );
+        status.assertExhaustion( 0.2372941f );
+        status.assertHealth( 20.0f );
 
         // ... for dimension pool 'default'?
 
         instanceWithoutGameMode.transitionHandler.loadToPlayer( StorageVersion.V2, dimensionPoolDefault, player );
 
-        combinedInventory.expectItem( 0, Items.DIAMOND_SWORD );
-        combinedInventory.expectItem( 1, Items.TRIDENT );
-        combinedInventory.expectItem( 2, Items.COOKED_PORKCHOP );
-        combinedInventory.expectItem( 3, Items.DIAMOND_PICKAXE );
-        combinedInventory.expectItem( 4, Items.DIAMOND_HOE );
-        combinedInventory.expectItem( 5, Items.AIR );
-        combinedInventory.expectItem( 6, Items.ENDER_PEARL );
-        combinedInventory.expectItem( 7, Items.FIREWORK_ROCKET );
-        combinedInventory.expectItem( 8, Items.WATER_BUCKET );
+        combinedInventory.assertItemTypeAt( 0, Items.DIAMOND_SWORD );
+        combinedInventory.assertItemTypeAt( 1, Items.TRIDENT );
+        combinedInventory.assertItemTypeAt( 2, Items.COOKED_PORKCHOP );
+        combinedInventory.assertItemTypeAt( 3, Items.DIAMOND_PICKAXE );
+        combinedInventory.assertItemTypeAt( 4, Items.DIAMOND_HOE );
+        combinedInventory.assertItemTypeAt( 5, Items.AIR );
+        combinedInventory.assertItemTypeAt( 6, Items.ENDER_PEARL );
+        combinedInventory.assertItemTypeAt( 7, Items.FIREWORK_ROCKET );
+        combinedInventory.assertItemTypeAt( 8, Items.WATER_BUCKET );
 
-        combinedInventory.expectItem( 9, Items.CHEST );
-        combinedInventory.expectItem( 10, Items.DIAMOND_SHOVEL );
-        combinedInventory.expectItem( 11, Items.ENDER_CHEST );
-        combinedInventory.expectItem( 12, Items.OAK_BOAT );
-        combinedInventory.expectItem( 13, Items.SHULKER_SHELL );
-        combinedInventory.expectItem( 14, Items.TORCH );
+        combinedInventory.assertItemTypeAt( 9, Items.CHEST );
+        combinedInventory.assertItemTypeAt( 10, Items.DIAMOND_SHOVEL );
+        combinedInventory.assertItemTypeAt( 11, Items.ENDER_CHEST );
+        combinedInventory.assertItemTypeAt( 12, Items.OAK_BOAT );
+        combinedInventory.assertItemTypeAt( 13, Items.SHULKER_SHELL );
+        combinedInventory.assertItemTypeAt( 14, Items.TORCH );
 
         for ( int index = 15; index < 36; ++index )
         {
-            combinedInventory.expectItem( index, Items.AIR );
+            combinedInventory.assertItemTypeAt( index, Items.AIR );
         }
 
-        combinedInventory.expectItem( 36, Items.DIAMOND_BOOTS );
-        combinedInventory.expectItem( 37, Items.DIAMOND_LEGGINGS );
-        combinedInventory.expectItem( 38, Items.ELYTRA );
-        combinedInventory.expectItem( 39, Items.DIAMOND_HELMET );
+        combinedInventory.assertItemTypeAt( 36, Items.DIAMOND_BOOTS );
+        combinedInventory.assertItemTypeAt( 37, Items.DIAMOND_LEGGINGS );
+        combinedInventory.assertItemTypeAt( 38, Items.ELYTRA );
+        combinedInventory.assertItemTypeAt( 39, Items.DIAMOND_HELMET );
 
-        enderChest.expectItem( 0, Items.BLUE_SHULKER_BOX );
-        enderChest.expectItem( 1, Items.BROWN_SHULKER_BOX );
-        enderChest.expectItem( 2, Items.CRAFTING_TABLE );
-        enderChest.expectItem( 3, Items.CYAN_SHULKER_BOX );
-        enderChest.expectItem( 4, Items.DIAMOND_AXE );
-        enderChest.expectItem( 5, Items.DIAMOND_PICKAXE );
-        enderChest.expectItem( 6, Items.DIAMOND_SWORD );
-        enderChest.expectItem( 7, Items.DIAMOND_SWORD );
-        enderChest.expectItem( 8, Items.GRAY_SHULKER_BOX );
-        enderChest.expectItem( 9, Items.LIGHT_GRAY_SHULKER_BOX );
-        enderChest.expectItem( 10, Items.ORANGE_SHULKER_BOX );
-        enderChest.expectItem( 11, Items.SHULKER_BOX );
-        enderChest.expectItem( 12, Items.WHITE_BED );
+        enderChest.assertItemTypeAt( 0, Items.BLUE_SHULKER_BOX );
+        enderChest.assertItemTypeAt( 1, Items.BROWN_SHULKER_BOX );
+        enderChest.assertItemTypeAt( 2, Items.CRAFTING_TABLE );
+        enderChest.assertItemTypeAt( 3, Items.CYAN_SHULKER_BOX );
+        enderChest.assertItemTypeAt( 4, Items.DIAMOND_AXE );
+        enderChest.assertItemTypeAt( 5, Items.DIAMOND_PICKAXE );
+        enderChest.assertItemTypeAt( 6, Items.DIAMOND_SWORD );
+        enderChest.assertItemTypeAt( 7, Items.DIAMOND_SWORD );
+        enderChest.assertItemTypeAt( 8, Items.GRAY_SHULKER_BOX );
+        enderChest.assertItemTypeAt( 9, Items.LIGHT_GRAY_SHULKER_BOX );
+        enderChest.assertItemTypeAt( 10, Items.ORANGE_SHULKER_BOX );
+        enderChest.assertItemTypeAt( 11, Items.SHULKER_BOX );
+        enderChest.assertItemTypeAt( 12, Items.WHITE_BED );
 
         for ( int index = 13; index < 20; ++index )
         {
-            enderChest.expectItem( index, Items.WHITE_SHULKER_BOX );
+            enderChest.assertItemTypeAt( index, Items.WHITE_SHULKER_BOX );
         }
 
         for ( int index = 20; index < 27; ++index )
         {
-            enderChest.expectItem( index, Items.AIR );
+            enderChest.assertItemTypeAt( index, Items.AIR );
         }
 
-        context.assertTrue( player.totalExperience == 64098, "total experience" );
-
-        context.assertTrue( player.getScore() == 159947, "score" );
-
-        context.assertTrue( player.getHungerManager().getFoodLevel() == 20, "food level" );
-
-        context.assertTrue( player.getHungerManager().getSaturationLevel() == 0.0f, "saturation level" );
-
-        context.assertTrue( player.getHungerManager().getExhaustion() == 0.45421875f, "exhaustion" );
-
-        context.assertTrue( player.getHealth() == 20.0f, "health" );
+        status.assertTotalExperience( 64098 );
+        status.assertScore( 159947 );
+        status.assertFoodLevel( 20 );
+        status.assertSaturationLevel( 0.0f );
+        status.assertExhaustion( 0.45421875f );
+        status.assertHealth( 20.0f );
 
         // ... including damage, enchantments, custom names etc. (the stuff that was moved to item components)?
 
         // Pre-24w09a (1.20.5)
         if ( MinecraftVersion.CURRENT.getSaveVersion().getId() <= 3819 )
         {
-            final ItemStack chest = player.getInventory().armor.get( 2 );
-
-            context.assertTrue( chest.getCount() == 1, "%s count".formatted( Items.ELYTRA ) );
-            context.assertTrue( chest.getCount() == 1, "Elytra count" );
-            context.assertTrue( chest.getDamage() == 6, "Elytra damage" );
-            context.assertTrue( EnchantmentHelper.getLevel( Enchantments.UNBREAKING, chest ) == 3, "Unbreaking level" );
-            context.assertTrue( EnchantmentHelper.getLevel( Enchantments.MENDING, chest ) == 1, "Mending level" );
-            context.assertTrue( chest.getName().getString().equals( "Can I put a wang on this?" ), "custom item name" );
+            combinedInventory.assertCountAt( 38, 1 );
+            combinedInventory.assertDamage( 38, 6 );
+            combinedInventory.assertName( 38, "Can I put a wang on this?" );
+            combinedInventory.assertEnchantment( 38, Enchantments.UNBREAKING, 3 );
+            combinedInventory.assertEnchantment( 38, Enchantments.MENDING, 1 );
         }
 
         context.complete();
@@ -331,9 +281,30 @@ public class StorageVersionMigrationTest
         }
     }
 
-    @BeforeBatch( batchId = StorageVersionMigrationTest.MIGRATION_BATCH )
-    public void stashExistingData( final ServerWorld unused )
+    private DimensionalInventories getInstanceWithoutGameModeModule()
     {
-        TestState.stashModData( StorageVersionMigrationTest.MIGRATION_BATCH );
+        class MainModuleGroupWithoutGameMode
+            extends ModuleGroup
+        {
+            @SuppressWarnings( "deprecation" )
+            public MainModuleGroupWithoutGameMode()
+            {
+                super( "main" );
+
+                this.register(
+                    DimensionPoolConfigModule.class,
+                    InventoryModule.class,
+                    StatusModule.class,
+                    ShoulderEntityModule.class,
+                    DimensionPoolConfigModule_SV1.class,
+                    InventoryModule_SV1.class,
+                    StatusModule_SV1.class
+                );
+            }
+        }
+        final DimensionalInventories instanceWithoutGameMode = new DimensionalInventories();
+        instanceWithoutGameMode.registerModules( new MainModuleGroupWithoutGameMode() );
+
+        return instanceWithoutGameMode;
     }
 }
