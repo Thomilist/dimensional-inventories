@@ -65,7 +65,7 @@ public class ItemStackAsserter
     {
         AssertionUtils.assertEquals(
             this.context,
-            itemStack.getName(),
+            itemStack.getName().getString(),
             expectedName,
             "%s item name".formatted( itemStack.getItem() )
         );
