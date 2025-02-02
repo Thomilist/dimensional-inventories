@@ -16,7 +16,8 @@ public class StatusAsserter
 
     public void assertTotalExperience( final int expectedTotalExperience )
     {
-        this.context.assertEquals(
+        AssertionUtils.assertEquals(
+            this.context,
             this.player.totalExperience,
             expectedTotalExperience,
             "total experience"
@@ -25,7 +26,8 @@ public class StatusAsserter
 
     public void assertScore( final int expectedScore )
     {
-        this.context.assertEquals(
+        AssertionUtils.assertEquals(
+            this.context,
             this.player.getScore(),
             expectedScore,
             "score"
@@ -34,7 +36,8 @@ public class StatusAsserter
 
     public void assertFoodLevel( final int expectedFoodLevel )
     {
-        this.context.assertEquals(
+        AssertionUtils.assertEquals(
+            this.context,
             this.player.getHungerManager().getFoodLevel(),
             expectedFoodLevel,
             "food level"
@@ -43,7 +46,8 @@ public class StatusAsserter
 
     public void assertSaturationLevel( final float expectedSaturationLevel )
     {
-        this.context.assertEquals(
+        AssertionUtils.assertEquals(
+            this.context,
             this.player.getHungerManager().getSaturationLevel(),
             expectedSaturationLevel,
             "saturation level"
@@ -52,7 +56,8 @@ public class StatusAsserter
 
     public void assertExhaustion( final float expectedExhaustion )
     {
-        this.context.assertEquals(
+        AssertionUtils.assertEquals(
+            this.context,
             this.player.getHungerManager().getExhaustion(),
             expectedExhaustion,
             "exhaustion"
@@ -61,7 +66,8 @@ public class StatusAsserter
 
     public void assertHealth( final float expectedHealth )
     {
-        this.context.assertEquals(
+        AssertionUtils.assertEquals(
+            this.context,
             this.player.getHealth(),
             expectedHealth,
             "health"

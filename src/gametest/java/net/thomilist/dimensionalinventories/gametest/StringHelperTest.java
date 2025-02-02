@@ -3,6 +3,7 @@ package net.thomilist.dimensionalinventories.gametest;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUtils;
 import net.thomilist.dimensionalinventories.util.StringHelper;
 
 public class StringHelperTest
@@ -13,7 +14,7 @@ public class StringHelperTest
         final String[] scopes = { "one", "two", "three", "four", "five" };
         final String joinedScopes = StringHelper.joinScopes( scopes );
 
-        context.assertTrue( joinedScopes.equals( "one :: two :: three :: four :: five" ), "Scopes joined incorrectly" );
+        AssertionUtils.assertEquals( context, joinedScopes, "one :: two :: three :: four :: five", "joined scopes" );
 
         context.complete();
     }
@@ -24,9 +25,11 @@ public class StringHelperTest
         final String[] scopes = { "one", "two", "three", "four", "five" };
         final String joinedScopes = StringHelper.joinAndWrapScopes( scopes );
 
-        context.assertTrue(
-            joinedScopes.equals( "[ one :: two :: three :: four :: five ]" ),
-            "Scopes joined or wrapped incorrectly"
+        AssertionUtils.assertEquals(
+            context,
+            joinedScopes,
+            "[ one :: two :: three :: four :: five ]",
+            "joined and wrapped scopes"
         );
 
         context.complete();

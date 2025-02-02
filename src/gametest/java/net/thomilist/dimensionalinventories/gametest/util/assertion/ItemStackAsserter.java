@@ -15,22 +15,41 @@ public class ItemStackAsserter
         this.context = context;
     }
 
+    public void assertItemsEqual( final ItemStack itemStack, final ItemStack expectedItemStack, final String name )
+    {
+        AssertionUtils.assertEquals( this.context, itemStack, expectedItemStack, name, ItemStack::areItemsEqual );
+    }
+
+    public void assertEmpty( final ItemStack itemStack, final String name )
+    {
+        this.assertItemsEqual( itemStack, ItemStack.EMPTY, name );
+    }
+
     public void assertItemType( final ItemStack itemStack, final Item expectedItem )
     {
         this.context.assertTrue(
             itemStack.isOf( expectedItem ),
-            "Expected item type %s; found %s".formatted( expectedItem, itemStack.getItem() )
+            "Expected item type to be %s, but was %s".formatted(
+                expectedItem,
+                itemStack.getItem()
+            )
         );
     }
 
     public void assertCount( final ItemStack itemStack, final int expectedCount )
     {
-        this.context.assertEquals( itemStack.getCount(), expectedCount, "%s count".formatted( itemStack.getItem() ) );
+        AssertionUtils.assertEquals(
+            this.context,
+            itemStack.getCount(),
+            expectedCount,
+            "%s count".formatted( itemStack.getItem() )
+        );
     }
 
     public void assertDamage( final ItemStack itemStack, final int expectedDamage )
     {
-        this.context.assertEquals(
+        AssertionUtils.assertEquals(
+            this.context,
             itemStack.getDamage(),
             expectedDamage,
             "%s damage".formatted( itemStack.getItem() )
@@ -39,10 +58,11 @@ public class ItemStackAsserter
 
     public void assertName( final ItemStack itemStack, final String expectedName )
     {
-        this.context.assertEquals(
+        AssertionUtils.assertEquals(
+            this.context,
             itemStack.getName(),
             expectedName,
-            "%s custom item name".formatted( itemStack.getItem() )
+            "%s item name".formatted( itemStack.getItem() )
         );
     }
 
@@ -50,7 +70,8 @@ public class ItemStackAsserter
                                    final Enchantment expectedEnchantment,
                                    final int expectedEnchantmentLevel )
     {
-        this.context.assertEquals(
+        AssertionUtils.assertEquals(
+            this.context,
             EnchantmentHelper.getLevel( expectedEnchantment, itemStack ),
             expectedEnchantmentLevel,
             "%s level".formatted( expectedEnchantment )
