@@ -1,0 +1,22 @@
+[
+  {
+    "name": "default",
+    "dimensions": [
+      "minecraft:overworld",
+      "minecraft:the_nether",
+      "minecraft:the_end"
+    ],
+    "gameMode": "SURVIVAL",
+    "progressAdvancements": true,
+    "incrementStatistics": true
+  },
+  {
+    "name": "creative",
+    "dimensions": [
+      "custom:creative"
+    ],
+    "gameMode": "CREATIVE",
+    "progressAdvancements": false,
+    "incrementStatistics": false
+  }
+]

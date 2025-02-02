@@ -12,6 +12,7 @@
       "net.thomilist.dimensionalinventories.gametest.GameModeModuleTest",
       "net.thomilist.dimensionalinventories.gametest.ShoulderEntityModuleTest",
       "net.thomilist.dimensionalinventories.gametest.NonPlayerHandlingTest",
+      "net.thomilist.dimensionalinventories.gametest.StorageVersionMigrationTest",
       "net.thomilist.dimensionalinventories.gametest.StringHelperTest",
       "net.thomilist.dimensionalinventories.gametest.LogThrottlerTest"
     ]
