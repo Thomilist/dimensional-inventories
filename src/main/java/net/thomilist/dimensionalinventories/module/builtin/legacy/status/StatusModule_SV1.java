@@ -11,6 +11,7 @@ import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.status.StatusModule;
 import net.thomilist.dimensionalinventories.module.builtin.status.StatusModuleState;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
+import net.thomilist.dimensionalinventories.util.ListHelper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -86,12 +87,12 @@ public final class StatusModule_SV1
 
         final StatusModuleState statusModuleState = new StatusModuleState();
 
-        statusModuleState.experiencePoints = Integer.parseInt( lines.get( lineIndex++ ) );
-        statusModuleState.score = Integer.parseInt( lines.get( lineIndex++ ) );
-        statusModuleState.foodLevel = Integer.parseInt( lines.get( lineIndex++ ) );
-        statusModuleState.saturationLevel = Float.parseFloat( lines.get( lineIndex++ ) );
-        statusModuleState.exhaustion = Float.parseFloat( lines.get( lineIndex++ ) );
-        statusModuleState.health = Float.parseFloat( lines.get( lineIndex++ ) );
+        statusModuleState.experiencePoints = Integer.parseInt( ListHelper.getOrDefault( lines, lineIndex++, "0" ) );
+        statusModuleState.score = Integer.parseInt( ListHelper.getOrDefault( lines, lineIndex++, "0" ) );
+        statusModuleState.foodLevel = Integer.parseInt( ListHelper.getOrDefault( lines, lineIndex++, "20" ) );
+        statusModuleState.saturationLevel = Float.parseFloat( ListHelper.getOrDefault( lines, lineIndex++, "5.0" ) );
+        statusModuleState.exhaustion = Float.parseFloat( ListHelper.getOrDefault( lines, lineIndex++, "0.0" ) );
+        statusModuleState.health = Float.parseFloat( ListHelper.getOrDefault( lines, lineIndex++, "20.0" ) );
 
         statusModuleState.applyToPlayer( player );
     }
