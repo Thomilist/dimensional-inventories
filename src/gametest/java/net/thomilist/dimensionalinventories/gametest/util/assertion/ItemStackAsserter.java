@@ -17,22 +17,22 @@ public class ItemStackAsserter
 
     public void assertItemsEqual( final ItemStack itemStack, final ItemStack expectedItemStack, final String name )
     {
-        AssertionUtils.assertEquals( this.context, itemStack, expectedItemStack, name, ItemStack::areItemsEqual );
+        AssertionUtils.assertEquals( this.context, itemStack, expectedItemStack, name, ItemStack::areEqual );
     }
 
     public void assertEmpty( final ItemStack itemStack, final String name )
     {
-        this.assertItemsEqual( itemStack, ItemStack.EMPTY, name );
+        this.context.assertTrue(
+            itemStack.isEmpty(),
+            "Expected %s to be empty, but was %s".formatted( name, itemStack )
+        );
     }
 
     public void assertItemType( final ItemStack itemStack, final Item expectedItem )
     {
         this.context.assertTrue(
             itemStack.isOf( expectedItem ),
-            "Expected item type to be %s, but was %s".formatted(
-                expectedItem,
-                itemStack.getItem()
-            )
+            "Expected item type to be %s, but was %s".formatted( expectedItem, itemStack.getItem() )
         );
     }
 
