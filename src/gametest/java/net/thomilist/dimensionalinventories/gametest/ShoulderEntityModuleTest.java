@@ -11,6 +11,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.gametest.util.NbtUtils;
+import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUtils;
 import net.thomilist.dimensionalinventories.mixin.PlayerEntityAccessor;
 
 import java.util.UUID;
@@ -58,10 +59,11 @@ public class ShoulderEntityModuleTest
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        context.assertEquals(
+        AssertionUtils.assertEquals(
+            context,
             NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() ),
             parrotNbtString,
-            "Left parrot restored after return transition"
+            "left parrot after return transition"
         );
         context.assertTrue(
             NbtUtils.isEmpty( player.getShoulderEntityRight() ),
@@ -121,15 +123,17 @@ public class ShoulderEntityModuleTest
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        context.assertEquals(
+        AssertionUtils.assertEquals(
+            context,
             NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() ),
             leftParrotNbtString,
-            "Left parrot restored after return transition"
+            "left parrot after return transition"
         );
-        context.assertEquals(
+        AssertionUtils.assertEquals(
+            context,
             NbtHelper.toNbtProviderString( player.getShoulderEntityRight() ),
             rightParrotNbtString,
-            "Right parrot restored after return transition"
+            "right parrot after return transition"
         );
 
         context.complete();
