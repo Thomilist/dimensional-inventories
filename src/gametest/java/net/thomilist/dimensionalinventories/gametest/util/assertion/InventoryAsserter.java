@@ -65,7 +65,7 @@ public class InventoryAsserter
     }
 
     public void assertEnchantment( final int index,
-                                   final RegistryKey<Enchantment> expectedEnchantment,
+                                   final Enchantment expectedEnchantment,
                                    final int expectedEnchantmentLevel )
     {
         this.itemStackAsserter.assertEnchantment(

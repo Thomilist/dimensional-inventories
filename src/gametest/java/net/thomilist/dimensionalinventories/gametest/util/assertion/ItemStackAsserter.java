@@ -4,20 +4,15 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.test.TestContext;
 
 public class ItemStackAsserter
 {
     private final TestContext context;
-    private final Registry<Enchantment> enchantmentRegistry;
 
     public ItemStackAsserter( final TestContext context )
     {
         this.context = context;
-        this.enchantmentRegistry = context.getWorld().getRegistryManager().getOrThrow( RegistryKeys.ENCHANTMENT );
     }
 
     public void assertItemsEqual( final ItemStack itemStack, final ItemStack expectedItemStack, final String name )
@@ -72,14 +67,12 @@ public class ItemStackAsserter
     }
 
     public void assertEnchantment( final ItemStack itemStack,
-                                   final RegistryKey<Enchantment> expectedEnchantment,
+                                   final Enchantment expectedEnchantment,
                                    final int expectedEnchantmentLevel )
     {
         AssertionUtils.assertEquals(
             this.context,
-            EnchantmentHelper
-                .getEnchantments( itemStack )
-                .getLevel( this.enchantmentRegistry.getOrThrow( expectedEnchantment ) ),
+            EnchantmentHelper.getLevel( expectedEnchantment, itemStack ),
             expectedEnchantmentLevel,
             "%s level".formatted( expectedEnchantment )
         );
