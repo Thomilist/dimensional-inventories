@@ -6,7 +6,7 @@ import net.minecraft.test.TestContext;
 
 import java.util.stream.IntStream;
 
-public class BlockPlacement
+public final class BlockPlacement
 {
     public static void PlaceFloor( final TestContext context )
     {
