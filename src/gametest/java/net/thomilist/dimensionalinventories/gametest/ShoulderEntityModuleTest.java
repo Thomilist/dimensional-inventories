@@ -11,6 +11,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.gametest.util.NbtUtils;
+import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUtils;
 import net.thomilist.dimensionalinventories.mixin.PlayerEntityAccessor;
 
 import java.util.UUID;
@@ -58,9 +59,11 @@ public class ShoulderEntityModuleTest
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        context.assertTrue(
-            NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() ).equals( parrotNbtString ),
-            "Left parrot restored after return transition"
+        AssertionUtils.assertEquals(
+            context,
+            NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() ),
+            parrotNbtString,
+            "left parrot after return transition"
         );
         context.assertTrue(
             NbtUtils.isEmpty( player.getShoulderEntityRight() ),
@@ -120,13 +123,17 @@ public class ShoulderEntityModuleTest
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        context.assertTrue(
-            NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() ).equals( leftParrotNbtString ),
-            "Left parrot restored after return transition"
+        AssertionUtils.assertEquals(
+            context,
+            NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() ),
+            leftParrotNbtString,
+            "left parrot after return transition"
         );
-        context.assertTrue(
-            NbtHelper.toNbtProviderString( player.getShoulderEntityRight() ).equals( rightParrotNbtString ),
-            "Right parrot restored after return transition"
+        AssertionUtils.assertEquals(
+            context,
+            NbtHelper.toNbtProviderString( player.getShoulderEntityRight() ),
+            rightParrotNbtString,
+            "right parrot after return transition"
         );
 
         context.complete();
