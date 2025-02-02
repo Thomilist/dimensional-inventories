@@ -3,6 +3,7 @@ package net.thomilist.dimensionalinventories.gametest;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUtils;
 import net.thomilist.dimensionalinventories.util.LogThrottler;
 
 public class LogThrottlerTest
@@ -21,7 +22,7 @@ public class LogThrottlerTest
             }
         }
 
-        context.assertTrue( count == 100, "Logs are not throttled correctly" );
+        AssertionUtils.assertEquals( context, count, 100, "number of allowed logs" );
 
         context.complete();
     }
