@@ -8,7 +8,7 @@ import net.thomilist.dimensionalinventories.DimensionalInventories;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class NbtUtils
+public final class NbtUtils
 {
     public static final NbtCompound[] EMPTY_NBT;
     private static final NbtCompound EMPTY_FROM_NEW = new NbtCompound();
