@@ -104,6 +104,16 @@ tasks.register("acceptInteractiveServerEula") {
 	}
 }
 
+tasks.register("gametestJar", Jar) {
+	group = "build"
+	from sourceSets.gametest.output
+	archiveClassifier = "gametest"
+}
+
+tasks.build {
+	dependsOn(gametestJar)
+}
+
 tasks.javadoc {
 	source += sourceSets.client.allJava
 	source += sourceSets.gametest.allJava
