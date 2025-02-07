@@ -263,7 +263,7 @@ public class StorageVersionMigrationTest
             .getSavePath( WorldSavePath.ROOT )
             .resolve( worldDestinationPath );
 
-        final File sampleDataDirectory = sampleDataPath.toFile();
+        final File sampleDataDirectory = TestState.toFileExtractZip( sampleDataPath );
         final File legacyDataDirectory = legacyDataPath.toFile();
 
         try
