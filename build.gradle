@@ -110,8 +110,15 @@ tasks.register("gametestJar", Jar) {
 	archiveClassifier = "gametest"
 }
 
+tasks.register("gametestSourcesJar", Jar) {
+	group = "build"
+	from sourceSets.gametest.allSource
+	archiveClassifier = "gametest-sources"
+}
+
 tasks.build {
 	dependsOn(gametestJar)
+	dependsOn(gametestSourcesJar)
 }
 
 tasks.javadoc {
