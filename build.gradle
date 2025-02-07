@@ -204,6 +204,13 @@ tasks.withType(JavaCompile).configureEach {
 	}
 }
 
+tasks.withType(Jar).configureEach {
+	if (!it.name.endsWith("sourcesJar"))
+	{
+		exclude("**/*.xcf")
+	}
+}
+
 java {
 	def javaVersion = JavaVersion.toVersion(targetJavaVersion)
 	if (JavaVersion.current() < javaVersion) {
@@ -219,7 +226,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${base.archivesName}" }
+		rename { "${it}_${base.archivesName.get()}" }
 	}
 }
 
