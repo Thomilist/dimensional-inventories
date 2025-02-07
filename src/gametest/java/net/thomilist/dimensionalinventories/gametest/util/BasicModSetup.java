@@ -23,17 +23,14 @@ public class BasicModSetup
         this.dimensionPoolConfig = this.instance.configModules.get( DimensionPoolConfigModule.class );
 
         this.dimensionPoolConfig.state().createPool( BasicModSetup.ORIGIN_DIMENSION_POOL_ID, GameMode.DEFAULT );
-
         this.dimensionPoolConfig.state().createPool( BasicModSetup.DESTINATION_DIMENSION_POOL_ID, GameMode.DEFAULT );
 
-        this.dimensionPoolConfig.state().assignDimensionToPool(
-            BasicModSetup.ORIGIN_DIMENSION,
-            BasicModSetup.ORIGIN_DIMENSION_POOL_ID
-        );
+        this.dimensionPoolConfig
+            .state()
+            .assignDimensionToPool( BasicModSetup.ORIGIN_DIMENSION, BasicModSetup.ORIGIN_DIMENSION_POOL_ID );
 
-        this.dimensionPoolConfig.state().assignDimensionToPool(
-            BasicModSetup.DESTINATION_DIMENSION,
-            BasicModSetup.DESTINATION_DIMENSION_POOL_ID
-        );
+        this.dimensionPoolConfig
+            .state()
+            .assignDimensionToPool( BasicModSetup.DESTINATION_DIMENSION, BasicModSetup.DESTINATION_DIMENSION_POOL_ID );
     }
 }
