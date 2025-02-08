@@ -9,7 +9,8 @@ import net.thomilist.dimensionalinventories.util.StringHelper;
 public class StringHelperTest
     extends DimensionalInventoriesGameTest
 {
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void joinScopes( final TestContext context )
     {
         this.logTestStart();
@@ -22,7 +23,8 @@ public class StringHelperTest
         context.complete();
     }
 
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void joinAndWrapScopes( final TestContext context )
     {
         this.logTestStart();
