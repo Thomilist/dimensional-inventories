@@ -18,7 +18,7 @@ public class InventoryModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwapsPlayerItems( final TestContext context )
     {
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
 
         for ( final Item item : Registries.ITEM )
@@ -67,7 +67,7 @@ public class InventoryModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void unconfiguredTransitionDoesNotSwapPlayerItems( final TestContext context )
     {
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
         final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getMaxCount() );
 
@@ -92,7 +92,7 @@ public class InventoryModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionHandlesEveryInventorySlot( final TestContext context )
     {
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
         final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getMaxCount() );
 

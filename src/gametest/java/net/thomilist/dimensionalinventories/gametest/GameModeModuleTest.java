@@ -16,7 +16,7 @@ public class GameModeModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwitchesGameMode( final TestContext context )
     {
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get( context.getWorld() );
 
         final DimensionPool originPool = setup.dimensionPoolConfig
