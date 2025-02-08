@@ -6,8 +6,6 @@ import net.minecraft.MinecraftVersion;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.WorldSavePath;
@@ -43,16 +41,8 @@ import java.util.List;
 public class StorageVersionMigrationTest
     extends DimensionalInventoriesGameTest
 {
-    public static final String MIGRATION_BATCH = "migration";
-
-    @BeforeBatch( batchId = StorageVersionMigrationTest.MIGRATION_BATCH )
-    public void stashExistingData( final ServerWorld unused )
-    {
-        TestState.stashModData( StorageVersionMigrationTest.MIGRATION_BATCH );
-    }
-
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = StorageVersionMigrationTest.MIGRATION_BATCH )
+               batchId = Batches.MIGRATION )
     public void migrateLegacyToV2( final TestContext context )
     {
         this.logTestStart();

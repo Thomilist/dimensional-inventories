@@ -14,7 +14,8 @@ public class GameModeModuleTest
 {
     // When a player crosses dimension pools, their gamemode should be changed
     // according to dimension pool settings
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void transitionSwitchesGameMode( final TestContext context )
     {
         this.logTestStart();

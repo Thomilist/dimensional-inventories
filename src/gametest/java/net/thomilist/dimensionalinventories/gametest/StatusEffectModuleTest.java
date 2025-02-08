@@ -14,11 +14,12 @@ public class StatusEffectModuleTest
 {
     // Status effects should be swapped on dimension pool transition.
     // Test with all registered status effects
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void transitionSwapsStatusEffects( final TestContext context )
     {
         this.logTestStart();
-        
+
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get( context.getWorld() );
 

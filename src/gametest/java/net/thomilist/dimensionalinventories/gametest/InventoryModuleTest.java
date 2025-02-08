@@ -16,7 +16,8 @@ public class InventoryModuleTest
 {
     // Swap player inventory on dimension pool transition (kinda the whole point of the mod).
     // Tests with every registered item
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void transitionSwapsPlayerItems( final TestContext context )
     {
         this.logTestStart();
@@ -67,7 +68,8 @@ public class InventoryModuleTest
     }
 
     // Do not swap player inventory on unconfigured transition
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void unconfiguredTransitionDoesNotSwapPlayerItems( final TestContext context )
     {
         this.logTestStart();
@@ -94,7 +96,8 @@ public class InventoryModuleTest
     }
 
     // Ensure all inventory slots are supported (main, offhand, armour, ender chest)
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void transitionHandlesEveryInventorySlot( final TestContext context )
     {
         this.logTestStart();
