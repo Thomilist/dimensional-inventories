@@ -21,7 +21,8 @@ public class ShoulderEntityModuleTest
 {
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
     // Test with a single parrot
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void transitionSwapsSingleShoulderEntity( final TestContext context )
     {
         this.logTestStart();
@@ -78,7 +79,8 @@ public class ShoulderEntityModuleTest
 
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
     // Test with two parrots
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void transitionSwapsBothShoulderEntities( final TestContext context )
     {
         this.logTestStart();

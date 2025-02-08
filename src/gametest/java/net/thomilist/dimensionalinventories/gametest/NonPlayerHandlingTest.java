@@ -22,7 +22,8 @@ public class NonPlayerHandlingTest
     extends DimensionalInventoriesGameTest
 {
     // When an item entity crosses dimension pools, it should be deleted
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void transitionDeletesItemEntity( final TestContext context )
     {
         this.logTestStart();
@@ -52,7 +53,8 @@ public class NonPlayerHandlingTest
 
     // When an item entity crosses dimension pools, but one or both of the dimensions are not
     // assigned to any dimension pool, the item entity should be unaffected
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void unconfiguredTransitionDoesNotDeleteItemEntity( final TestContext context )
     {
         this.logTestStart();
@@ -73,7 +75,8 @@ public class NonPlayerHandlingTest
     }
 
     // When a mob entity crosses dimension pools, it should be deleted
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void transitionDeletesMobEntity( final TestContext context )
     {
         this.logTestStart();
@@ -123,7 +126,8 @@ public class NonPlayerHandlingTest
 
     // When a mob entity crosses dimension pools, but one or both of the dimensions are not
     // assigned to any dimension pool, the mob entity should be unaffected
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void unconfiguredTransitionDoesNotDeleteMobEntity( final TestContext context )
     {
         this.logTestStart();
@@ -146,7 +150,8 @@ public class NonPlayerHandlingTest
 
     // Ensure chest boats, chest minecarts and hopper minecarts don't drop their contents on transition,
     // i.e. not bringing back https://github.com/Thomilist/dimensional-inventories/issues/15
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void transitionHandlesClearableEntity( final TestContext context )
     {
         this.logTestStart();
