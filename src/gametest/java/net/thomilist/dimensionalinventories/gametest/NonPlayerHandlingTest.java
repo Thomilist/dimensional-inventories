@@ -19,11 +19,14 @@ import java.util.List;
 import java.util.Set;
 
 public class NonPlayerHandlingTest
+    extends DimensionalInventoriesGameTest
 {
     // When an item entity crosses dimension pools, it should be deleted
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionDeletesItemEntity( final TestContext context )
     {
+        this.logTestStart();
+
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
@@ -52,6 +55,8 @@ public class NonPlayerHandlingTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void unconfiguredTransitionDoesNotDeleteItemEntity( final TestContext context )
     {
+        this.logTestStart();
+
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
@@ -71,6 +76,8 @@ public class NonPlayerHandlingTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionDeletesMobEntity( final TestContext context )
     {
+        this.logTestStart();
+
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
@@ -119,6 +126,8 @@ public class NonPlayerHandlingTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void unconfiguredTransitionDoesNotDeleteMobEntity( final TestContext context )
     {
+        this.logTestStart();
+
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
@@ -140,6 +149,8 @@ public class NonPlayerHandlingTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionHandlesClearableEntity( final TestContext context )
     {
+        this.logTestStart();
+
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
