@@ -11,12 +11,15 @@ import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 
 public class StatusEffectModuleTest
+    extends DimensionalInventoriesGameTest
 {
     // Status effects should be swapped on dimension pool transition.
     // Test with all registered status effects
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwapsStatusEffects( final TestContext context )
     {
+        this.logTestStart();
+        
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get( context.getWorld() );
 
