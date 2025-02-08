@@ -25,7 +25,7 @@ public class NonPlayerHandlingTest
     public void transitionDeletesItemEntity( final TestContext context )
     {
         BlockPlacement.PlaceFloor( context );
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
         for ( final Item item : Registries.ITEM )
         {
@@ -53,7 +53,7 @@ public class NonPlayerHandlingTest
     public void unconfiguredTransitionDoesNotDeleteItemEntity( final TestContext context )
     {
         BlockPlacement.PlaceFloor( context );
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
         final ItemEntity itemEntity = context.spawnItem( Items.STONE, 0.5f, 2.5f, 0.5f );
 
@@ -72,7 +72,7 @@ public class NonPlayerHandlingTest
     public void transitionDeletesMobEntity( final TestContext context )
     {
         BlockPlacement.PlaceFloor( context );
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
         final Set<SpawnGroup> mobSpawnGroups = Set.of(
             SpawnGroup.AMBIENT,
@@ -120,7 +120,7 @@ public class NonPlayerHandlingTest
     public void unconfiguredTransitionDoesNotDeleteMobEntity( final TestContext context )
     {
         BlockPlacement.PlaceFloor( context );
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
         final EntityType<CreeperEntity> entityType = EntityType.CREEPER;
         final CreeperEntity entity = context.spawnEntity( entityType, 4, 4, 4 );
@@ -141,7 +141,7 @@ public class NonPlayerHandlingTest
     public void transitionHandlesClearableEntity( final TestContext context )
     {
         BlockPlacement.PlaceFloor( context );
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
         final var clearableEntityTypes = List.of(
             // Minecarts
