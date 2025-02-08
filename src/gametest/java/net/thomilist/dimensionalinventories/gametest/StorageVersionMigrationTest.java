@@ -41,6 +41,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class StorageVersionMigrationTest
+    extends DimensionalInventoriesGameTest
 {
     public static final String MIGRATION_BATCH = "migration";
 
@@ -54,6 +55,8 @@ public class StorageVersionMigrationTest
                batchId = StorageVersionMigrationTest.MIGRATION_BATCH )
     public void migrateLegacyToV2( final TestContext context )
     {
+        this.logTestStart();
+
         // Prepare legacy data to migrate from
 
         final String legacySaveDirectoryName = "dimensionalinventories";

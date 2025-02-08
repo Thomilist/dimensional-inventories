@@ -7,10 +7,13 @@ import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUti
 import net.thomilist.dimensionalinventories.util.LogThrottler;
 
 public class LogThrottlerTest
+    extends DimensionalInventoriesGameTest
 {
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void throttleLog( final TestContext context )
     {
+        this.logTestStart();
+
         final LogThrottler logThrottler = new LogThrottler( 10 );
         int count = 0;
 

@@ -12,12 +12,15 @@ import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.util.DummyServerPlayerEntity;
 
 public class InventoryModuleTest
+    extends DimensionalInventoriesGameTest
 {
     // Swap player inventory on dimension pool transition (kinda the whole point of the mod).
     // Tests with every registered item
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwapsPlayerItems( final TestContext context )
     {
+        this.logTestStart();
+
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
 
@@ -67,6 +70,8 @@ public class InventoryModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void unconfiguredTransitionDoesNotSwapPlayerItems( final TestContext context )
     {
+        this.logTestStart();
+
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
         final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getMaxCount() );
@@ -92,6 +97,8 @@ public class InventoryModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionHandlesEveryInventorySlot( final TestContext context )
     {
+        this.logTestStart();
+
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
         final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getMaxCount() );

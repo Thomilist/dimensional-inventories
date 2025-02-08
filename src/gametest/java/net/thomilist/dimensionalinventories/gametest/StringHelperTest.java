@@ -7,10 +7,13 @@ import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUti
 import net.thomilist.dimensionalinventories.util.StringHelper;
 
 public class StringHelperTest
+    extends DimensionalInventoriesGameTest
 {
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void joinScopes( final TestContext context )
     {
+        this.logTestStart();
+
         final String[] scopes = { "one", "two", "three", "four", "five" };
         final String joinedScopes = StringHelper.joinScopes( scopes );
 
@@ -22,6 +25,8 @@ public class StringHelperTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void joinAndWrapScopes( final TestContext context )
     {
+        this.logTestStart();
+
         final String[] scopes = { "one", "two", "three", "four", "five" };
         final String joinedScopes = StringHelper.joinAndWrapScopes( scopes );
 
