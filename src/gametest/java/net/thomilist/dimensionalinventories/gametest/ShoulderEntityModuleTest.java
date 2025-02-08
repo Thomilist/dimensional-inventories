@@ -17,12 +17,15 @@ import net.thomilist.dimensionalinventories.mixin.PlayerEntityAccessor;
 import java.util.UUID;
 
 public class ShoulderEntityModuleTest
+    extends DimensionalInventoriesGameTest
 {
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
     // Test with a single parrot
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwapsSingleShoulderEntity( final TestContext context )
     {
+        this.logTestStart();
+
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
             context.getWorld(),
@@ -78,6 +81,8 @@ public class ShoulderEntityModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwapsBothShoulderEntities( final TestContext context )
     {
+        this.logTestStart();
+
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
             context.getWorld(),

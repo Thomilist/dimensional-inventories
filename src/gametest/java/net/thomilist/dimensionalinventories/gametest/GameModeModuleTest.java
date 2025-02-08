@@ -10,12 +10,15 @@ import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 
 public class GameModeModuleTest
+    extends DimensionalInventoriesGameTest
 {
     // When a player crosses dimension pools, their gamemode should be changed
     // according to dimension pool settings
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwitchesGameMode( final TestContext context )
     {
+        this.logTestStart();
+
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get( context.getWorld() );
 
