@@ -23,7 +23,7 @@ public class ShoulderEntityModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwapsSingleShoulderEntity( final TestContext context )
     {
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
             context.getWorld(),
             new GameProfile( UUID.randomUUID(), "OneParrot" )
@@ -78,7 +78,7 @@ public class ShoulderEntityModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwapsBothShoulderEntities( final TestContext context )
     {
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
             context.getWorld(),
             new GameProfile( UUID.randomUUID(), "TwoParrots" )

@@ -17,7 +17,7 @@ public class StatusEffectModuleTest
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
     public void transitionSwapsStatusEffects( final TestContext context )
     {
-        final BasicModSetup setup = new BasicModSetup();
+        final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get( context.getWorld() );
 
         for ( final StatusEffect effect : Registries.STATUS_EFFECT )
