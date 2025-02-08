@@ -35,7 +35,13 @@ public final class TestState
             {
                 modDataDirectory = modDataPath.toFile();
 
-                FileUtils.copyDirectory( modDataDirectory, TestState.GAMETEST_STASH_PATH.resolve( batchId ).toFile() );
+                FileUtils.copyDirectory(
+                    modDataDirectory,
+                    TestState.GAMETEST_STASH_PATH
+                        .resolve( batchId )
+                        .resolve( modDataDirectory.getName() )
+                        .toFile()
+                );
                 FileUtils.deleteDirectory( modDataDirectory );
             }
             catch ( final IOException ignored )

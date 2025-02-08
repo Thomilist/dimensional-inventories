@@ -9,7 +9,8 @@ import net.thomilist.dimensionalinventories.util.LogThrottler;
 public class LogThrottlerTest
     extends DimensionalInventoriesGameTest
 {
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE )
+    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
+               batchId = Batches.MAIN )
     public void throttleLog( final TestContext context )
     {
         this.logTestStart();
