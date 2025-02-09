@@ -9,7 +9,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 
-public class StatusEffectModuleTest
+public class StatusEffectModuleTests
     extends DimensionalInventoriesGameTest
 {
     // Status effects should be swapped on dimension pool transition.

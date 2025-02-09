@@ -18,7 +18,7 @@ import net.thomilist.dimensionalinventories.gametest.util.BlockPlacement;
 import java.util.List;
 import java.util.Set;
 
-public class NonPlayerHandlingTest
+public class NonPlayerHandlingTests
     extends DimensionalInventoriesGameTest
 {
     // When an item entity crosses dimension pools, it should be deleted

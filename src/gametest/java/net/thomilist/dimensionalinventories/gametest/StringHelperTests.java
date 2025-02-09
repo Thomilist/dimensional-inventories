@@ -6,7 +6,7 @@ import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUtils;
 import net.thomilist.dimensionalinventories.util.StringHelper;
 
-public class StringHelperTest
+public class StringHelperTests
     extends DimensionalInventoriesGameTest
 {
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
