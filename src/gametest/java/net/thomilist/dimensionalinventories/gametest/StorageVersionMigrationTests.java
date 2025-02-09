@@ -38,7 +38,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public class StorageVersionMigrationTest
+public class StorageVersionMigrationTests
     extends DimensionalInventoriesGameTest
 {
     @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,

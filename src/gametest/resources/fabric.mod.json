@@ -8,14 +8,14 @@
   "entrypoints": {
     "fabric-gametest": [
       "net.thomilist.dimensionalinventories.gametest.Batches",
-      "net.thomilist.dimensionalinventories.gametest.InventoryModuleTest",
-      "net.thomilist.dimensionalinventories.gametest.StatusEffectModuleTest",
-      "net.thomilist.dimensionalinventories.gametest.GameModeModuleTest",
-      "net.thomilist.dimensionalinventories.gametest.ShoulderEntityModuleTest",
-      "net.thomilist.dimensionalinventories.gametest.NonPlayerHandlingTest",
-      "net.thomilist.dimensionalinventories.gametest.StorageVersionMigrationTest",
-      "net.thomilist.dimensionalinventories.gametest.StringHelperTest",
-      "net.thomilist.dimensionalinventories.gametest.LogThrottlerTest"
+      "net.thomilist.dimensionalinventories.gametest.InventoryModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.StatusEffectModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.GameModeModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.ShoulderEntityModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.NonPlayerHandlingTests",
+      "net.thomilist.dimensionalinventories.gametest.StorageVersionMigrationTests",
+      "net.thomilist.dimensionalinventories.gametest.StringHelperTests",
+      "net.thomilist.dimensionalinventories.gametest.LogThrottlerTests"
     ]
   },
   "mixins": [
