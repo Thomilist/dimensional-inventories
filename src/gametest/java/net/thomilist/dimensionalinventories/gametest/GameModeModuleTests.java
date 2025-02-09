@@ -9,7 +9,7 @@ import net.minecraft.world.GameMode;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 
-public class GameModeModuleTest
+public class GameModeModuleTests
     extends DimensionalInventoriesGameTest
 {
     // When a player crosses dimension pools, their gamemode should be changed

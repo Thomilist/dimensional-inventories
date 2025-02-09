@@ -16,7 +16,7 @@ import net.thomilist.dimensionalinventories.mixin.PlayerEntityAccessor;
 
 import java.util.UUID;
 
-public class ShoulderEntityModuleTest
+public class ShoulderEntityModuleTests
     extends DimensionalInventoriesGameTest
 {
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
