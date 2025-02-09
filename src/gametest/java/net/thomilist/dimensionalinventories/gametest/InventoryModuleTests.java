@@ -11,7 +11,7 @@ import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.util.DummyServerPlayerEntity;
 
-public class InventoryModuleTest
+public class InventoryModuleTests
     extends DimensionalInventoriesGameTest
 {
     // Swap player inventory on dimension pool transition (kinda the whole point of the mod).
