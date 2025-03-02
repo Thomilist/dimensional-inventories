@@ -6,7 +6,7 @@ import net.minecraft.util.math.MathHelper;
 // Code from sf-inc/xp_storage (MIT licence)
 // https://github.com/sf-inc/xp_storage/blob/master/src/main/java/com/github/charlyb01/xpstorage/Utils.java
 
-// Code from Meridanus/fabric_xp_storage_1.18 (MIT license)
+// Code from Meridanus/fabric_xp_storage_1.18 (MIT licence)
 // https://github.com/Meridanus/fabric_xp_storage_1.18/blob/ee109ef98654efefa92111effcc06101d13d330d/src/main/java/com/notker/xp_storage/XpFunctions.java#L34
 
 public final class ExperienceHelper
