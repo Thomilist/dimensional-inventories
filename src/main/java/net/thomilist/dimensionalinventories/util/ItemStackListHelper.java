@@ -15,9 +15,21 @@ public final class ItemStackListHelper
             return;
         }
 
-        for ( int i = 0; i < source.size(); i++ )
+        for ( int i = 0; i < source.size(); ++i )
         {
             target.set( i, source.get( i ) );
+        }
+    }
+
+    public static void fillWithCopies( final DefaultedList<ItemStack> target,
+                                       final ItemStack itemStackToCopy,
+                                       final int count )
+    {
+        target.replaceAll( ignored -> itemStackToCopy.copy() );
+
+        while ( target.size() < count )
+        {
+            target.add( itemStackToCopy.copy() );
         }
     }
 }

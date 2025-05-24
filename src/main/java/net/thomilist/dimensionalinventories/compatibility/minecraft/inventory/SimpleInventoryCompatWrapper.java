@@ -8,5 +8,7 @@ import net.thomilist.dimensionalinventories.compatibility.CompatWrapper;
 public interface SimpleInventoryCompatWrapper
     extends CompatWrapper
 {
-    DefaultedList<ItemStack> getHeldStacks( SimpleInventory simpleInventory );
+    DefaultedList<ItemStack> getHeldStacks( final SimpleInventory simpleInventory );
+
+    void setHeldStacks( final SimpleInventory simpleInventory, final DefaultedList<ItemStack> itemStacks );
 }

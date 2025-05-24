@@ -3,13 +3,16 @@ package net.thomilist.dimensionalinventories.compatibility.minecraft.nbt;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
 
+import java.util.Optional;
+
 @LimitedCompatibility( target = "Minecraft",
-                       versions = ">=1.20.5" )
-public final class NbtCompatWrapper_Minecraft_1_20_5
+                       versions = ">=1.21.5" )
+public final class NbtCompatWrapper_Minecraft_1_21_5
     implements NbtCompatWrapper
 {
     private RegistryWrapper.WrapperLookup wrapperLookup;
@@ -24,12 +27,24 @@ public final class NbtCompatWrapper_Minecraft_1_20_5
     @Override
     public ItemStack toItemStack( final NbtCompound nbtCompound )
     {
-        if ( nbtCompound.isEmpty() || nbtCompound.getString( "id" ).matches( "^minecraft:air$" ) )
+        if ( nbtCompound.isEmpty() )
         {
             return ItemStack.EMPTY;
         }
 
-        return ItemStack.fromNbtOrEmpty( this.wrapperLookup, nbtCompound );
+        final Optional<String> id = nbtCompound.getString( "id" );
+
+        if ( id.isEmpty() )
+        {
+            return ItemStack.EMPTY;
+        }
+
+        if ( id.get().matches( "^minecraft:air$" ) )
+        {
+            return ItemStack.EMPTY;
+        }
+
+        return ItemStack.fromNbt( this.wrapperLookup, nbtCompound ).orElse( ItemStack.EMPTY );
     }
 
     @Override
@@ -46,12 +61,15 @@ public final class NbtCompatWrapper_Minecraft_1_20_5
     @Override
     public StatusEffectInstance toStatusEffectInstance( final NbtCompound nbtCompound )
     {
-        return StatusEffectInstance.fromNbt( nbtCompound );
+        return StatusEffectInstance.CODEC.parse( NbtOps.INSTANCE, nbtCompound ).result().orElse( null );
     }
 
     @Override
     public NbtCompound fromStatusEffectInstance( final StatusEffectInstance statusEffectInstance )
     {
-        return (NbtCompound) statusEffectInstance.writeNbt();
+        return (NbtCompound) StatusEffectInstance.CODEC
+            .encodeStart( NbtOps.INSTANCE, statusEffectInstance )
+            .result()
+            .orElse( new NbtCompound() );
     }
 }

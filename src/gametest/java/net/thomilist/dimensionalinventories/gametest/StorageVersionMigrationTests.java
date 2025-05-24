@@ -1,13 +1,13 @@
 package net.thomilist.dimensionalinventories.gametest;
 
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.MinecraftVersion;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.minecraft.text.Text;
 import net.minecraft.util.WorldSavePath;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.gametest.util.TestState;
@@ -41,11 +41,10 @@ import java.util.List;
 public class StorageVersionMigrationTests
     extends DimensionalInventoriesGameTest
 {
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MIGRATION )
+    @GameTest
     public void migrateLegacyToV2( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         // Prepare legacy data to migrate from
 
@@ -74,8 +73,14 @@ public class StorageVersionMigrationTests
             .get( DimensionPoolConfigModule.class )
             .state();
 
-        context.assertTrue( dimensionPoolConfig.poolExists( "default" ), "Dimension pool 'default' missing" );
-        context.assertTrue( dimensionPoolConfig.poolExists( "creative" ), "Dimension pool 'creative' missing" );
+        context.assertTrue(
+            dimensionPoolConfig.poolExists( "default" ),
+            Text.of( "Dimension pool 'default' missing" )
+        );
+        context.assertTrue(
+            dimensionPoolConfig.poolExists( "creative" ),
+            Text.of( "Dimension pool 'creative' missing" )
+        );
 
         final DimensionPool dimensionPoolDefault = dimensionPoolConfig.poolWithId( "default" ).orElseThrow();
         final DimensionPool dimensionPoolCreative = dimensionPoolConfig.poolWithId( "creative" ).orElseThrow();
@@ -84,12 +89,12 @@ public class StorageVersionMigrationTests
 
         context.assertTrue(
             dimensionPoolDefault.hasDimensions( "minecraft:overworld", "minecraft:the_nether", "minecraft:the_end" ),
-            "Dimension pool 'default' missing dimension(s)"
+            Text.of( "Dimension pool 'default' missing dimension(s)" )
         );
 
         context.assertTrue(
             dimensionPoolCreative.hasDimensions( "custom:creative" ),
-            "Dimension pool 'creative' missing dimension(s)"
+            Text.of( "Dimension pool 'creative' missing dimension(s)" )
         );
 
         // Data for all players migrated?
@@ -114,8 +119,9 @@ public class StorageVersionMigrationTests
                     {
                         context.assertTrue(
                             jsonPlayerModule.saveFile( player, dimensionPool ).toFile().exists(),
-                            "Dimension pool '" + dimensionPool.getId() + "' missing " + playerModule.moduleId() +
-                            " data for " + "player '" + playerUuid + '\''
+                            Text.of(
+                                "Dimension pool '" + dimensionPool.getId() + "' missing " + playerModule.moduleId() +
+                                " data for " + "player '" + playerUuid + '\'' )
                         );
                     }
                 }
@@ -237,6 +243,7 @@ public class StorageVersionMigrationTests
         }
 
         context.complete();
+        this.end();
     }
 
     private void initializeSampleData( final TestContext context,

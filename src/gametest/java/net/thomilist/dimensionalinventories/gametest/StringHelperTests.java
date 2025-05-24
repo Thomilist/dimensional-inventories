@@ -1,7 +1,6 @@
 package net.thomilist.dimensionalinventories.gametest;
 
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.minecraft.test.GameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUtils;
 import net.thomilist.dimensionalinventories.util.StringHelper;
@@ -9,11 +8,10 @@ import net.thomilist.dimensionalinventories.util.StringHelper;
 public class StringHelperTests
     extends DimensionalInventoriesGameTest
 {
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void joinScopes( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         final String[] scopes = { "one", "two", "three", "four", "five" };
         final String joinedScopes = StringHelper.joinScopes( scopes );
@@ -21,13 +19,13 @@ public class StringHelperTests
         AssertionUtils.assertEquals( context, joinedScopes, "one :: two :: three :: four :: five", "joined scopes" );
 
         context.complete();
+        this.end();
     }
 
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void joinAndWrapScopes( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         final String[] scopes = { "one", "two", "three", "four", "five" };
         final String joinedScopes = StringHelper.joinAndWrapScopes( scopes );
@@ -40,5 +38,6 @@ public class StringHelperTests
         );
 
         context.complete();
+        this.end();
     }
 }

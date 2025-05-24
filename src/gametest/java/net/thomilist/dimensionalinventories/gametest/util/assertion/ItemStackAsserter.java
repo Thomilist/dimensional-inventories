@@ -8,6 +8,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.test.TestContext;
+import net.minecraft.text.Text;
 
 public class ItemStackAsserter
 {
@@ -29,7 +30,7 @@ public class ItemStackAsserter
     {
         this.context.assertTrue(
             itemStack.isEmpty(),
-            "Expected %s to be empty, but was %s".formatted( name, itemStack )
+            Text.of( "Expected %s to be empty, but was %s".formatted( name, itemStack ) )
         );
     }
 
@@ -37,7 +38,10 @@ public class ItemStackAsserter
     {
         this.context.assertTrue(
             itemStack.isOf( expectedItem ),
-            "Expected item type to be %s, but was %s".formatted( expectedItem, itemStack.getItem() )
+            Text.of( "Expected item type to be %s, but was %s".formatted(
+                expectedItem,
+                itemStack.getItem()
+            ) )
         );
     }
 

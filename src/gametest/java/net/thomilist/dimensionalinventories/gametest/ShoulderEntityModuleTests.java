@@ -2,16 +2,15 @@ package net.thomilist.dimensionalinventories.gametest;
 
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.entity.FakePlayer;
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.minecraft.text.Text;
+import net.thomilist.dimensionalinventories.gametest.mixin.ParrotAccessor;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.gametest.util.NbtUtils;
-import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUtils;
 import net.thomilist.dimensionalinventories.mixin.PlayerEntityAccessor;
 
 import java.util.UUID;
@@ -21,11 +20,10 @@ public class ShoulderEntityModuleTests
 {
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
     // Test with a single parrot
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void transitionSwapsSingleShoulderEntity( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
@@ -37,10 +35,10 @@ public class ShoulderEntityModuleTests
         ((PlayerEntityAccessor) player).invokeDropShoulderEntities();
 
         final ParrotEntity parrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
-        parrot.setVariant( ParrotEntity.Variant.RED_BLUE );
+        ((ParrotAccessor) parrot).invokeSetVariant( ParrotEntity.Variant.RED_BLUE );
         final NbtCompound parrotNbt = parrot.writeNbt( new NbtCompound() );
         player.addShoulderEntity( parrotNbt );
-        final String parrotNbtString = NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() );
+        final NbtCompound parrotBefore = player.getShoulderEntityLeft();
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
             player,
@@ -49,12 +47,13 @@ public class ShoulderEntityModuleTests
         );
 
         context.assertTrue(
-            NbtUtils.isEmpty( player.getShoulderEntityLeft() ),
-            "Left shoulder empty after transition"
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityLeft() ),
+            Text.of( "Left shoulder empty after transition" )
         );
+
         context.assertTrue(
-            NbtUtils.isEmpty( player.getShoulderEntityRight() ),
-            "Right shoulder empty after transition"
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityRight() ),
+            Text.of( "Right shoulder empty after transition" )
         );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -63,27 +62,26 @@ public class ShoulderEntityModuleTests
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        AssertionUtils.assertEquals(
-            context,
-            NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() ),
-            parrotNbtString,
-            "left parrot after return transition"
-        );
         context.assertTrue(
-            NbtUtils.isEmpty( player.getShoulderEntityRight() ),
-            "Right shoulder empty after return transition"
+            NbtUtils.areEffectivelyEqual( parrotBefore, player.getShoulderEntityLeft() ),
+            Text.of( "Left parrot restored after return transition" )
+        );
+
+        context.assertTrue(
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityRight() ),
+            Text.of( "Right shoulder empty after return transition" )
         );
 
         context.complete();
+        this.end();
     }
 
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
     // Test with two parrots
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void transitionSwapsBothShoulderEntities( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
@@ -97,8 +95,8 @@ public class ShoulderEntityModuleTests
         final ParrotEntity leftParrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
         final ParrotEntity rightParrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
 
-        leftParrot.setVariant( ParrotEntity.Variant.RED_BLUE );
-        rightParrot.setVariant( ParrotEntity.Variant.GREEN );
+        ((ParrotAccessor) leftParrot).invokeSetVariant( ParrotEntity.Variant.RED_BLUE );
+        ((ParrotAccessor) rightParrot).invokeSetVariant( ParrotEntity.Variant.GREEN );
 
         final NbtCompound leftParrotNbt = leftParrot.writeNbt( new NbtCompound() );
         final NbtCompound rightParrotNbt = rightParrot.writeNbt( new NbtCompound() );
@@ -106,8 +104,8 @@ public class ShoulderEntityModuleTests
         player.addShoulderEntity( leftParrotNbt );
         player.addShoulderEntity( rightParrotNbt );
 
-        final String leftParrotNbtString = NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() );
-        final String rightParrotNbtString = NbtHelper.toNbtProviderString( player.getShoulderEntityRight() );
+        final NbtCompound leftParrotBefore = player.getShoulderEntityLeft();
+        final NbtCompound rightParrotBefore = player.getShoulderEntityRight();
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
             player,
@@ -116,12 +114,13 @@ public class ShoulderEntityModuleTests
         );
 
         context.assertTrue(
-            NbtUtils.isEmpty( player.getShoulderEntityLeft() ),
-            "Left shoulder empty after transition"
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityLeft() ),
+            Text.of( "Left shoulder empty after transition" )
         );
+
         context.assertTrue(
-            NbtUtils.isEmpty( player.getShoulderEntityRight() ),
-            "Right shoulder empty after transition"
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityRight() ),
+            Text.of( "Right shoulder empty after transition" )
         );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -130,19 +129,17 @@ public class ShoulderEntityModuleTests
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        AssertionUtils.assertEquals(
-            context,
-            NbtHelper.toNbtProviderString( player.getShoulderEntityLeft() ),
-            leftParrotNbtString,
-            "left parrot after return transition"
+        context.assertTrue(
+            NbtUtils.areEffectivelyEqual( leftParrotBefore, player.getShoulderEntityLeft() ),
+            Text.of( "Left parrot restored after return transition" )
         );
-        AssertionUtils.assertEquals(
-            context,
-            NbtHelper.toNbtProviderString( player.getShoulderEntityRight() ),
-            rightParrotNbtString,
-            "right parrot after return transition"
+
+        context.assertTrue(
+            NbtUtils.areEffectivelyEqual( rightParrotBefore, player.getShoulderEntityRight() ),
+            Text.of( "Right parrot restored after return transition" )
         );
 
         context.complete();
+        this.end();
     }
 }

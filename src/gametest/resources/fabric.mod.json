@@ -7,7 +7,6 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "net.thomilist.dimensionalinventories.gametest.Batches",
       "net.thomilist.dimensionalinventories.gametest.InventoryModuleTests",
       "net.thomilist.dimensionalinventories.gametest.StatusEffectModuleTests",
       "net.thomilist.dimensionalinventories.gametest.GameModeModuleTests",

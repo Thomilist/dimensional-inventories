@@ -1,74 +1,57 @@
 package net.thomilist.dimensionalinventories.gametest.util;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.nbt.AbstractNbtList;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
-import net.thomilist.dimensionalinventories.DimensionalInventories;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.HashSet;
 
 public final class NbtUtils
 {
-    public static final NbtCompound[] EMPTY_NBT;
-    private static final NbtCompound EMPTY_FROM_NEW = new NbtCompound();
-    private static final NbtCompound EMPTY_FROM_CONVERSION;
-    private static final String[] EMPTY_NBT_STRINGS = {
-        "{}",
-        "{data:[],palette:[]}",
-        "{blocks:[],palette:[]}",
-        "{\n    data: [],\n    palette: []\n}",
-        "{\n    blocks: [],\n    palette: []\n}"
-    };
-
-    static
+    public static boolean isEffectivelyEmpty( @Nullable final NbtElement nbtElement )
     {
-        try
+        return switch ( nbtElement )
         {
-            EMPTY_FROM_CONVERSION
-                = NbtHelper.fromNbtProviderString( NbtHelper.toNbtProviderString( new NbtCompound() ) );
-
-            final ArrayList<NbtCompound> emptyNbt = new ArrayList<>();
-
-            emptyNbt.add( NbtUtils.EMPTY_FROM_NEW );
-            emptyNbt.add( NbtUtils.EMPTY_FROM_CONVERSION );
-
-            for ( final String nbtString : NbtUtils.EMPTY_NBT_STRINGS )
-            {
-                emptyNbt.add( NbtHelper.fromNbtProviderString( nbtString ) );
-            }
-
-            EMPTY_NBT = emptyNbt.toArray( new NbtCompound[] { } );
-        }
-        catch ( final CommandSyntaxException e )
-        {
-            DimensionalInventories.LOGGER.error( "Nbt string", e );
-            throw new IllegalStateException();
-        }
+            case final AbstractNbtList nbtList -> nbtList.isEmpty();
+            case final NbtCompound nbtCompound ->
+                nbtCompound.isEmpty() || nbtCompound.values().stream().allMatch( NbtUtils::isEffectivelyEmpty );
+            case null -> true;
+            default -> false;
+        };
     }
 
-    public static boolean isEmpty( final NbtCompound nbt )
+    public static boolean areEffectivelyEqual( @Nullable final NbtElement left, @Nullable final NbtElement right )
     {
-        if ( nbt.isEmpty() )
+        if ( NbtHelper.matches( left, right, true ) )
         {
             return true;
         }
 
-        final String nbtString = NbtHelper.toNbtProviderString( nbt );
-
-        for ( final NbtCompound emptyNbt : NbtUtils.EMPTY_NBT )
+        if ( NbtUtils.isEffectivelyEmpty( left ) && NbtUtils.isEffectivelyEmpty( right ) )
         {
-            if ( nbt == emptyNbt )
-            {
-                return true;
-            }
+            return true;
+        }
 
-            if ( Objects.equals( nbtString, NbtHelper.toNbtProviderString( emptyNbt ) ) )
+        if ( (left instanceof final NbtCompound leftCompound) && (right instanceof final NbtCompound rightCompound) )
+        {
+            final HashSet<String> combinedKeys = new HashSet<String>();
+            combinedKeys.addAll( leftCompound.getKeys() );
+            combinedKeys.addAll( rightCompound.getKeys() );
+
+            for ( final String key : combinedKeys )
             {
-                return true;
+                final NbtElement leftElement = leftCompound.get( key );
+                final NbtElement rightElement = rightCompound.get( key );
+
+                if ( !NbtUtils.areEffectivelyEqual( leftElement, rightElement ) )
+                {
+                    return false;
+                }
             }
         }
 
-        return false;
+        return true;
     }
 }

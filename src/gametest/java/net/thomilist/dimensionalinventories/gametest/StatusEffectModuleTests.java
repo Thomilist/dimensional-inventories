@@ -1,13 +1,13 @@
 package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.entity.FakePlayer;
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.minecraft.text.Text;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 
 public class StatusEffectModuleTests
@@ -15,11 +15,10 @@ public class StatusEffectModuleTests
 {
     // Status effects should be swapped on dimension pool transition.
     // Test with all registered status effects
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void transitionSwapsStatusEffects( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get( context.getWorld() );
@@ -41,7 +40,10 @@ public class StatusEffectModuleTests
                 BasicModSetup.DESTINATION_DIMENSION
             );
 
-            context.assertTrue( player.getStatusEffects().isEmpty(), "Player has no status effects after transition" );
+            context.assertTrue(
+                player.getStatusEffects().isEmpty(),
+                Text.of( "Player has no status effects after transition" )
+            );
 
             setup.instance.transitionHandler.handlePlayerDimensionChange(
                 player,
@@ -51,12 +53,13 @@ public class StatusEffectModuleTests
 
             context.assertTrue(
                 player.hasStatusEffect( effectEntry ),
-                "Player regained status effect after return transition"
+                Text.of( "Player regained status effect after return transition" )
             );
 
             player.clearStatusEffects();
         }
 
         context.complete();
+        this.end();
     }
 }

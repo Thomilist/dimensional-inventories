@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.gametest;
 
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -10,7 +10,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
-import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.gametest.util.BlockPlacement;
@@ -22,11 +21,10 @@ public class NonPlayerHandlingTests
     extends DimensionalInventoriesGameTest
 {
     // When an item entity crosses dimension pools, it should be deleted
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void transitionDeletesItemEntity( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
@@ -49,15 +47,15 @@ public class NonPlayerHandlingTests
         }
 
         context.complete();
+        this.end();
     }
 
     // When an item entity crosses dimension pools, but one or both of the dimensions are not
     // assigned to any dimension pool, the item entity should be unaffected
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void unconfiguredTransitionDoesNotDeleteItemEntity( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
@@ -72,14 +70,14 @@ public class NonPlayerHandlingTests
 
         context.expectEntity( EntityType.ITEM );
         context.complete();
+        this.end();
     }
 
     // When a mob entity crosses dimension pools, it should be deleted
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void transitionDeletesMobEntity( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
@@ -122,15 +120,15 @@ public class NonPlayerHandlingTests
         }
 
         context.complete();
+        this.end();
     }
 
     // When a mob entity crosses dimension pools, but one or both of the dimensions are not
     // assigned to any dimension pool, the mob entity should be unaffected
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void unconfiguredTransitionDoesNotDeleteMobEntity( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
@@ -146,15 +144,15 @@ public class NonPlayerHandlingTests
 
         context.expectEntity( entityType );
         context.complete();
+        this.end();
     }
 
     // Ensure chest boats, chest minecarts and hopper minecarts don't drop their contents on transition,
     // i.e. not bringing back https://github.com/Thomilist/dimensional-inventories/issues/15
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void transitionHandlesClearableEntity( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
@@ -198,5 +196,6 @@ public class NonPlayerHandlingTests
         }
 
         context.complete();
+        this.end();
     }
 }

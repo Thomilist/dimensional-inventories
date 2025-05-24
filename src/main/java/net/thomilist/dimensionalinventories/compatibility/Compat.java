@@ -5,10 +5,12 @@ import net.thomilist.dimensionalinventories.compatibility.java.collection.ListCo
 import net.thomilist.dimensionalinventories.compatibility.java.collection.ListCompatWrapper_Java_21;
 import net.thomilist.dimensionalinventories.compatibility.java.collection.SortedSetCompatWrapper;
 import net.thomilist.dimensionalinventories.compatibility.java.collection.SortedSetCompatWrapper_Java_21;
+import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.PlayerInventoryCompatWrapper;
+import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.PlayerInventoryCompatWrapper_Minecraft_1_21_5;
 import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.SimpleInventoryCompatWrapper;
 import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.SimpleInventoryCompatWrapper_Minecraft_1_20_3;
 import net.thomilist.dimensionalinventories.compatibility.minecraft.nbt.NbtCompatWrapper;
-import net.thomilist.dimensionalinventories.compatibility.minecraft.nbt.NbtCompatWrapper_Minecraft_1_20_5;
+import net.thomilist.dimensionalinventories.compatibility.minecraft.nbt.NbtCompatWrapper_Minecraft_1_21_5;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -24,9 +26,11 @@ public final class Compat
     public static final SortedSetCompatWrapper SORTED_SET = new SortedSetCompatWrapper_Java_21();
 
     // For Minecraft versions
-    public static final NbtCompatWrapper NBT = new NbtCompatWrapper_Minecraft_1_20_5();
+    public static final NbtCompatWrapper NBT = new NbtCompatWrapper_Minecraft_1_21_5();
     public static final SimpleInventoryCompatWrapper SIMPLE_INVENTORY
         = new SimpleInventoryCompatWrapper_Minecraft_1_20_3();
+    public static final PlayerInventoryCompatWrapper PLAYER_INVENTORY =
+        new PlayerInventoryCompatWrapper_Minecraft_1_21_5();
 
     public static void onServerStarted( final MinecraftServer server )
     {

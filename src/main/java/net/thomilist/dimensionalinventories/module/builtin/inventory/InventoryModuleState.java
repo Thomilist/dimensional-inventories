@@ -53,19 +53,25 @@ public class InventoryModuleState
     @Override
     public void applyToPlayer( final ServerPlayerEntity player )
     {
-        ItemStackListHelper.assignItemStacks( this.armor, player.getInventory().armor );
-        ItemStackListHelper.assignItemStacks( this.main, player.getInventory().main );
-        ItemStackListHelper.assignItemStacks( this.offHand, player.getInventory().offHand );
-        ItemStackListHelper.assignItemStacks( this.enderChest, Compat.SIMPLE_INVENTORY.getHeldStacks(player.getEnderChestInventory()) );
+        Compat.PLAYER_INVENTORY.setArmor( player.getInventory(), this.armor );
+        Compat.PLAYER_INVENTORY.setMain( player.getInventory(), this.main );
+        Compat.PLAYER_INVENTORY.setOffHand( player.getInventory(), this.offHand );
+        Compat.SIMPLE_INVENTORY.setHeldStacks( player.getEnderChestInventory(), this.enderChest );
     }
 
     @Override
     public void loadFromPlayer( final ServerPlayerEntity player )
     {
-        ItemStackListHelper.assignItemStacks( player.getInventory().armor, this.armor );
-        ItemStackListHelper.assignItemStacks( player.getInventory().main, this.main );
-        ItemStackListHelper.assignItemStacks( player.getInventory().offHand, this.offHand );
-        ItemStackListHelper.assignItemStacks( Compat.SIMPLE_INVENTORY.getHeldStacks(player.getEnderChestInventory()), this.enderChest );
+        ItemStackListHelper.assignItemStacks( Compat.PLAYER_INVENTORY.getArmor( player.getInventory() ), this.armor );
+        ItemStackListHelper.assignItemStacks( Compat.PLAYER_INVENTORY.getMain( player.getInventory() ), this.main );
+        ItemStackListHelper.assignItemStacks(
+            Compat.PLAYER_INVENTORY.getOffHand( player.getInventory() ),
+            this.offHand
+        );
+        ItemStackListHelper.assignItemStacks(
+            Compat.SIMPLE_INVENTORY.getHeldStacks( player.getEnderChestInventory() ),
+            this.enderChest
+        );
     }
 
     public DefaultedList<ItemStack> section( final InventorySection label )

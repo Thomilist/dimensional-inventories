@@ -1,10 +1,10 @@
 package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.entity.FakePlayer;
-import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.minecraft.text.Text;
 import net.minecraft.world.GameMode;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
@@ -14,11 +14,10 @@ public class GameModeModuleTests
 {
     // When a player crosses dimension pools, their gamemode should be changed
     // according to dimension pool settings
-    @GameTest( templateName = FabricGameTest.EMPTY_STRUCTURE,
-               batchId = Batches.MAIN )
+    @GameTest
     public void transitionSwitchesGameMode( final TestContext context )
     {
-        this.logTestStart();
+        this.begin();
 
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get( context.getWorld() );
@@ -41,7 +40,11 @@ public class GameModeModuleTests
             BasicModSetup.DESTINATION_DIMENSION
         );
 
-        context.testEntity( player, ServerPlayerEntity::isCreative, "Game mode is creative after first transition" );
+        context.testEntity(
+            player,
+            ServerPlayerEntity::isCreative,
+            Text.of( "Game mode is creative after first transition" )
+        );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
             player,
@@ -49,8 +52,13 @@ public class GameModeModuleTests
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        context.testEntity( player, ServerPlayerEntity::isSpectator, "Game mode is spectator after return transition" );
+        context.testEntity(
+            player,
+            ServerPlayerEntity::isSpectator,
+            Text.of( "Game mode is spectator after return transition" )
+        );
 
         context.complete();
+        this.end();
     }
 }

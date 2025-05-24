@@ -4,6 +4,7 @@ import net.thomilist.dimensionalinventories.gametest.DimensionalInventoriesGameT
 import net.thomilist.dimensionalinventories.util.SavePaths;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,25 @@ public final class TestState
 {
     public static final Path WORLD_SAVE_PATH = SavePaths.saveDirectory().getParent();
     public static final Path GAMETEST_STASH_PATH = TestState.WORLD_SAVE_PATH.resolve( ".gametest" );
+
+    @Nullable
+    private static String LATEST_BATCH_ID = null;
+
+    public static void setLatestBatchId( final String batchId )
+    {
+        TestState.LATEST_BATCH_ID = batchId;
+    }
+
+    public static void stashLatestModData()
+    {
+        if ( TestState.LATEST_BATCH_ID == null )
+        {
+            return;
+        }
+
+        TestState.stashModData( TestState.LATEST_BATCH_ID );
+        TestState.LATEST_BATCH_ID = null;
+    }
 
     public static void stashModData( final String batchId )
     {
