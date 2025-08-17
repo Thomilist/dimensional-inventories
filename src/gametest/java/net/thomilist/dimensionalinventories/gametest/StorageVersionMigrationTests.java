@@ -3,6 +3,7 @@ package net.thomilist.dimensionalinventories.gametest;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.MinecraftVersion;
+import net.minecraft.GameVersion;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -233,7 +234,8 @@ public class StorageVersionMigrationTests
         // ... including damage, enchantments, custom names etc. (the stuff that was moved to item components)?
 
         // Pre-24w09a (1.20.5)
-        if ( MinecraftVersion.CURRENT.getSaveVersion().getId() <= 3819 )
+//        if ( MinecraftVersion.CURRENT.getSaveVersion().getId() <= 3819 )
+        if ( MinecraftVersion.CURRENT.dataVersion().id() <= 3819 )
         {
             combinedInventory.assertCountAt( 38, 1 );
             combinedInventory.assertDamage( 38, 6 );

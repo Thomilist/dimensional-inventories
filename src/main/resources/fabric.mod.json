@@ -34,7 +34,6 @@
       "environment": "client"
     }
   ],
-
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",

@@ -8,10 +8,12 @@ import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
+import net.minecraft.util.ErrorReporter;
 import net.thomilist.dimensionalinventories.gametest.mixin.ParrotAccessor;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.gametest.util.NbtUtils;
 import net.thomilist.dimensionalinventories.mixin.PlayerEntityAccessor;
+import net.minecraft.storage.NbtWriteView;
 
 import java.util.UUID;
 
@@ -36,7 +38,10 @@ public class ShoulderEntityModuleTests
 
         final ParrotEntity parrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
         ((ParrotAccessor) parrot).invokeSetVariant( ParrotEntity.Variant.RED_BLUE );
-        final NbtCompound parrotNbt = parrot.writeNbt( new NbtCompound() );
+        NbtWriteView parrotView = NbtWriteView.create( new ErrorReporter.Impl());
+        parrot.writeData(parrotView);
+        final NbtCompound parrotNbt = parrotView.getNbt();
+//        final NbtCompound parrotNbt = parrot.writeNbt( new NbtCompound() );
         player.addShoulderEntity( parrotNbt );
         final NbtCompound parrotBefore = player.getShoulderEntityLeft();
 
@@ -98,8 +103,14 @@ public class ShoulderEntityModuleTests
         ((ParrotAccessor) leftParrot).invokeSetVariant( ParrotEntity.Variant.RED_BLUE );
         ((ParrotAccessor) rightParrot).invokeSetVariant( ParrotEntity.Variant.GREEN );
 
-        final NbtCompound leftParrotNbt = leftParrot.writeNbt( new NbtCompound() );
-        final NbtCompound rightParrotNbt = rightParrot.writeNbt( new NbtCompound() );
+        NbtWriteView leftParrotView = NbtWriteView.create( new ErrorReporter.Impl());
+        NbtWriteView rightParrotView = NbtWriteView.create( new ErrorReporter.Impl());
+
+        leftParrot.writeData( leftParrotView );
+        rightParrot.writeData( rightParrotView );
+
+        final NbtCompound leftParrotNbt = leftParrotView.getNbt();
+        final NbtCompound rightParrotNbt = rightParrotView.getNbt();
 
         player.addShoulderEntity( leftParrotNbt );
         player.addShoulderEntity( rightParrotNbt );
