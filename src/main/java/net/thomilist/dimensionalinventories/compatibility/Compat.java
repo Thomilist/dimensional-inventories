@@ -10,7 +10,7 @@ import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.Pl
 import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.SimpleInventoryCompatWrapper;
 import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.SimpleInventoryCompatWrapper_Minecraft_1_20_3;
 import net.thomilist.dimensionalinventories.compatibility.minecraft.nbt.NbtCompatWrapper;
-import net.thomilist.dimensionalinventories.compatibility.minecraft.nbt.NbtCompatWrapper_Minecraft_1_21_7;
+import net.thomilist.dimensionalinventories.compatibility.minecraft.nbt.NbtCompatWrapper_Minecraft_1_21_6;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -26,11 +26,11 @@ public final class Compat
     public static final SortedSetCompatWrapper SORTED_SET = new SortedSetCompatWrapper_Java_21();
 
     // For Minecraft versions
-    public static final NbtCompatWrapper NBT = new NbtCompatWrapper_Minecraft_1_21_7();
+    public static final NbtCompatWrapper NBT = new NbtCompatWrapper_Minecraft_1_21_6();
     public static final SimpleInventoryCompatWrapper SIMPLE_INVENTORY
         = new SimpleInventoryCompatWrapper_Minecraft_1_20_3();
-    public static final PlayerInventoryCompatWrapper PLAYER_INVENTORY =
-        new PlayerInventoryCompatWrapper_Minecraft_1_21_5();
+    public static final PlayerInventoryCompatWrapper PLAYER_INVENTORY
+        = new PlayerInventoryCompatWrapper_Minecraft_1_21_5();
 
     public static void onServerStarted( final MinecraftServer server )
     {

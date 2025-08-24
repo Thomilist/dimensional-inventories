@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "dimensional-inventories",
   "version": "${version}",
-
   "name": "Dimensional Inventories",
   "description": "Keep separate inventories across pools of dimensions.",
   "authors": [
@@ -13,10 +12,8 @@
     "sources": "https://github.com/thomilist/dimensional-inventories/",
     "issues": "https://github.com/Thomilist/dimensional-inventories/issues"
   },
-
   "license": "MIT",
   "icon": "assets/dimensionalinventories/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "client": [

@@ -176,7 +176,7 @@ public class DimensionPoolChangeOnRespawnTest
 
         // 2: player killed; respawns in overworld; has 64 diamonds
 
-        originalPlayer.kill( originalPlayer.getServerWorld() );
+        originalPlayer.kill( originalPlayer.getWorld() );
 
         context
             .getWorld()
