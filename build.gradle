@@ -3,7 +3,7 @@ plugins {
 	id 'maven-publish'
 }
 
-def targetJavaVersion = Integer.parseInt(target_java_version)
+def targetJavaVersion = Integer.parseInt(project.target_java_version)
 def javaVersionString = "JAVA_" + targetJavaVersion.toString()
 
 version = project.mod_version
@@ -53,6 +53,9 @@ loom {
 		}
 	}
 
+    createRemapConfigurations( sourceSets.gametest )
+    createRemapConfigurations( sourceSets.gametestClient )
+
 	runs {
 		server {
 			runDir(interactiveServerRunPath)
@@ -79,6 +82,8 @@ loom {
 			source sourceSets.gametestClient
 		}
 	}
+
+    accessWidenerPath = file("src/gametest/resources/dimensional-inventories-gametest.accesswidener")
 }
 
 tasks.register("cleanGametestServer") {
@@ -125,6 +130,7 @@ tasks.javadoc {
 	source += sourceSets.client.allJava
 	source += sourceSets.gametest.allJava
 	source += sourceSets.test.allJava
+    classpath += sourceSets.gametest.compileClasspath
 }
 
 runClient.configure {
@@ -151,6 +157,10 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 dependencies {
@@ -172,6 +182,8 @@ dependencies {
 	gametestClientImplementation sourceSets.main.output
 	gametestClientImplementation sourceSets.client.output
 	gametestClientImplementation sourceSets.gametest.output
+
+    modGametestImplementation "maven.modrinth:carpet:${project.carpet_version}"
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -179,13 +191,15 @@ tasks.withType(ProcessResources).configureEach {
 	inputs.property("version", project.version)
 	inputs.property("minecraft_version", project.minecraft_version)
 	inputs.property("loader_version", project.loader_version)
+	inputs.property("carpet_version", project.carpet_version)
 	filteringCharset = "UTF-8"
 
 	filesMatching("fabric.mod.json") {
 		expand "java_version": project.target_java_version,
 				"version": project.version,
 				"minecraft_version": project.minecraft_version,
-				"loader_version": project.loader_version
+                "loader_version": project.loader_version,
+                "carpet_version": project.carpet_version
 	}
 
 	filesMatching("*.mixins.json") {
