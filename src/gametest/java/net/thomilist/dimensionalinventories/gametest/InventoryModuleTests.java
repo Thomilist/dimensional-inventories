@@ -19,11 +19,9 @@ public class InventoryModuleTests
 {
     // Swap player inventory on dimension pool transition (kinda the whole point of the mod).
     // Tests with every registered item
-    @GameTest
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void transitionSwapsPlayerItems( final TestContext context )
     {
-        this.begin();
-
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
 
@@ -73,15 +71,12 @@ public class InventoryModuleTests
         }
 
         context.complete();
-        this.end();
     }
 
     // Do not swap player inventory on unconfigured transition
-    @GameTest
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void unconfiguredTransitionDoesNotSwapPlayerItems( final TestContext context )
     {
-        this.begin();
-
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
         final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getMaxCount() );
@@ -101,15 +96,12 @@ public class InventoryModuleTests
         );
 
         context.complete();
-        this.end();
     }
 
     // Ensure all inventory slots are supported (main, offhand, armour, ender chest)
-    @GameTest
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void transitionHandlesEveryInventorySlot( final TestContext context )
     {
-        this.begin();
-
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
         final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getMaxCount() );
@@ -121,7 +113,10 @@ public class InventoryModuleTests
         ItemStackListHelper.fillWithCopies( itemStacksEnderChest, itemStack, 27 );
 
         Compat.PLAYER_INVENTORY.setMain( player.getInventory(), itemStacksMain );
-        Compat.PLAYER_INVENTORY.setOffHand( player.getInventory(), DefaultedList.copyOf( ItemStack.EMPTY, itemStack.copy() ) );
+        Compat.PLAYER_INVENTORY.setOffHand(
+            player.getInventory(),
+            DefaultedList.copyOf( ItemStack.EMPTY, itemStack.copy() )
+        );
         Compat.SIMPLE_INVENTORY.setHeldStacks( player.getEnderChestInventory(), itemStacksEnderChest );
 
         final ItemStack helmet = new ItemStack( Items.DIAMOND_HELMET );
@@ -305,6 +300,5 @@ public class InventoryModuleTests
         );
 
         context.complete();
-        this.end();
     }
 }

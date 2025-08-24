@@ -20,11 +20,9 @@ public class ShoulderEntityModuleTests
 {
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
     // Test with a single parrot
-    @GameTest
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void transitionSwapsSingleShoulderEntity( final TestContext context )
     {
-        this.begin();
-
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
             context.getWorld(),
@@ -73,16 +71,13 @@ public class ShoulderEntityModuleTests
         );
 
         context.complete();
-        this.end();
     }
 
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
     // Test with two parrots
-    @GameTest
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void transitionSwapsBothShoulderEntities( final TestContext context )
     {
-        this.begin();
-
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
             context.getWorld(),
@@ -140,6 +135,5 @@ public class ShoulderEntityModuleTests
         );
 
         context.complete();
-        this.end();
     }
 }
