@@ -9,6 +9,8 @@ import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class DimensionPoolTransitionHandler
@@ -16,6 +18,7 @@ public class DimensionPoolTransitionHandler
     private final StorageVersion storageVersion;
     private final ModuleRegistry<ConfigModule> configModules;
     private final ModuleRegistry<PlayerModule> playerModules;
+    private final Map<Entity, TransitionInfo> lastTransitions = new HashMap<>();
 
     public DimensionPoolTransitionHandler( final StorageVersion storageVersion,
                                            final ModuleRegistry<ConfigModule> configModules,
@@ -56,6 +59,11 @@ public class DimensionPoolTransitionHandler
                                              final String originDimensionName,
                                              final String destinationDimensionName )
     {
+        if ( this.transitionAlreadyHandled( player, originDimensionName, destinationDimensionName ) )
+        {
+            return;
+        }
+
         DimensionalInventories.LOGGER.debug(
             "Player '{}' ({}) travelled from {} to {}.",
             player.getName().getString(),
@@ -105,6 +113,11 @@ public class DimensionPoolTransitionHandler
                                              final String originDimensionName,
                                              final String destinationDimensionName )
     {
+        if ( this.transitionAlreadyHandled( newEntity, originDimensionName, destinationDimensionName ) )
+        {
+            return;
+        }
+
         final DimensionPoolConfigModule dimensionPoolConfig = this.configModules.get( DimensionPoolConfigModule.class );
 
         if ( !dimensionPoolConfig.state().dimensionsAreInSamePool( originDimensionName, destinationDimensionName ) )
@@ -147,4 +160,29 @@ public class DimensionPoolTransitionHandler
             newEntity.discard();
         }
     }
+
+    private Boolean transitionAlreadyHandled( final Entity newEntity,
+                                              final String originDimensionName,
+                                              final String destinationDimensionName )
+    {
+        final TransitionInfo oldTransitionInfo = this.lastTransitions.get( newEntity );
+        final TransitionInfo newTransitionInfo = new TransitionInfo( originDimensionName, destinationDimensionName );
+
+        if ( (oldTransitionInfo != null) && oldTransitionInfo.equals( newTransitionInfo ) )
+        {
+            DimensionalInventories.LOGGER.debug(
+                "Transition already handled. Entity '{}' unaffected ({} -> {}).",
+                newEntity.getName().getString(),
+                originDimensionName,
+                destinationDimensionName
+            );
+            return true;
+        }
+
+        this.lastTransitions.put( newEntity, newTransitionInfo );
+        return false;
+    }
+
+    record TransitionInfo( String originDimensionName, String destinationDimensionName )
+    { }
 }
