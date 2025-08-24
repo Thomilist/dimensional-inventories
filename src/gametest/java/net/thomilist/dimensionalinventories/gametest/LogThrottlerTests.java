@@ -8,11 +8,9 @@ import net.thomilist.dimensionalinventories.util.LogThrottler;
 public class LogThrottlerTests
     extends DimensionalInventoriesGameTest
 {
-    @GameTest
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void throttleLog( final TestContext context )
     {
-        this.begin();
-
         final LogThrottler logThrottler = new LogThrottler( 10 );
         int count = 0;
 
@@ -27,6 +25,5 @@ public class LogThrottlerTests
         AssertionUtils.assertEquals( context, count, 100, "number of allowed logs" );
 
         context.complete();
-        this.end();
     }
 }

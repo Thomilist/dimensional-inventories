@@ -4,7 +4,8 @@
   "package": "net.thomilist.dimensionalinventories.gametest.mixin",
   "compatibilityLevel": "${java_version}",
   "mixins": [
-    "ParrotAccessor"
+    "ParrotAccessor",
+    "TestEnvironmentDefinitionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

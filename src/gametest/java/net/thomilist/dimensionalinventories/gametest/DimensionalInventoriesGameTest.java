@@ -1,43 +1,63 @@
 package net.thomilist.dimensionalinventories.gametest;
 
+import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
+import net.minecraft.test.TestContext;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.gametest.util.TestState;
 import net.thomilist.dimensionalinventories.util.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
 import java.time.Instant;
 
 public abstract class DimensionalInventoriesGameTest
+    implements CustomTestMethodInvoker
 {
     public static final Logger LOGGER = LoggerFactory.getLogger(
         DimensionalInventories.PROPERTIES.namePascal() + "GameTest" );
 
+    public static final int MAX_TICKS = 200;
+
+    private static boolean RUNNING = false;
     private String packageName;
     private String className;
     private String methodName;
 
-    protected void begin()
+    @Override
+    public void invokeTestMethod( final TestContext context, final Method method )
+        throws ReflectiveOperationException
     {
-        final StackWalker.StackFrame caller = StackWalker
-            .getInstance()
-            .walk( frames -> frames.skip( 1 ).findFirst() )
-            .orElseThrow();
+        try
+        {
+            this.begin( method );
+            method.invoke( this, context );
+        }
+        finally
+        {
+            this.end();
+        }
+    }
 
-        final int splitIndex = caller.getClassName().lastIndexOf( '.' );
-        this.packageName = caller.getClassName().substring( 0, splitIndex );
-        this.className = caller.getClassName().substring( splitIndex + 1 );
-        this.methodName = caller.getMethodName();
+    private void begin( final Method method )
+    {
+        DimensionalInventoriesGameTest.RUNNING = true;
+
+        this.packageName = method.getDeclaringClass().getPackageName();
+        this.className = method.getDeclaringClass().getSimpleName();
+        this.methodName = method.getName();
 
         this.logTestBegin();
         TestState.stashLatestModData();
         TestState.setLatestBatchId( Instant.now().toEpochMilli() + "_" + this.getClass().getSimpleName() );
     }
 
-    protected void end()
+    private void end()
     {
         this.logTestEnd();
         TestState.stashLatestModData();
+
+        DimensionalInventoriesGameTest.RUNNING = false;
     }
 
     private void logTestStage( final String header )
@@ -46,10 +66,8 @@ public abstract class DimensionalInventoriesGameTest
         final String packageLine = "(in " + this.packageName + ')';
 
         final int longestLineLength = Integer.max(
-            header.length() + 2, Integer.max(
-                scopeLine.length(),
-                packageLine.length()
-            )
+            header.length() + 2,
+            Integer.max( scopeLine.length(), packageLine.length() )
         );
 
         final int dashCount = Integer.max( (longestLineLength - (header.length() + 2)) / 2, 4 );
