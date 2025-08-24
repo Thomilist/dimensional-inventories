@@ -8,14 +8,15 @@
   "entrypoints": {
     "fabric-gametest": [
       "net.thomilist.dimensionalinventories.gametest.Batches",
-      "net.thomilist.dimensionalinventories.gametest.InventoryModuleTests",
-      "net.thomilist.dimensionalinventories.gametest.StatusEffectModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.DimensionPoolChangeOnRespawnTest",
       "net.thomilist.dimensionalinventories.gametest.GameModeModuleTests",
-      "net.thomilist.dimensionalinventories.gametest.ShoulderEntityModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.InventoryModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.LogThrottlerTests",
       "net.thomilist.dimensionalinventories.gametest.NonPlayerHandlingTests",
+      "net.thomilist.dimensionalinventories.gametest.ShoulderEntityModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.StatusEffectModuleTests",
       "net.thomilist.dimensionalinventories.gametest.StorageVersionMigrationTests",
-      "net.thomilist.dimensionalinventories.gametest.StringHelperTests",
-      "net.thomilist.dimensionalinventories.gametest.LogThrottlerTests"
+      "net.thomilist.dimensionalinventories.gametest.StringHelperTests"
     ]
   },
   "mixins": [
@@ -25,11 +26,13 @@
       "environment": "client"
     }
   ],
+  "accessWidener": "dimensional-inventories-gametest.accesswidener",
 
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "~${minecraft_version}",
-    "java": ">=${java_version}"
+    "java": ">=${java_version}",
+    "carpet": "~${carpet_version}"
   }
 }
