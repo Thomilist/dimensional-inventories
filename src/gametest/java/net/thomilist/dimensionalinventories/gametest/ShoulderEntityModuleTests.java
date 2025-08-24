@@ -8,6 +8,7 @@ import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.gametest.mixin.ParrotAccessor;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.gametest.util.NbtUtils;
@@ -34,7 +35,7 @@ public class ShoulderEntityModuleTests
 
         final ParrotEntity parrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
         ((ParrotAccessor) parrot).invokeSetVariant( ParrotEntity.Variant.RED_BLUE );
-        final NbtCompound parrotNbt = parrot.writeNbt( new NbtCompound() );
+        final NbtCompound parrotNbt = Compat.NBT.fromEntity( parrot );
         player.addShoulderEntity( parrotNbt );
         final NbtCompound parrotBefore = player.getShoulderEntityLeft();
 
@@ -93,8 +94,8 @@ public class ShoulderEntityModuleTests
         ((ParrotAccessor) leftParrot).invokeSetVariant( ParrotEntity.Variant.RED_BLUE );
         ((ParrotAccessor) rightParrot).invokeSetVariant( ParrotEntity.Variant.GREEN );
 
-        final NbtCompound leftParrotNbt = leftParrot.writeNbt( new NbtCompound() );
-        final NbtCompound rightParrotNbt = rightParrot.writeNbt( new NbtCompound() );
+        final NbtCompound leftParrotNbt = Compat.NBT.fromEntity( leftParrot );
+        final NbtCompound rightParrotNbt = Compat.NBT.fromEntity( rightParrot );
 
         player.addShoulderEntity( leftParrotNbt );
         player.addShoulderEntity( rightParrotNbt );

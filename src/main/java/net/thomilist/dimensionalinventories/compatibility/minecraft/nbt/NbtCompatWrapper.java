@@ -1,5 +1,6 @@
 package net.thomilist.dimensionalinventories.compatibility.minecraft.nbt;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -15,4 +16,6 @@ public interface NbtCompatWrapper
     StatusEffectInstance toStatusEffectInstance( NbtCompound nbtCompound );
 
     NbtCompound fromStatusEffectInstance( StatusEffectInstance statusEffectInstance );
+
+    NbtCompound fromEntity( Entity entity );
 }

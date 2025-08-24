@@ -231,7 +231,7 @@ public class StorageVersionMigrationTests
         // ... including damage, enchantments, custom names etc. (the stuff that was moved to item components)?
 
         // Pre-24w09a (1.20.5)
-        if ( MinecraftVersion.CURRENT.getSaveVersion().getId() <= 3819 )
+        if ( MinecraftVersion.CURRENT.dataVersion().id() <= 3819 )
         {
             combinedInventory.assertCountAt( 38, 1 );
             combinedInventory.assertDamage( 38, 6 );
