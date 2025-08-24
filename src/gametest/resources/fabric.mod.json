@@ -7,6 +7,7 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
+      "net.thomilist.dimensionalinventories.gametest.DimensionPoolChangeOnRespawnTest",
       "net.thomilist.dimensionalinventories.gametest.GameModeModuleTests",
       "net.thomilist.dimensionalinventories.gametest.InventoryModuleTests",
       "net.thomilist.dimensionalinventories.gametest.LogThrottlerTests",
@@ -24,11 +25,13 @@
       "environment": "client"
     }
   ],
+  "accessWidener": "dimensional-inventories-gametest.accesswidener",
 
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "~${minecraft_version}",
-    "java": ">=${java_version}"
+    "java": ">=${java_version}",
+    "carpet": "~${carpet_version}"
   }
 }
