@@ -33,6 +33,17 @@ public interface Module
     default void registerCommands()
     { }
 
+    default String toFormatted()
+    {
+        return "%s module %s".formatted(
+            this.category(),
+            StringHelper.joinAndWrapScopes(
+                this.groupId(),
+                "%s (%s)".formatted( this.moduleId(), this.toString() )
+            )
+        );
+    }
+
     @Override
     default int compareTo( @NotNull final Module other )
     {
