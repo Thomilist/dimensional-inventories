@@ -2,6 +2,7 @@ package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
 import net.minecraft.test.TestContext;
+import net.minecraft.text.Text;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.gametest.util.TestState;
 import net.thomilist.dimensionalinventories.util.StringHelper;
@@ -23,19 +24,41 @@ public abstract class DimensionalInventoriesGameTest
     private String packageName;
     private String className;
     private String methodName;
+    private int ticks;
 
     @Override
     public void invokeTestMethod( final TestContext context, final Method method )
         throws ReflectiveOperationException
     {
-        try
+        if ( DimensionalInventoriesGameTest.RUNNING )
         {
-            this.begin( method );
-            method.invoke( this, context );
+            context.waitAndRun(
+                1, () -> {
+                    try
+                    {
+                        this.invokeTestMethod( context, method );
+                    }
+                    catch ( final ReflectiveOperationException e )
+                    {
+                        throw context.createError( Text.of(
+                            "Failed to run game test " + "(ReflectiveOperationException): " + e.getMessage() ) );
+                    }
+                }
+            );
         }
-        finally
+        else
         {
-            this.end();
+            try
+            {
+                this.ticks = context.getWorld().getServer().getTicks();
+                this.begin( method );
+                method.invoke( this, context );
+            }
+            finally
+            {
+                this.ticks = context.getWorld().getServer().getTicks();
+                this.end();
+            }
         }
     }
 
@@ -75,6 +98,7 @@ public abstract class DimensionalInventoriesGameTest
         final String dashes = "-".repeat( dashCount );
 
         DimensionalInventoriesGameTest.LOGGER.info( "{} {} {}", dashes, header, dashes );
+        DimensionalInventoriesGameTest.LOGGER.info( "@ tick {}", this.ticks );
         DimensionalInventoriesGameTest.LOGGER.info( scopeLine );
         DimensionalInventoriesGameTest.LOGGER.info( packageLine );
     }
