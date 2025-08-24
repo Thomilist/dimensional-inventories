@@ -5,7 +5,6 @@ import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.ModuleNotRegisteredException;
 import net.thomilist.dimensionalinventories.module.base.Module;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
-import net.thomilist.dimensionalinventories.util.StringHelper;
 
 import java.util.HashMap;
 import java.util.SortedSet;
@@ -32,25 +31,38 @@ public final class ModuleRegistry<T extends Module>
         {
             this.modules.putIfAbsent( storageVersion, new TreeSet<>() );
 
+            if ( this.modules
+                .get( storageVersion )
+                .removeIf( existingModule -> existingModule
+                    .getClass()
+                    .getCanonicalName()
+                    .equals( module.getClass().getCanonicalName() ) ) )
+            {
+                DimensionalInventories.LOGGER.warn(
+                    "Module {} replaces already-registered module of the same type ({})",
+                    module.toFormatted(),
+                    module.getClass()
+                );
+            }
+
             if ( !this.modules.get( storageVersion ).add( module ) )
             {
                 DimensionalInventories.LOGGER.warn(
                     "Failed to register module: {} has already been registered",
-                    StringHelper.joinAndWrapScopes( module.groupId(), module.moduleId() )
+                    module.toFormatted()
                 );
 
                 continue;
             }
 
-            if (module.latestStorageVersion() == StorageVersion.latest())
+            if ( module.latestStorageVersion() == StorageVersion.latest() )
             {
                 module.registerCommands();
             }
 
             DimensionalInventories.LOGGER.info(
-                "Registered {} module {}",
-                module.category(),
-                StringHelper.joinAndWrapScopes( module.groupId(), "%s (%s)".formatted(module.moduleId(), storageVersion.toString()) )
+                "Registered {}",
+                module.toFormatted()
             );
         }
     }
