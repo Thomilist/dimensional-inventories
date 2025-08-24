@@ -15,11 +15,9 @@ public class StatusEffectModuleTests
 {
     // Status effects should be swapped on dimension pool transition.
     // Test with all registered status effects
-    @GameTest
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void transitionSwapsStatusEffects( final TestContext context )
     {
-        this.begin();
-
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get( context.getWorld() );
 
@@ -60,6 +58,5 @@ public class StatusEffectModuleTests
         }
 
         context.complete();
-        this.end();
     }
 }

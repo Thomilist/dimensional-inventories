@@ -42,11 +42,9 @@ import java.util.List;
 public class StorageVersionMigrationTests
     extends DimensionalInventoriesGameTest
 {
-    @GameTest
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void migrateLegacyToV2( final TestContext context )
     {
-        this.begin();
-
         // Prepare legacy data to migrate from
 
         final String legacySaveDirectoryName = "dimensionalinventories";
@@ -245,7 +243,6 @@ public class StorageVersionMigrationTests
         }
 
         context.complete();
-        this.end();
     }
 
     private void initializeSampleData( final TestContext context,

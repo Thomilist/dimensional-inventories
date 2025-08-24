@@ -14,11 +14,9 @@ public class GameModeModuleTests
 {
     // When a player crosses dimension pools, their gamemode should be changed
     // according to dimension pool settings
-    @GameTest
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void transitionSwitchesGameMode( final TestContext context )
     {
-        this.begin();
-
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get( context.getWorld() );
 
@@ -59,6 +57,5 @@ public class GameModeModuleTests
         );
 
         context.complete();
-        this.end();
     }
 }

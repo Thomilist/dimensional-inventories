@@ -7,14 +7,14 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "net.thomilist.dimensionalinventories.gametest.InventoryModuleTests",
-      "net.thomilist.dimensionalinventories.gametest.StatusEffectModuleTests",
       "net.thomilist.dimensionalinventories.gametest.GameModeModuleTests",
-      "net.thomilist.dimensionalinventories.gametest.ShoulderEntityModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.InventoryModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.LogThrottlerTests",
       "net.thomilist.dimensionalinventories.gametest.NonPlayerHandlingTests",
+      "net.thomilist.dimensionalinventories.gametest.ShoulderEntityModuleTests",
+      "net.thomilist.dimensionalinventories.gametest.StatusEffectModuleTests",
       "net.thomilist.dimensionalinventories.gametest.StorageVersionMigrationTests",
-      "net.thomilist.dimensionalinventories.gametest.StringHelperTests",
-      "net.thomilist.dimensionalinventories.gametest.LogThrottlerTests"
+      "net.thomilist.dimensionalinventories.gametest.StringHelperTests"
     ]
   },
   "mixins": [
