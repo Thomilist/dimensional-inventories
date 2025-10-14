@@ -107,7 +107,7 @@ public class DimensionalInventories
     private void registerPlayerTravelHandler()
     {
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register( ( player, origin, destination ) -> {
-            try ( final LostAndFoundContext LAF = LostAndFound.init( "player changed " + "dimension" ) )
+            try ( final LostAndFoundContext LAF = LostAndFound.init( "player changed dimension" ) )
             {
                 final String originDimensionName = origin.getRegistryKey().getValue().toString();
                 final String destinationDimensionName = destination.getRegistryKey().getValue().toString();
@@ -142,7 +142,7 @@ public class DimensionalInventories
     {
         ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register( ( originalEntity, newEntity, origin,
                                                                             destination ) -> {
-            try ( final LostAndFoundContext LAF = LostAndFound.init( "entity changed " + "dimension" ) )
+            try ( final LostAndFoundContext LAF = LostAndFound.init( "entity changed dimension" ) )
             {
                 final String originDimensionName = origin.getRegistryKey().getValue().toString();
                 final String destinationDimensionName = destination.getRegistryKey().getValue().toString();
