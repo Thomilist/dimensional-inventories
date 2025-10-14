@@ -8,7 +8,7 @@ public final class AssertionUtils
 {
     public static <N> void assertEquals( final TestContext context, final N value, final N expected, final String name )
     {
-        context.assertEquals( value, expected, name );
+        context.assertEquals( expected, value, name );
     }
 
     public static <N> void assertEquals( final TestContext context,
