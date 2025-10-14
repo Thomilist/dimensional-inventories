@@ -9,7 +9,7 @@ public final class AssertionUtils
 {
     public static <N> void assertEquals( final TestContext context, final N value, final N expected, final String name )
     {
-        context.assertEquals( value, expected, Text.of( name ) );
+        context.assertEquals( expected, value, Text.of( name ) );
     }
 
     public static <N> void assertEquals( final TestContext context,
