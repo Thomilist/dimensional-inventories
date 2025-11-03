@@ -64,7 +64,7 @@ public abstract class DisableStatisticIncrementMixin
     @Unique
     public boolean canPoolIncrementStatistics()
     {
-        final String dimensionName = this.getWorld().getRegistryKey().getValue().toString();
+        final String dimensionName = this.getEntityWorld().getRegistryKey().getValue().toString();
 
         final Optional<DimensionPool> pool = DisableStatisticIncrementMixin
             .dimensionPoolConfig()

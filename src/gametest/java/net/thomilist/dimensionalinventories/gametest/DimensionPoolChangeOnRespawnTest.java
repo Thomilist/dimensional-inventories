@@ -11,10 +11,12 @@ import net.minecraft.test.TestContext;
 import net.minecraft.test.TestServer;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProperties;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.gametest.mixin.MinecraftServerMixin;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
@@ -93,9 +95,10 @@ public class DimensionPoolChangeOnRespawnTest
         // Set the player's spawn point in the overworld
 
         final ServerPlayerEntity.Respawn spawnPoint = new ServerPlayerEntity.Respawn(
-            World.OVERWORLD,
-            BlockPos.ofFloored( 0, 70, 0 ),
-            0,
+            // World.OVERWORLD,
+            // BlockPos.ofFloored( 0, 70, 0 ),
+            // 0,
+            new WorldProperties.SpawnPoint(new GlobalPos(World.OVERWORLD, BlockPos.ofFloored(0, 70, 0)), 0, 0),
             true
         );
 
@@ -128,12 +131,12 @@ public class DimensionPoolChangeOnRespawnTest
         DimensionalInventoriesGameTest.LOGGER.info(
             "0: Player {} is in {}",
             originalPlayer.getName().getString(),
-            originalPlayer.getWorld().getRegistryKey()
+            originalPlayer.getEntityWorld().getRegistryKey()
         );
 
         context.assertEquals(
             World.OVERWORLD,
-            originalPlayer.getWorld().getRegistryKey(),
+            originalPlayer.getEntityWorld().getRegistryKey(),
             Text.of( "initial dimension" )
         );
 
@@ -160,12 +163,12 @@ public class DimensionPoolChangeOnRespawnTest
         DimensionalInventoriesGameTest.LOGGER.info(
             "1: Player {} is in {}",
             originalPlayer.getName().getString(),
-            originalPlayer.getWorld().getRegistryKey()
+            originalPlayer.getEntityWorld().getRegistryKey()
         );
 
         context.assertEquals(
             World.NETHER,
-            originalPlayer.getWorld().getRegistryKey(),
+            originalPlayer.getEntityWorld().getRegistryKey(),
             Text.of( "dimension after teleporting" )
         );
 
@@ -176,7 +179,7 @@ public class DimensionPoolChangeOnRespawnTest
 
         // 2: player killed; respawns in overworld; has 64 diamonds
 
-        originalPlayer.kill( originalPlayer.getWorld() );
+        originalPlayer.kill( originalPlayer.getEntityWorld() );
 
         context
             .getWorld()
@@ -188,19 +191,19 @@ public class DimensionPoolChangeOnRespawnTest
             .getWorld()
             .getServer()
             .getPlayerManager()
-            .getPlayer( originalPlayer.getGameProfile().getId() );
+            .getPlayer( originalPlayer.getGameProfile().id() );
 
         assert respawnedPlayer != null;
 
         DimensionalInventoriesGameTest.LOGGER.info(
             "2: Player {} is in {}",
             respawnedPlayer.getName().getString(),
-            respawnedPlayer.getWorld().getRegistryKey()
+            respawnedPlayer.getEntityWorld().getRegistryKey()
         );
 
         context.assertEquals(
             World.OVERWORLD,
-            respawnedPlayer.getWorld().getRegistryKey(),
+            respawnedPlayer.getEntityWorld().getRegistryKey(),
             Text.of( "dimension after respawning" )
         );
 
@@ -227,12 +230,12 @@ public class DimensionPoolChangeOnRespawnTest
         DimensionalInventoriesGameTest.LOGGER.info(
             "3: Player {} is in {}",
             respawnedPlayer.getName().getString(),
-            respawnedPlayer.getWorld().getRegistryKey()
+            respawnedPlayer.getEntityWorld().getRegistryKey()
         );
 
         context.assertEquals(
             World.NETHER,
-            respawnedPlayer.getWorld().getRegistryKey(),
+            respawnedPlayer.getEntityWorld().getRegistryKey(),
             Text.of( "dimension after teleporting again" )
         );
 

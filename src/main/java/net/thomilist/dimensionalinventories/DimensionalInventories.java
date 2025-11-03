@@ -126,8 +126,8 @@ public class DimensionalInventories
         ServerPlayerEvents.AFTER_RESPAWN.register( ( oldPlayer, newPlayer, alive ) -> {
             try ( final LostAndFoundContext LAF = LostAndFound.init( "player respawned" ) )
             {
-                final String originDimensionName = oldPlayer.getWorld().getRegistryKey().getValue().toString();
-                final String destinationDimensionName = newPlayer.getWorld().getRegistryKey().getValue().toString();
+                final String originDimensionName = oldPlayer.getEntityWorld().getRegistryKey().getValue().toString();
+                final String destinationDimensionName = newPlayer.getEntityWorld().getRegistryKey().getValue().toString();
 
                 this.transitionHandler.handlePlayerDimensionChange(
                     newPlayer,

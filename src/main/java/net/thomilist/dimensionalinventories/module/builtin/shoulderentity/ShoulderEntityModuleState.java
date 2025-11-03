@@ -37,8 +37,8 @@ public class ShoulderEntityModuleState
     @Override
     public void loadFromPlayer( final ServerPlayerEntity player )
     {
-        this.leftShoulderEntity = player.getShoulderEntityLeft();
-        this.rightShoulderEntity = player.getShoulderEntityRight();
+        this.leftShoulderEntity = player.getLeftShoulderNbt();
+        this.rightShoulderEntity = player.getRightShoulderNbt();
         this.shoulderEntityAddedTime = ((PlayerEntityAccessor) player).getShoulderEntityAddedTime();
     }
 

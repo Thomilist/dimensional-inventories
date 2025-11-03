@@ -47,7 +47,7 @@ public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterio
              cancellable = true )
     public void trigger( final ServerPlayerEntity player, final Predicate<T> predicate, final CallbackInfo info )
     {
-        final String dimensionName = player.getWorld().getRegistryKey().getValue().toString();
+        final String dimensionName = player.getEntityWorld().getRegistryKey().getValue().toString();
 
         final Optional<DimensionPool> pool = DisableAdvancementProgressMixin
             .dimensionPoolConfig()

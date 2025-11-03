@@ -25,7 +25,7 @@ public class MinecraftServerMixin
     /**
      * Gets the user cache of this server, with special cases for certain game tests.
      * <p>
-     * For {@link TestServer} instances, {@link MinecraftServer#getUserCache()} returns {@code null}. However, for
+     * For {@link TestServer} instances, @link MinecraftServer#getUserCache() returns {@code null}. However, for
      * game tests that depend on the user cache being present without caring about the actual cache contents, this
      * replaces the return value with a {@link DummyUserCache} instance.
      *
