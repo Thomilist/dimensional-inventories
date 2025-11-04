@@ -12,7 +12,7 @@ import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.gametest.mixin.ParrotAccessor;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.gametest.util.NbtUtils;
-import net.thomilist.dimensionalinventories.mixin.PlayerEntityAccessor;
+import net.thomilist.dimensionalinventories.mixin.ServerPlayerEntityAccessor;
 
 import java.util.UUID;
 
@@ -31,7 +31,7 @@ public class ShoulderEntityModuleTests
         );
 
         player.setOnGround( true );
-        ((PlayerEntityAccessor) player).invokeDropShoulderEntities();
+        ((ServerPlayerEntityAccessor) player).invokeDropShoulderEntities();
 
         final ParrotEntity parrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
         ((ParrotAccessor) parrot).invokeSetVariant( ParrotEntity.Variant.RED_BLUE );
@@ -86,7 +86,7 @@ public class ShoulderEntityModuleTests
         );
 
         player.setOnGround( true );
-        ((PlayerEntityAccessor) player).invokeDropShoulderEntities();
+        ((ServerPlayerEntityAccessor) player).invokeDropShoulderEntities();
 
         final ParrotEntity leftParrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
         final ParrotEntity rightParrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
