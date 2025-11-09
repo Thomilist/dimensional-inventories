@@ -8,15 +8,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.TestContext;
-import net.minecraft.test.TestServer;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProperties;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
-import net.thomilist.dimensionalinventories.gametest.mixin.MinecraftServerMixin;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModuleState;
@@ -37,9 +38,7 @@ public class DimensionPoolChangeOnRespawnTest
      * <p>
      * This test requires that a player is actually spawned into the world rather than simply operating on an arbitrary
      * player instance in memory. To do so, {@link EntityPlayerMPFake} from
-     * <a href="https://github.com/gnembon/fabric-carpet">Carpet Mod</a> is used. However, before spawning the player,
-     * the Carpet Mod implementation first checks the server's user cache for a matching username. This does not work on
-     * a vanilla {@link TestServer}, but this is patched with the {@link MinecraftServerMixin}.
+     * <a href="https://github.com/gnembon/fabric-carpet">Carpet Mod</a> is used.
      *
      * @param context The test context
      */
@@ -93,9 +92,12 @@ public class DimensionPoolChangeOnRespawnTest
         // Set the player's spawn point in the overworld
 
         final ServerPlayerEntity.Respawn spawnPoint = new ServerPlayerEntity.Respawn(
-            World.OVERWORLD,
-            BlockPos.ofFloored( 0, 70, 0 ),
-            0,
+            new WorldProperties.SpawnPoint(
+                new GlobalPos(
+                    World.OVERWORLD,
+                    BlockPos.ofFloored( 0, 70, 0 )
+                ), 0, 0
+            ),
             true
         );
 
@@ -128,12 +130,12 @@ public class DimensionPoolChangeOnRespawnTest
         DimensionalInventoriesGameTest.LOGGER.info(
             "0: Player {} is in {}",
             originalPlayer.getName().getString(),
-            originalPlayer.getWorld().getRegistryKey()
+            Compat.ENTITY.getWorld( originalPlayer ).getRegistryKey()
         );
 
         context.assertEquals(
             World.OVERWORLD,
-            originalPlayer.getWorld().getRegistryKey(),
+            Compat.ENTITY.getWorld( originalPlayer ).getRegistryKey(),
             Text.of( "initial dimension" )
         );
 
@@ -160,12 +162,12 @@ public class DimensionPoolChangeOnRespawnTest
         DimensionalInventoriesGameTest.LOGGER.info(
             "1: Player {} is in {}",
             originalPlayer.getName().getString(),
-            originalPlayer.getWorld().getRegistryKey()
+            Compat.ENTITY.getWorld( originalPlayer ).getRegistryKey()
         );
 
         context.assertEquals(
             World.NETHER,
-            originalPlayer.getWorld().getRegistryKey(),
+            Compat.ENTITY.getWorld( originalPlayer ).getRegistryKey(),
             Text.of( "dimension after teleporting" )
         );
 
@@ -176,7 +178,7 @@ public class DimensionPoolChangeOnRespawnTest
 
         // 2: player killed; respawns in overworld; has 64 diamonds
 
-        originalPlayer.kill( originalPlayer.getWorld() );
+        originalPlayer.kill( Compat.ENTITY.getWorld( originalPlayer ) );
 
         context
             .getWorld()
@@ -188,19 +190,19 @@ public class DimensionPoolChangeOnRespawnTest
             .getWorld()
             .getServer()
             .getPlayerManager()
-            .getPlayer( originalPlayer.getGameProfile().getId() );
+            .getPlayer( originalPlayer.getGameProfile().id() );
 
         assert respawnedPlayer != null;
 
         DimensionalInventoriesGameTest.LOGGER.info(
             "2: Player {} is in {}",
             respawnedPlayer.getName().getString(),
-            respawnedPlayer.getWorld().getRegistryKey()
+            Compat.ENTITY.getWorld( respawnedPlayer ).getRegistryKey()
         );
 
         context.assertEquals(
             World.OVERWORLD,
-            respawnedPlayer.getWorld().getRegistryKey(),
+            Compat.ENTITY.getWorld( respawnedPlayer ).getRegistryKey(),
             Text.of( "dimension after respawning" )
         );
 
@@ -227,12 +229,12 @@ public class DimensionPoolChangeOnRespawnTest
         DimensionalInventoriesGameTest.LOGGER.info(
             "3: Player {} is in {}",
             respawnedPlayer.getName().getString(),
-            respawnedPlayer.getWorld().getRegistryKey()
+            Compat.ENTITY.getWorld( respawnedPlayer ).getRegistryKey()
         );
 
         context.assertEquals(
             World.NETHER,
-            respawnedPlayer.getWorld().getRegistryKey(),
+            Compat.ENTITY.getWorld( respawnedPlayer ).getRegistryKey(),
             Text.of( "dimension after teleporting again" )
         );
 

@@ -1,8 +1,12 @@
 package net.thomilist.dimensionalinventories.util;
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ConnectedClientData;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
@@ -14,14 +18,27 @@ public class DummyServerPlayerEntity
 {
     private static final String DUMMY_NAME = "TempPlayer";
 
+    private DummyServerPlayerEntity( final MinecraftServer server, final ServerWorld world, final GameProfile profile )
+    {
+        super( server, world, profile, SyncedClientOptions.createDefault() );
+
+        // Set a non-null network handler to avoid NullPointerException in ServerPlayerEntity#changeGameMode
+        this.networkHandler = new ServerPlayNetworkHandler(
+            server,
+            new ClientConnection( NetworkSide.CLIENTBOUND ),
+            this,
+            ConnectedClientData.createDefault( this.getGameProfile(), false )
+        );
+    }
+
     private DummyServerPlayerEntity( final ServerWorld world, final GameProfile profile )
     {
-        super( world.getServer(), world, profile, SyncedClientOptions.createDefault() );
+        this( world.getServer(), world, profile );
     }
 
     private DummyServerPlayerEntity( final MinecraftServer server, final GameProfile profile )
     {
-        super( server, server.getOverworld(), profile, SyncedClientOptions.createDefault() );
+        this( server, server.getOverworld(), profile );
     }
 
     public DummyServerPlayerEntity( final ServerWorld world, final UUID uuid )

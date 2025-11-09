@@ -7,7 +7,7 @@
     "DisableAdvancementProgressMixin",
     "DisableStatisticIncrementMixin",
     "HungerManagerAccessor",
-    "PlayerEntityAccessor"
+    "ServerPlayerEntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

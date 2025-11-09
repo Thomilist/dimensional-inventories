@@ -4,6 +4,7 @@ import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
@@ -47,7 +48,7 @@ public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterio
              cancellable = true )
     public void trigger( final ServerPlayerEntity player, final Predicate<T> predicate, final CallbackInfo info )
     {
-        final String dimensionName = player.getWorld().getRegistryKey().getValue().toString();
+        final String dimensionName = Compat.ENTITY.getWorld( player ).getRegistryKey().getValue().toString();
 
         final Optional<DimensionPool> pool = DisableAdvancementProgressMixin
             .dimensionPoolConfig()

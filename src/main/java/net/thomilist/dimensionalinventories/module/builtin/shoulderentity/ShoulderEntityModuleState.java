@@ -1,21 +1,21 @@
 package net.thomilist.dimensionalinventories.module.builtin.shoulderentity;
 
-import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.thomilist.dimensionalinventories.mixin.PlayerEntityAccessor;
+import net.thomilist.dimensionalinventories.mixin.ServerPlayerEntityAccessor;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModuleState;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 public class ShoulderEntityModuleState
     implements PlayerModuleState
 {
-    public static TrackedData<NbtCompound> LEFT_SHOULDER_ENTITY = PlayerEntityAccessor.getLeftShoulderEntity();
-    public static TrackedData<NbtCompound> RIGHT_SHOULDER_ENTITY = PlayerEntityAccessor.getRightShoulderEntity();
-
     public NbtCompound leftShoulderEntity = new NbtCompound();
     public NbtCompound rightShoulderEntity = new NbtCompound();
+    public Optional<ParrotEntity.Variant> leftShoulderParrotVariant = Optional.empty();
+    public Optional<ParrotEntity.Variant> rightShoulderParrotVariant = Optional.empty();
     public long shoulderEntityAddedTime = 0;
 
     public ShoulderEntityModuleState()
@@ -29,17 +29,21 @@ public class ShoulderEntityModuleState
     @Override
     public void applyToPlayer( final ServerPlayerEntity player )
     {
-        player.getDataTracker().set( ShoulderEntityModuleState.LEFT_SHOULDER_ENTITY, this.leftShoulderEntity );
-        player.getDataTracker().set( ShoulderEntityModuleState.RIGHT_SHOULDER_ENTITY, this.rightShoulderEntity );
-        ((PlayerEntityAccessor) player).setShoulderEntityAddedTime( this.shoulderEntityAddedTime );
+        ((ServerPlayerEntityAccessor) player).invokeSetLeftShoulderNbt(this.leftShoulderEntity );
+        ((ServerPlayerEntityAccessor) player).invokeSetRightShoulderNbt(this.rightShoulderEntity );
+        player.setLeftShoulderParrotVariant( this.leftShoulderParrotVariant );
+        player.setRightShoulderParrotVariant( this.rightShoulderParrotVariant );
+        ((ServerPlayerEntityAccessor) player).setShoulderMountTime( this.shoulderEntityAddedTime );
     }
 
     @Override
     public void loadFromPlayer( final ServerPlayerEntity player )
     {
-        this.leftShoulderEntity = player.getShoulderEntityLeft();
-        this.rightShoulderEntity = player.getShoulderEntityRight();
-        this.shoulderEntityAddedTime = ((PlayerEntityAccessor) player).getShoulderEntityAddedTime();
+        this.leftShoulderEntity = player.getLeftShoulderNbt();
+        this.rightShoulderEntity = player.getRightShoulderNbt();
+        this.leftShoulderParrotVariant = player.getLeftShoulderParrotVariant();
+        this.rightShoulderParrotVariant = player.getRightShoulderParrotVariant();
+        this.shoulderEntityAddedTime = ((ServerPlayerEntityAccessor) player).getShoulderMountTime();
     }
 
     @Override

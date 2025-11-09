@@ -4,7 +4,6 @@
   "package": "net.thomilist.dimensionalinventories.gametest.mixin",
   "compatibilityLevel": "${java_version}",
   "mixins": [
-    "MinecraftServerMixin",
     "ParrotAccessor",
     "TestEnvironmentDefinitionMixin"
   ],

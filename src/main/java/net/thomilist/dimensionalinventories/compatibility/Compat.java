@@ -5,6 +5,8 @@ import net.thomilist.dimensionalinventories.compatibility.java.collection.ListCo
 import net.thomilist.dimensionalinventories.compatibility.java.collection.ListCompatWrapper_Java_21;
 import net.thomilist.dimensionalinventories.compatibility.java.collection.SortedSetCompatWrapper;
 import net.thomilist.dimensionalinventories.compatibility.java.collection.SortedSetCompatWrapper_Java_21;
+import net.thomilist.dimensionalinventories.compatibility.minecraft.entity.EntityCompatWrapper;
+import net.thomilist.dimensionalinventories.compatibility.minecraft.entity.EntityCompatWrapper_Minecraft_1_21_9;
 import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.PlayerInventoryCompatWrapper;
 import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.PlayerInventoryCompatWrapper_Minecraft_1_21_5;
 import net.thomilist.dimensionalinventories.compatibility.minecraft.inventory.SimpleInventoryCompatWrapper;
@@ -31,6 +33,10 @@ public final class Compat
         = new SimpleInventoryCompatWrapper_Minecraft_1_20_3();
     public static final PlayerInventoryCompatWrapper PLAYER_INVENTORY
         = new PlayerInventoryCompatWrapper_Minecraft_1_21_5();
+    public static final EntityCompatWrapper ENTITY = new EntityCompatWrapper_Minecraft_1_21_9();
+
+    private Compat()
+    { }
 
     public static void onServerStarted( final MinecraftServer server )
     {

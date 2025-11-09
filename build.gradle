@@ -82,8 +82,6 @@ loom {
 			source sourceSets.gametestClient
 		}
 	}
-
-    accessWidenerPath = file("src/gametest/resources/dimensional-inventories-gametest.accesswidener")
 }
 
 tasks.register("cleanGametestServer") {
@@ -161,6 +159,10 @@ repositories {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
     }
+    maven {
+        name = "JitPack"
+        url = "https://jitpack.io"
+    }
 }
 
 dependencies {
@@ -183,7 +185,8 @@ dependencies {
 	gametestClientImplementation sourceSets.client.output
 	gametestClientImplementation sourceSets.gametest.output
 
-    modGametestImplementation "maven.modrinth:carpet:${project.carpet_version}"
+    // Exclude transitive dependencies to avoid duplicate Fabric Loader classes
+    modGametestImplementation "com.github.gnembon:fabric-carpet:${project.carpet_version}" transitive false
 }
 
 tasks.withType(ProcessResources).configureEach {

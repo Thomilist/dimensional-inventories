@@ -9,6 +9,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
+import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.util.LogThrottler;
@@ -64,7 +65,7 @@ public abstract class DisableStatisticIncrementMixin
     @Unique
     public boolean canPoolIncrementStatistics()
     {
-        final String dimensionName = this.getWorld().getRegistryKey().getValue().toString();
+        final String dimensionName = Compat.ENTITY.getWorld( this ).getRegistryKey().getValue().toString();
 
         final Optional<DimensionPool> pool = DisableStatisticIncrementMixin
             .dimensionPoolConfig()

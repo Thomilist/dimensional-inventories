@@ -1,15 +1,22 @@
 package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
+import net.minecraft.util.WorldSavePath;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.gametest.util.TestState;
 import net.thomilist.dimensionalinventories.util.StringHelper;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.time.Instant;
 
 public abstract class DimensionalInventoriesGameTest
@@ -25,6 +32,44 @@ public abstract class DimensionalInventoriesGameTest
     private String className;
     private String methodName;
     private int ticks;
+
+    protected DimensionalInventoriesGameTest()
+    { }
+
+    protected static void initializeSampleData( final TestContext context,
+                                                final String resourcePath,
+                                                final String worldDestinationPath )
+    {
+        final Path sampleDataPath = FabricLoader
+            .getInstance()
+            .getModContainer( "dimensional-inventories-gametest" )
+            .orElseThrow()
+            .findPath( resourcePath )
+            .orElseThrow();
+
+        final Path legacyDataPath = context
+            .getWorld()
+            .getServer()
+            .getSavePath( WorldSavePath.ROOT )
+            .resolve( worldDestinationPath );
+
+        final File sampleDataDirectory = TestState.toFileExtractZip( sampleDataPath );
+        final File legacyDataDirectory = legacyDataPath.toFile();
+
+        try
+        {
+            if ( legacyDataDirectory.exists() )
+            {
+                FileUtils.deleteDirectory( legacyDataDirectory );
+            }
+
+            FileUtils.copyDirectory( sampleDataDirectory, legacyDataDirectory );
+        }
+        catch ( final IOException e )
+        {
+            throw new UncheckedIOException( e );
+        }
+    }
 
     @Override
     public void invokeTestMethod( final TestContext context, final Method method )
@@ -53,6 +98,11 @@ public abstract class DimensionalInventoriesGameTest
                 this.ticks = context.getWorld().getServer().getTicks();
                 this.begin( method );
                 method.invoke( this, context );
+            }
+            catch ( final Exception e )
+            {
+                DimensionalInventoriesGameTest.LOGGER.error( "An error occurred while running the test:", e );
+                throw e;
             }
             finally
             {

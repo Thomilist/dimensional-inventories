@@ -1,41 +1,27 @@
 package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.MinecraftVersion;
+import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
-import net.minecraft.util.WorldSavePath;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
-import net.thomilist.dimensionalinventories.gametest.util.TestState;
+import net.thomilist.dimensionalinventories.gametest.util.CurrentMinecraftVersion;
 import net.thomilist.dimensionalinventories.gametest.util.assertion.InventoryAsserter;
 import net.thomilist.dimensionalinventories.gametest.util.assertion.StatusAsserter;
-import net.thomilist.dimensionalinventories.module.ModuleGroup;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
 import net.thomilist.dimensionalinventories.module.builtin.MainModuleGroup;
-import net.thomilist.dimensionalinventories.module.builtin.inventory.InventoryModule;
-import net.thomilist.dimensionalinventories.module.builtin.legacy.inventory.InventoryModule_SV1;
-import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPoolConfigModule_SV1;
-import net.thomilist.dimensionalinventories.module.builtin.legacy.status.StatusModule_SV1;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModuleState;
-import net.thomilist.dimensionalinventories.module.builtin.shoulderentity.ShoulderEntityModule;
-import net.thomilist.dimensionalinventories.module.builtin.status.StatusModule;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.util.DummyServerPlayerEntity;
-import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
 import java.util.List;
 
 public class StorageVersionMigrationTests
@@ -43,12 +29,13 @@ public class StorageVersionMigrationTests
 {
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
     public void migrateLegacyToV2( final TestContext context )
+        throws VersionParsingException
     {
         // Prepare legacy data to migrate from
 
         final String legacySaveDirectoryName = "dimensionalinventories";
         final String resourcePath = "samples/legacy/" + legacySaveDirectoryName;
-        this.initializeSampleData( context, resourcePath, legacySaveDirectoryName );
+        DimensionalInventoriesGameTest.initializeSampleData( context, resourcePath, legacySaveDirectoryName );
 
         // Initialise mod instance
 
@@ -126,11 +113,6 @@ public class StorageVersionMigrationTests
             }
         }
 
-        // Switching game mode requires the player to have a non-null network handler, so create a mod instance
-        // without the game mode module:
-
-        final DimensionalInventories instanceWithoutGameMode = this.getInstanceWithoutGameModeModule();
-
         // Player data migrated correctly?
 
         final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld(), playerUuids.get( 4 ) );
@@ -140,7 +122,7 @@ public class StorageVersionMigrationTests
 
         // ... for dimension pool 'creative'?
 
-        instanceWithoutGameMode.transitionHandler.loadToPlayer( StorageVersion.V2, dimensionPoolCreative, player );
+        instance.transitionHandler.loadToPlayer( StorageVersion.V2, dimensionPoolCreative, player );
 
         final List<@NotNull Item> expectedItems = List.of(
             Items.WHITE_CONCRETE,
@@ -168,7 +150,7 @@ public class StorageVersionMigrationTests
 
         // ... for dimension pool 'default'?
 
-        instanceWithoutGameMode.transitionHandler.loadToPlayer( StorageVersion.V2, dimensionPoolDefault, player );
+        instance.transitionHandler.loadToPlayer( StorageVersion.V2, dimensionPoolDefault, player );
 
         combinedInventory.assertItemTypeAt( 0, Items.DIAMOND_SWORD );
         combinedInventory.assertItemTypeAt( 1, Items.TRIDENT );
@@ -231,7 +213,7 @@ public class StorageVersionMigrationTests
         // ... including damage, enchantments, custom names etc. (the stuff that was moved to item components)?
 
         // Pre-24w09a (1.20.5)
-        if ( MinecraftVersion.CURRENT.dataVersion().id() <= 3819 )
+        if ( CurrentMinecraftVersion.isOlderThanOrEqualTo( "24w09a" ) )
         {
             combinedInventory.assertCountAt( 38, 1 );
             combinedInventory.assertDamage( 38, 6 );
@@ -241,67 +223,5 @@ public class StorageVersionMigrationTests
         }
 
         context.complete();
-    }
-
-    private void initializeSampleData( final TestContext context,
-                                       final String resourcePath,
-                                       final String worldDestinationPath )
-    {
-        final Path sampleDataPath = FabricLoader
-            .getInstance()
-            .getModContainer( "dimensional-inventories-gametest" )
-            .orElseThrow()
-            .findPath( resourcePath )
-            .orElseThrow();
-
-        final Path legacyDataPath = context
-            .getWorld()
-            .getServer()
-            .getSavePath( WorldSavePath.ROOT )
-            .resolve( worldDestinationPath );
-
-        final File sampleDataDirectory = TestState.toFileExtractZip( sampleDataPath );
-        final File legacyDataDirectory = legacyDataPath.toFile();
-
-        try
-        {
-            if ( legacyDataDirectory.exists() )
-            {
-                FileUtils.deleteDirectory( legacyDataDirectory );
-            }
-
-            FileUtils.copyDirectory( sampleDataDirectory, legacyDataDirectory );
-        }
-        catch ( final IOException e )
-        {
-            throw new UncheckedIOException( e );
-        }
-    }
-
-    private DimensionalInventories getInstanceWithoutGameModeModule()
-    {
-        class MainModuleGroupWithoutGameMode
-            extends ModuleGroup
-        {
-            @SuppressWarnings( "deprecation" )
-            public MainModuleGroupWithoutGameMode()
-            {
-                super( "main" );
-
-                this.register(
-                    DimensionPoolConfigModule.class,
-                    InventoryModule.class,
-                    StatusModule.class,
-                    ShoulderEntityModule.class,
-                    DimensionPoolConfigModule_SV1.class,
-                    InventoryModule_SV1.class,
-                    StatusModule_SV1.class
-                );
-            }
-        }
-        final DimensionalInventories instanceWithoutGameMode = new DimensionalInventories();
-        instanceWithoutGameMode.registerModules( new MainModuleGroupWithoutGameMode() );
-
-        return instanceWithoutGameMode;
     }
 }
