@@ -25,7 +25,7 @@ public interface ListCompatWrapper
             throw new NoSuchElementException();
         }
 
-        return list.remove( 0 );
+        return list.get( 0 );
     }
 
     /**
@@ -45,7 +45,7 @@ public interface ListCompatWrapper
             throw new NoSuchElementException();
         }
 
-        return list.remove( list.size() - 1 );
+        return list.get( list.size() - 1 );
     }
 
     /**
