@@ -11,12 +11,12 @@ import net.minecraft.text.Text;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.gametest.mixin.ParrotAccessor;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
-import net.thomilist.dimensionalinventories.gametest.util.NbtUtils;
 import net.thomilist.dimensionalinventories.mixin.ServerPlayerEntityAccessor;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.shoulderentity.ShoulderEntityModule;
 import net.thomilist.dimensionalinventories.util.DummyServerPlayerEntity;
+import net.thomilist.dimensionalinventories.util.NbtUtils;
 
 import java.util.UUID;
 

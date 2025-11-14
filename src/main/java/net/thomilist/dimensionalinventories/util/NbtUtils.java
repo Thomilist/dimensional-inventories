@@ -1,4 +1,4 @@
-package net.thomilist.dimensionalinventories.gametest.util;
+package net.thomilist.dimensionalinventories.util;
 
 import net.minecraft.nbt.AbstractNbtList;
 import net.minecraft.nbt.NbtCompound;
@@ -6,11 +6,15 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 public final class NbtUtils
 {
-    public static boolean isEffectivelyEmpty( @Nullable final NbtElement nbtElement )
+    private NbtUtils()
+    { }
+
+    public static boolean isEffectivelyEmpty( final @Nullable NbtElement nbtElement )
     {
         return switch ( nbtElement )
         {
@@ -22,7 +26,7 @@ public final class NbtUtils
         };
     }
 
-    public static boolean areEffectivelyEqual( @Nullable final NbtElement left, @Nullable final NbtElement right )
+    public static boolean areEffectivelyEqual( final @Nullable NbtElement left, final @Nullable NbtElement right )
     {
         if ( NbtHelper.matches( left, right, true ) )
         {
@@ -36,7 +40,7 @@ public final class NbtUtils
 
         if ( (left instanceof final NbtCompound leftCompound) && (right instanceof final NbtCompound rightCompound) )
         {
-            final HashSet<String> combinedKeys = new HashSet<String>();
+            final Collection<String> combinedKeys = new HashSet<>();
             combinedKeys.addAll( leftCompound.getKeys() );
             combinedKeys.addAll( rightCompound.getKeys() );
 

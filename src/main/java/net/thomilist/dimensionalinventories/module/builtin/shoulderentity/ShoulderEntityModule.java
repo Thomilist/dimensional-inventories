@@ -2,7 +2,6 @@ package net.thomilist.dimensionalinventories.module.builtin.shoulderentity;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.thomilist.dimensionalinventories.module.base.JsonModule;
@@ -10,8 +9,7 @@ import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
 import net.thomilist.dimensionalinventories.module.version.VersionedJsonData;
-
-import java.util.Optional;
+import net.thomilist.dimensionalinventories.util.NbtUtils;
 
 public final class ShoulderEntityModule
     extends ModuleBase
@@ -38,16 +36,14 @@ public final class ShoulderEntityModule
         );
     }
 
-    private static Optional<ParrotEntity.Variant> getVariant( final NbtCompound nbt )
+    private static void preprocessOldShoulderEntityNbt( final NbtCompound nbtCompound )
     {
-        return nbt.getInt( "Variant" )
-            .map( ParrotEntity.Variant::byIndex );
-    }
+        if ( NbtUtils.isEffectivelyEmpty( nbtCompound ) || nbtCompound.contains( "id" ) )
+        {
+            return;
+        }
 
-    @Override
-    public int moduleVersion()
-    {
-        return 2;
+        nbtCompound.putString( "id", "minecraft:parrot" );
     }
 
     @Override
@@ -60,11 +56,12 @@ public final class ShoulderEntityModule
     public ShoulderEntityModuleState loadVersionedData( final VersionedJsonData versionedData )
         throws JsonParseException
     {
-        return switch ( versionedData.version() )
-        {
-            case 1 -> this.loadAsVersion1( versionedData );
-            default -> JsonPlayerModule.super.loadVersionedData( versionedData );
-        };
+        final ShoulderEntityModuleState loadedState = JsonPlayerModule.super.loadVersionedData( versionedData );
+
+        ShoulderEntityModule.preprocessOldShoulderEntityNbt( loadedState.leftShoulderEntity );
+        ShoulderEntityModule.preprocessOldShoulderEntityNbt( loadedState.rightShoulderEntity );
+
+        return loadedState;
     }
 
     @Override
@@ -83,13 +80,5 @@ public final class ShoulderEntityModule
     public ShoulderEntityModuleState defaultState()
     {
         return new ShoulderEntityModuleState();
-    }
-
-    private ShoulderEntityModuleState loadAsVersion1( final VersionedJsonData versionedData )
-    {
-        final ShoulderEntityModuleState state = this.gson().fromJson( versionedData.data(), this.state().type() );
-        state.leftShoulderParrotVariant = ShoulderEntityModule.getVariant( state.leftShoulderEntity );
-        state.rightShoulderParrotVariant = ShoulderEntityModule.getVariant( state.rightShoulderEntity );
-        return state;
     }
 }
