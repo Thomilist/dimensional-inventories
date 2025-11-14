@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "data": {
+    "experiencePoints": 0,
+    "score": 0,
+    "foodLevel": 20,
+    "saturationLevel": 5.0,
+    "exhaustion": 0.0,
+    "health": 20.0,
+    "statusEffects": []
+  }
+}

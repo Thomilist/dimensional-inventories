@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "data": {
+    "leftShoulderEntity": "{\n    data: [],\n    palette: []\n}",
+    "rightShoulderEntity": "{\n    data: [],\n    palette: []\n}",
+    "shoulderEntityAddedTime": 0
+  }
+}

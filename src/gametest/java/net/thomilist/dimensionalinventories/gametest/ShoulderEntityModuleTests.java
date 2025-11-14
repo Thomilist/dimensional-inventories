@@ -13,6 +13,10 @@ import net.thomilist.dimensionalinventories.gametest.mixin.ParrotAccessor;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.gametest.util.NbtUtils;
 import net.thomilist.dimensionalinventories.mixin.ServerPlayerEntityAccessor;
+import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
+import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
+import net.thomilist.dimensionalinventories.module.builtin.shoulderentity.ShoulderEntityModule;
+import net.thomilist.dimensionalinventories.util.DummyServerPlayerEntity;
 
 import java.util.UUID;
 
@@ -134,6 +138,37 @@ public class ShoulderEntityModuleTests
             NbtUtils.areEffectivelyEqual( rightParrotBefore, player.getRightShoulderNbt() ),
             Text.of( "Right parrot restored after return transition" )
         );
+
+        context.complete();
+    }
+
+    // Parrots changed a bit internally in 1.21.9, but old data should still load correctly.
+    @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
+    public void oldDataIsLoadedCorrectly( final TestContext context )
+    {
+        final String saveDirectoryName = "dimensional-inventories";
+        final String resourcePath = "samples/v2/module/shoulder-entity/mv1/" + saveDirectoryName;
+        DimensionalInventoriesGameTest.initializeSampleData( context, resourcePath, saveDirectoryName );
+
+        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld(), "50870ba6-fadb-4ac4-8e7f-ba57a56dc5d5" );
+        final PlayerModule module = new ShoulderEntityModule( "main" );
+        final DimensionPool dimensionPool = new DimensionPool( "origin" );
+
+        module.load( player, dimensionPool );
+
+        context.assertEquals(
+            ParrotEntity.Variant.RED_BLUE,
+            player.getLeftShoulderParrotVariant().orElseThrow(),
+            Text.of( "Left shoulder parrot variant loaded correctly." )
+        );
+
+        context.assertEquals(
+            ParrotEntity.Variant.GREEN,
+            player.getRightShoulderParrotVariant().orElseThrow(),
+            Text.of( "Right shoulder parrot variant loaded correctly." )
+        );
+
+        module.save( player, dimensionPool );
 
         context.complete();
     }

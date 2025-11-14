@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "data": {
+    "leftShoulderEntity": "{\n    data: [],\n    palette: [],\n    AbsorptionAmount: 0.0f,\n    Age: 0,\n    Air: 300s,\n    Brain: {\n        memories: {}\n    },\n    CanPickUpLoot: 0b,\n    DeathTime: 0s,\n    FallFlying: 0b,\n    Fire: 0s,\n    ForcedAge: 0,\n    Health: 6.0f,\n    HurtByTimestamp: 0,\n    HurtTime: 0s,\n    InLove: 0,\n    Invulnerable: 0b,\n    LeftHanded: 0b,\n    Motion: [\n        0.0d,\n        0.0d,\n        0.0d\n    ],\n    OnGround: 0b,\n    PersistenceRequired: 0b,\n    PortalCooldown: 0,\n    Pos: [\n        0.0d,\n        0.0d,\n        0.0d\n    ],\n    Rotation: [\n        3.3594115f,\n        0.0f\n    ],\n    Sitting: 0b,\n    UUID: [I; -1927006350, -718845242, -1338757359, 254925209],\n    Variant: 0,\n    attributes: [],\n    fall_distance: 0.0d\n}",
+    "rightShoulderEntity": "{\n    data: [],\n    palette: [],\n    AbsorptionAmount: 0.0f,\n    Age: 0,\n    Air: 300s,\n    Brain: {\n        memories: {}\n    },\n    CanPickUpLoot: 0b,\n    DeathTime: 0s,\n    FallFlying: 0b,\n    Fire: 0s,\n    ForcedAge: 0,\n    Health: 6.0f,\n    HurtByTimestamp: 0,\n    HurtTime: 0s,\n    InLove: 0,\n    Invulnerable: 0b,\n    LeftHanded: 0b,\n    Motion: [\n        0.0d,\n        0.0d,\n        0.0d\n    ],\n    OnGround: 0b,\n    PersistenceRequired: 0b,\n    PortalCooldown: 0,\n    Pos: [\n        0.0d,\n        0.0d,\n        0.0d\n    ],\n    Rotation: [\n        1.1730653f,\n        0.0f\n    ],\n    Sitting: 0b,\n    UUID: [I; 640441963, 850346859, -1330301880, 2101976450],\n    Variant: 2,\n    attributes: [],\n    fall_distance: 0.0d\n}",
+    "shoulderEntityAddedTime": 3
+  }
+}
