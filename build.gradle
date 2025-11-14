@@ -121,9 +121,24 @@ tasks.register("gametestSourcesJar", Jar) {
 	archiveClassifier = "gametest-sources"
 }
 
+tasks.register("creativeDimensionDatapackZip", Zip) {
+    group = "build"
+    from "./src/main/datapacks/example"
+    archiveBaseName = "creative-dimension"
+    archiveVersion = project.minecraft_version
+
+    inputs.property("minecraft_version", project.minecraft_version)
+    inputs.property("data_pack_format", project.data_pack_format)
+
+    filter { String line ->
+        line.replace("\${data_pack_format}", project.data_pack_format)
+    }
+}
+
 tasks.build {
 	dependsOn(gametestJar)
 	dependsOn(gametestSourcesJar)
+	dependsOn(creativeDimensionDatapackZip)
 }
 
 tasks.javadoc {
