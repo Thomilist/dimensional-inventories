@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:overworld",
+  "generator": {
+    "settings": {
+      "structures": {
+        "structures": {}
+      },
+      "layers": [
+        {
+          "block": "minecraft:bedrock",
+          "height": 5
+        },
+        {
+          "block": "minecraft:deepslate",
+          "height": 59
+        },
+        {
+          "block": "minecraft:stone",
+          "height": 59
+        },
+        {
+          "block": "minecraft:dirt",
+          "height": 4
+        },
+        {
+          "block": "minecraft:grass_block",
+          "height": 1
+        },
+        {
+          "block": "minecraft:white_stained_glass",
+          "height": 1
+        }
+      ],
+      "biome": "minecraft:forest"
+    },
+    "type": "minecraft:flat"
+  }
+}
