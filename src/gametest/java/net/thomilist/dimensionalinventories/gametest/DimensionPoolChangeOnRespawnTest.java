@@ -13,9 +13,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProperties;
+import net.minecraft.world.rule.GameRules;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
@@ -107,10 +107,8 @@ public class DimensionPoolChangeOnRespawnTest
 
         context
             .getWorld()
-            .getServer()
             .getGameRules()
-            .get( GameRules.DO_IMMEDIATE_RESPAWN )
-            .set( true, context.getWorld().getServer() );
+            .setValue( GameRules.DO_IMMEDIATE_RESPAWN, true, context.getWorld().getServer() );
 
         // 0: player in the overworld; has 64 diamonds
 

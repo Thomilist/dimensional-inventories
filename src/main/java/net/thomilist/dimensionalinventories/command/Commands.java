@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.GameModeArgumentType;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
@@ -54,7 +55,7 @@ public class Commands
     public void register( final CommandDispatcher<ServerCommandSource> dispatcher )
     {
         dispatcher.register(literal(DimensionalInventoriesCommand.ROOT.toString())
-            .requires(source -> source.hasPermissionLevel(4))
+            .requires( CommandManager.requirePermissionLevel( CommandManager.OWNERS_CHECK))
             .executes(this::printVersion)
             .then(literal(DimensionalInventoriesCommand.LIST_POOLS.toString())
                 .executes(this::listAllDimensionPools))
