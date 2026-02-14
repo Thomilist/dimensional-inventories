@@ -3,7 +3,6 @@ package net.thomilist.dimensionalinventories.gametest;
 import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,6 +17,7 @@ import net.minecraft.world.World;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.gametest.mixin.MinecraftServerMixin;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
+import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUtils;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModuleState;
 import org.jetbrains.annotations.NotNull;
@@ -115,12 +115,17 @@ public class DimensionPoolChangeOnRespawnTest
             originalPlayer.getWorld().getRegistryKey()
         );
 
-        context.assertEquals( World.OVERWORLD, originalPlayer.getWorld().getRegistryKey(), "initial dimension" );
+        AssertionUtils.assertEquals(
+            context,
+            World.OVERWORLD,
+            originalPlayer.getWorld().getRegistryKey(),
+            "initial dimension"
+        );
 
         context.assertTrue(
             originalPlayer
                 .getInventory()
-                .contains( itemStack -> itemStack.isOf( Items.DIAMOND ) && (itemStack.getCount() == 64) ),
+                .containsAny( itemStack -> itemStack.isOf( Items.DIAMOND ) && (itemStack.getCount() == 64) ),
             "player initially has 64 diamonds in the overworld"
         );
 
@@ -134,10 +139,15 @@ public class DimensionPoolChangeOnRespawnTest
             originalPlayer.getWorld().getRegistryKey()
         );
 
-        context.assertEquals( World.NETHER, originalPlayer.getWorld().getRegistryKey(), "dimension after teleporting" );
+        AssertionUtils.assertEquals(
+            context,
+            World.NETHER,
+            originalPlayer.getWorld().getRegistryKey(),
+            "dimension after teleporting"
+        );
 
         context.assertFalse(
-            originalPlayer.getInventory().contains( itemStack -> itemStack.isOf( Items.DIAMOND ) ),
+            originalPlayer.getInventory().containsAny( itemStack -> itemStack.isOf( Items.DIAMOND ) ),
             "player has no items after teleporting to the nether"
         );
 
@@ -145,11 +155,7 @@ public class DimensionPoolChangeOnRespawnTest
 
         originalPlayer.kill();
 
-        context
-            .getWorld()
-            .getServer()
-            .getPlayerManager()
-            .respawnPlayer( originalPlayer, false, Entity.RemovalReason.KILLED );
+        context.getWorld().getServer().getPlayerManager().respawnPlayer( originalPlayer, false );
 
         final ServerPlayerEntity respawnedPlayer = context
             .getWorld()
@@ -165,7 +171,8 @@ public class DimensionPoolChangeOnRespawnTest
             respawnedPlayer.getWorld().getRegistryKey()
         );
 
-        context.assertEquals(
+        AssertionUtils.assertEquals(
+            context,
             World.OVERWORLD,
             respawnedPlayer.getWorld().getRegistryKey(),
             "dimension after respawning"
@@ -174,7 +181,7 @@ public class DimensionPoolChangeOnRespawnTest
         context.assertTrue(
             respawnedPlayer
                 .getInventory()
-                .contains( itemStack -> itemStack.isOf( Items.DIAMOND ) && (itemStack.getCount() == 64) ),
+                .containsAny( itemStack -> itemStack.isOf( Items.DIAMOND ) && (itemStack.getCount() == 64) ),
             "player has 64 diamonds after respawning in the overworld"
         );
 
@@ -188,14 +195,15 @@ public class DimensionPoolChangeOnRespawnTest
             respawnedPlayer.getWorld().getRegistryKey()
         );
 
-        context.assertEquals(
+        AssertionUtils.assertEquals(
+            context,
             World.NETHER,
             respawnedPlayer.getWorld().getRegistryKey(),
             "dimension after teleporting again"
         );
 
         context.assertFalse(
-            respawnedPlayer.getInventory().contains( itemStack -> itemStack.isOf( Items.DIAMOND ) ),
+            respawnedPlayer.getInventory().containsAny( itemStack -> itemStack.isOf( Items.DIAMOND ) ),
             "player has no items when returning to the nether after respawning"
         );
 
