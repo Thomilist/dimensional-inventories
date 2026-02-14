@@ -6,7 +6,7 @@ import net.minecraft.util.UserCache;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * A dummy implementation of the vanilla {@link UserCache}.
@@ -32,10 +32,8 @@ public class DummyUserCache
     }
 
     @Override
-    public CompletableFuture<Optional<GameProfile>> findByNameAsync( final String username )
-    {
-        return CompletableFuture.supplyAsync( Optional::empty );
-    }
+    public void findByNameAsync( final String username, final Consumer<Optional<GameProfile>> consumer )
+    { }
 
     @Override
     public Optional<GameProfile> getByUuid( final UUID uuid )
