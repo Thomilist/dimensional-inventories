@@ -87,3 +87,18 @@ To manage access to these and other commands, it can be useful to assign permiss
 Use of [Vanilla Permissions](https://modrinth.com/mod/vanilla-permissions) or [Universal Perms](https://modrinth.com/mod/universal-perms) to expose additional permission nodes may also be useful in this context.
 
 Adding portal support to custom dimensions using another mod alongside Dimensional Inventories may be of interest. An example of such a mod could be [Dimension Portal Linker](https://github.com/Encrypted-Thoughts/DimensionPortalLinker/).
+
+## Mod Compatibility
+
+Broadly speaking, there are (at least) two interesting cases when it comes to mod compatiblity:
+
+1. Mods that use vanilla Minecraft systems to add/remove/modify game content (items, status effects, dimensions and so on). These should be compatible with Dimensional Inventories "out of the box".
+2. Mods that affect the *types* of player state available (extra inventory slots, currency systems and so on). These require additional effort to integrate with Dimensional Inventories.
+
+For the second case, Dimensional Inventories features a preliminary extension API, which allows *another* mod to register additional player state handlers. The extension API may change, even across minor versions, so be sure to use the compatible mod versions listed on a particular extension release. Note that extension mods may be developed by different people than the "main" Dimensional Inventories mod or the mod they provide support for. **You should not expect mod authors to resolve issues caused by an extension mod developed by a different author**.
+
+Below is a list of extension mods:
+
+| Mod | Extension | Author |
+| --- | --------- | ------ |
+| [Trinkets](https://modrinth.com/mod/trinkets) | [Dimensional Inventories Extension: Trinkets](https://github.com/Thomilist/dimensional-inventories-extension-trinkets) | Same as Dimensional Inventories |
