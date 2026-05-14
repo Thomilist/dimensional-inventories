@@ -120,14 +120,15 @@ tasks.register("creativeDimensionDatapackZip", Zip) {
     group = "build"
     from "./src/main/datapacks/example"
     archiveBaseName = "creative-dimension"
-    archiveVersion = project.minecraft_version
+    archiveVersion = minecraft_version
 
-    inputs.property("minecraft_version", project.minecraft_version)
-    inputs.property("data_pack_format", project.data_pack_format)
+    inputs.property("minecraft_version", minecraft_version)
+    inputs.property("data_pack_min_format", data_pack_min_format)
+    inputs.property("data_pack_max_format", data_pack_max_format)
+	filteringCharset = "UTF-8"
 
-    filter { String line ->
-        line.replace("\${data_pack_format}", project.data_pack_format)
-    }
+	expand "data_pack_min_format": data_pack_min_format,
+			"data_pack_max_format": data_pack_max_format
 }
 
 tasks.build {

@@ -1,6 +1,8 @@
 {
     "pack": {
-        "pack_format": ${data_pack_format},
+        "pack_format": ${data_pack_min_format.split("\\.")[0]},
+        "min_format": [${String.join(", ", data_pack_min_format.split("\\."))}],
+        "max_format": [${String.join(", ", data_pack_max_format.split("\\."))}],
         "description": "Creative dimension"
     }
 }
