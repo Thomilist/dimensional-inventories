@@ -13,7 +13,7 @@ import java.util.Optional;
 public class DimensionPoolConfigModuleState
     implements ConfigModuleState
 {
-    public final HashMap<String, DimensionPool> dimensionPools = new HashMap<>();
+    public HashMap<String, DimensionPool> dimensionPools = new HashMap<>();
 
     public static DimensionPoolConfigModuleState createDefault()
     {
