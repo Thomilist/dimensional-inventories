@@ -202,21 +202,21 @@ dependencies {
 }
 
 tasks.withType(ProcessResources).configureEach {
-	inputs.property("java_version", project.target_java_version)
+	inputs.property("java_version", target_java_version)
 	inputs.property("version", project.version)
-	inputs.property("minecraft_version", project.minecraft_version)
-	inputs.property "target_minecraft_version", project.target_minecraft_version
-	inputs.property("loader_version", project.loader_version)
-	inputs.property("carpet_version", project.carpet_version)
+	inputs.property("minecraft_version", minecraft_version)
+	inputs.property "target_minecraft_version", target_minecraft_version
+	inputs.property("loader_version", loader_version)
+	inputs.property("carpet_version", carpet_version)
 	filteringCharset = "UTF-8"
 
 	filesMatching("fabric.mod.json") {
-		expand "java_version": project.target_java_version,
+		expand "java_version": target_java_version,
 				"version": project.version,
-				"minecraft_version": project.minecraft_version,
-				"target_minecraft_version": project.target_minecraft_version,
-                "loader_version": project.loader_version,
-                "carpet_version": project.carpet_version
+				"minecraft_version": minecraft_version,
+				"target_minecraft_version": target_minecraft_version,
+                "loader_version": loader_version,
+                "carpet_version": carpet_version
 	}
 
 	filesMatching("*.mixins.json") {
