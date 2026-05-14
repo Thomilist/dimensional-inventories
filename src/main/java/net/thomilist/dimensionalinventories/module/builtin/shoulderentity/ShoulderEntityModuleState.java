@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.module.builtin.shoulderentity;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.thomilist.dimensionalinventories.mixin.ServerPlayerEntityAccessor;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.thomilist.dimensionalinventories.mixin.ServerPlayerAccessor;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModuleState;
 
 import java.lang.reflect.Type;
@@ -10,32 +10,32 @@ import java.lang.reflect.Type;
 public class ShoulderEntityModuleState
     implements PlayerModuleState
 {
-    public NbtCompound leftShoulderEntity = new NbtCompound();
-    public NbtCompound rightShoulderEntity = new NbtCompound();
+    public CompoundTag leftShoulderEntity = new CompoundTag();
+    public CompoundTag rightShoulderEntity = new CompoundTag();
     public long shoulderEntityAddedTime = 0;
 
     public ShoulderEntityModuleState()
     { }
 
-    public ShoulderEntityModuleState( final ServerPlayerEntity player )
+    public ShoulderEntityModuleState( final ServerPlayer player )
     {
         this.loadFromPlayer( player );
     }
 
     @Override
-    public void applyToPlayer( final ServerPlayerEntity player )
+    public void applyToPlayer( final ServerPlayer player )
     {
-        ((ServerPlayerEntityAccessor) player).invokeSetLeftShoulderNbt( this.leftShoulderEntity );
-        ((ServerPlayerEntityAccessor) player).invokeSetRightShoulderNbt( this.rightShoulderEntity );
-        ((ServerPlayerEntityAccessor) player).setShoulderMountTime( this.shoulderEntityAddedTime );
+        ((ServerPlayerAccessor) player).invokeSetShoulderEntityLeft( this.leftShoulderEntity );
+        ((ServerPlayerAccessor) player).invokeSetShoulderEntityRight( this.rightShoulderEntity );
+        ((ServerPlayerAccessor) player).setTimeEntitySatOnShoulder( this.shoulderEntityAddedTime );
     }
 
     @Override
-    public void loadFromPlayer( final ServerPlayerEntity player )
+    public void loadFromPlayer( final ServerPlayer player )
     {
-        this.leftShoulderEntity = player.getLeftShoulderNbt();
-        this.rightShoulderEntity = player.getRightShoulderNbt();
-        this.shoulderEntityAddedTime = ((ServerPlayerEntityAccessor) player).getShoulderMountTime();
+        this.leftShoulderEntity = player.getShoulderEntityLeft();
+        this.rightShoulderEntity = player.getShoulderEntityRight();
+        this.shoulderEntityAddedTime = ((ServerPlayerAccessor) player).getTimeEntitySatOnShoulder();
     }
 
     @Override

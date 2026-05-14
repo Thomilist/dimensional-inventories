@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.module.builtin.inventory;
 
 import com.google.gson.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundScope;
 import net.thomilist.dimensionalinventories.util.ItemStackListHelper;
@@ -34,7 +34,7 @@ public class InventoryModuleStateSerializerPair
             try ( final LostAndFoundScope LAF = LostAndFound.push( label ) )
             {
                 final JsonElement stacksJson = inventoryJson.get( label.toString() );
-                final DefaultedList<ItemStack> items = context.deserialize(
+                final NonNullList<ItemStack> items = context.deserialize(
                     stacksJson,
                     ItemStackListSerializerPair.TYPE
                 );

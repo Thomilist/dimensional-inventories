@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.util;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.LevelResource;
 import net.thomilist.dimensionalinventories.module.base.Module;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.version.StorageVersion;
@@ -24,7 +24,7 @@ public final class SavePaths
     public static void onServerStarted( final MinecraftServer server )
     {
         SavePaths.baseSaveDirectory = server
-            .getSavePath( WorldSavePath.ROOT )
+            .getWorldPath( LevelResource.ROOT )
             .resolve( SavePaths.BASE_SAVE_DIRECTORY_NAME );
     }
 
@@ -52,18 +52,18 @@ public final class SavePaths
 
     public static Path saveDirectory( final StorageVersion storageVersion,
                                       final DimensionPool dimensionPool,
-                                      final ServerPlayerEntity player )
+                                      final ServerPlayer player )
     {
         return switch ( storageVersion )
         {
             case V1 -> SavePaths.saveDirectory( storageVersion, dimensionPool );
-            case V2 -> SavePaths.saveDirectory( storageVersion, dimensionPool ).resolve( player.getUuidAsString() );
+            case V2 -> SavePaths.saveDirectory( storageVersion, dimensionPool ).resolve( player.getStringUUID() );
         };
     }
 
     public static Path saveDirectory( final StorageVersion storageVersion,
                                       final DimensionPool dimensionPool,
-                                      final ServerPlayerEntity player,
+                                      final ServerPlayer player,
                                       final String namespace )
     {
         return switch ( storageVersion )
@@ -105,7 +105,7 @@ public final class SavePaths
 
     public static Path lostAndFoundDirectory( final StorageVersion storageVersion,
                                               final DimensionPool dimensionPool,
-                                              final ServerPlayerEntity player )
+                                              final ServerPlayer player )
     {
         return SavePaths
             .saveDirectory( storageVersion, dimensionPool, player )
@@ -114,7 +114,7 @@ public final class SavePaths
 
     public static Path lostAndFoundDirectory( final StorageVersion storageVersion,
                                               final DimensionPool dimensionPool,
-                                              final ServerPlayerEntity player,
+                                              final ServerPlayer player,
                                               final Module module )
     {
         return SavePaths

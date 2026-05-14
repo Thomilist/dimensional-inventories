@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories.module.builtin.status;
 
 import com.google.gson.*;
-import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.util.gson.SerializerPair;
 
@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class StatusEffectCollectionSerializerPair
-    implements SerializerPair<Collection<StatusEffectInstance>>
+    implements SerializerPair<Collection<MobEffectInstance>>
 {
     public static final Type TYPE = new StatusEffectCollectionSerializerPair().type();
 
     @Override
-    public Collection<StatusEffectInstance> fromJson( final JsonElement json,
-                                                      final Type typeOfT,
-                                                      final JsonDeserializationContext context )
+    public Collection<MobEffectInstance> fromJson( final JsonElement json,
+                                                   final Type typeOfT,
+                                                   final JsonDeserializationContext context )
         throws JsonParseException
     {
         if ( !json.isJsonArray() )
@@ -30,12 +30,12 @@ public class StatusEffectCollectionSerializerPair
             return new ArrayList<>();
         }
 
-        final ArrayList<StatusEffectInstance> effects = new ArrayList<>();
+        final ArrayList<MobEffectInstance> effects = new ArrayList<>();
         final JsonArray jsonArray = json.getAsJsonArray();
 
         for ( int i = 0; i < jsonArray.size(); i++ )
         {
-            final StatusEffectInstance effect = context.deserialize( jsonArray.get( i ), StatusEffectInstance.class );
+            final MobEffectInstance effect = context.deserialize( jsonArray.get( i ), MobEffectInstance.class );
 
             if ( effect == null )
             {
@@ -49,15 +49,15 @@ public class StatusEffectCollectionSerializerPair
     }
 
     @Override
-    public JsonElement toJson( final Collection<StatusEffectInstance> src,
+    public JsonElement toJson( final Collection<MobEffectInstance> src,
                                final Type typeOfSrc,
                                final JsonSerializationContext context )
     {
         final JsonArray json = new JsonArray();
 
-        for ( final StatusEffectInstance statusEffect : src )
+        for ( final MobEffectInstance statusEffect : src )
         {
-            json.add( context.serialize( statusEffect, StatusEffectInstance.class ) );
+            json.add( context.serialize( statusEffect, MobEffectInstance.class ) );
         }
 
         return json;

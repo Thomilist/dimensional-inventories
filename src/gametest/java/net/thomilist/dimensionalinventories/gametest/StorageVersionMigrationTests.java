@@ -2,11 +2,11 @@ package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.loader.api.VersionParsingException;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.gametest.util.CurrentMinecraftVersion;
 import net.thomilist.dimensionalinventories.gametest.util.assertion.InventoryAsserter;
@@ -28,7 +28,7 @@ public class StorageVersionMigrationTests
     extends DimensionalInventoriesGameTest
 {
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void migrateLegacyToV2( final TestContext context )
+    public void migrateLegacyToV2( final GameTestHelper context )
         throws VersionParsingException
     {
         // Prepare legacy data to migrate from
@@ -44,7 +44,7 @@ public class StorageVersionMigrationTests
 
         // Migrate
 
-        instance.storageVersionMigration.tryMigrate( context.getWorld().getServer() );
+        instance.storageVersionMigration.tryMigrate( context.getLevel().getServer() );
 
         // Load config modules
 
@@ -60,11 +60,11 @@ public class StorageVersionMigrationTests
 
         context.assertTrue(
             dimensionPoolConfig.poolExists( "default" ),
-            Text.of( "Dimension pool 'default' missing" )
+            Component.nullToEmpty( "Dimension pool 'default' missing" )
         );
         context.assertTrue(
             dimensionPoolConfig.poolExists( "creative" ),
-            Text.of( "Dimension pool 'creative' missing" )
+            Component.nullToEmpty( "Dimension pool 'creative' missing" )
         );
 
         final DimensionPool dimensionPoolDefault = dimensionPoolConfig.poolWithId( "default" ).orElseThrow();
@@ -74,12 +74,12 @@ public class StorageVersionMigrationTests
 
         context.assertTrue(
             dimensionPoolDefault.hasDimensions( "minecraft:overworld", "minecraft:the_nether", "minecraft:the_end" ),
-            Text.of( "Dimension pool 'default' missing dimension(s)" )
+            Component.nullToEmpty( "Dimension pool 'default' missing dimension(s)" )
         );
 
         context.assertTrue(
             dimensionPoolCreative.hasDimensions( "custom:creative" ),
-            Text.of( "Dimension pool 'creative' missing dimension(s)" )
+            Component.nullToEmpty( "Dimension pool 'creative' missing dimension(s)" )
         );
 
         // Data for all players migrated?
@@ -94,7 +94,7 @@ public class StorageVersionMigrationTests
 
         for ( final String playerUuid : playerUuids )
         {
-            final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld(), playerUuid );
+            final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getLevel(), playerUuid );
 
             for ( final DimensionPool dimensionPool : dimensionPoolConfig.dimensionPools.values() )
             {
@@ -104,7 +104,7 @@ public class StorageVersionMigrationTests
                     {
                         context.assertTrue(
                             jsonPlayerModule.saveFile( player, dimensionPool ).toFile().exists(),
-                            Text.of(
+                            Component.nullToEmpty(
                                 "Dimension pool '" + dimensionPool.getId() + "' missing " + playerModule.moduleId() +
                                 " data for " + "player '" + playerUuid + '\'' )
                         );
@@ -115,7 +115,7 @@ public class StorageVersionMigrationTests
 
         // Player data migrated correctly?
 
-        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld(), playerUuids.get( 4 ) );
+        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getLevel(), playerUuids.get( 4 ) );
         final InventoryAsserter combinedInventory = new InventoryAsserter( context, player.getInventory() );
         final InventoryAsserter enderChest = new InventoryAsserter( context, player.getEnderChestInventory() );
         final StatusAsserter status = new StatusAsserter( context, player );
@@ -222,6 +222,6 @@ public class StorageVersionMigrationTests
             combinedInventory.assertEnchantment( 38, Enchantments.MENDING, 1 );
         }
 
-        context.complete();
+        context.succeed();
     }
 }

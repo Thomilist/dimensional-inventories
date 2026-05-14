@@ -1,15 +1,15 @@
 package net.thomilist.dimensionalinventories.gametest.util.assertion;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.test.TestContext;
-import net.thomilist.dimensionalinventories.mixin.HungerManagerAccessor;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.player.Player;
+import net.thomilist.dimensionalinventories.mixin.FoodDataAccessor;
 
 public class StatusAsserter
 {
-    private final TestContext context;
-    private final PlayerEntity player;
+    private final GameTestHelper context;
+    private final Player player;
 
-    public StatusAsserter( final TestContext context, final PlayerEntity player )
+    public StatusAsserter( final GameTestHelper context, final Player player )
     {
         this.context = context;
         this.player = player;
@@ -39,7 +39,7 @@ public class StatusAsserter
     {
         AssertionUtils.assertEquals(
             this.context,
-            this.player.getHungerManager().getFoodLevel(),
+            this.player.getFoodData().getFoodLevel(),
             expectedFoodLevel,
             "food level"
         );
@@ -49,7 +49,7 @@ public class StatusAsserter
     {
         AssertionUtils.assertEquals(
             this.context,
-            this.player.getHungerManager().getSaturationLevel(),
+            this.player.getFoodData().getSaturationLevel(),
             expectedSaturationLevel,
             "saturation level"
         );
@@ -59,7 +59,7 @@ public class StatusAsserter
     {
         AssertionUtils.assertEquals(
             this.context,
-            ((HungerManagerAccessor) this.player.getHungerManager()).getExhaustion(),
+            ((FoodDataAccessor) this.player.getFoodData()).getExhaustionLevel(),
             expectedExhaustion,
             "exhaustion"
         );

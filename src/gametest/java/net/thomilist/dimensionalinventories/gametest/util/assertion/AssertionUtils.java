@@ -1,18 +1,18 @@
 package net.thomilist.dimensionalinventories.gametest.util.assertion;
 
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 
 import java.util.function.BiFunction;
 
 public final class AssertionUtils
 {
-    public static <N> void assertEquals( final TestContext context, final N value, final N expected, final String name )
+    public static <N> void assertEquals( final GameTestHelper context, final N value, final N expected, final String name )
     {
-        context.assertEquals( expected, value, Text.of( name ) );
+        context.assertValueEqual( expected, value, Component.nullToEmpty( name ) );
     }
 
-    public static <N> void assertEquals( final TestContext context,
+    public static <N> void assertEquals( final GameTestHelper context,
                                          final N value,
                                          final N expected,
                                          final String name,
@@ -20,7 +20,7 @@ public final class AssertionUtils
     {
         context.assertTrue(
             equalityComparer.apply( value, expected ),
-            Text.of( "Expected %s to be %s, but was %s".formatted( name, expected, value ) )
+            Component.nullToEmpty( "Expected %s to be %s, but was %s".formatted( name, expected, value ) )
         );
     }
 }

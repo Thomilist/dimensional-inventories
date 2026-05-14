@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.module.builtin.inventory;
 
 import com.google.gson.Gson;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.thomilist.dimensionalinventories.module.base.JsonModule;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
@@ -33,7 +33,7 @@ public final class InventoryModule
     }
 
     @Override
-    public InventoryModuleState newInstance( final ServerPlayerEntity player )
+    public InventoryModuleState newInstance( final ServerPlayer player )
     {
         return new InventoryModuleState( player );
     }

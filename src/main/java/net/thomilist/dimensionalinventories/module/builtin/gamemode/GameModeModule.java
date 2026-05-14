@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.module.builtin.gamemode;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
@@ -23,13 +23,13 @@ public final class GameModeModule
     }
 
     @Override
-    public void load( final ServerPlayerEntity player, final DimensionPool dimensionPool )
+    public void load( final ServerPlayer player, final DimensionPool dimensionPool )
     {
-        player.changeGameMode( dimensionPool.getGameMode() );
+        player.setGameMode( dimensionPool.getGameMode() );
     }
 
     @Override
-    public void save( final ServerPlayerEntity player, final DimensionPool dimensionPool )
+    public void save( final ServerPlayer player, final DimensionPool dimensionPool )
     {
         // Intentionally empty; the game mode state belongs to the dimension pool, not the player
     }

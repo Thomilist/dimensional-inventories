@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.module.version;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.WorldSavePath;
-import net.minecraft.world.GameMode;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.storage.LevelResource;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.ModuleNotRegisteredException;
 import net.thomilist.dimensionalinventories.exception.StorageVersionMigrationException;
@@ -63,7 +63,7 @@ public class StorageVersionMigration
         try ( final LostAndFoundScope LAF = LostAndFound.push( "storage version migration" ) )
         {
             this.legacyBaseSaveDirectory = server
-                .getSavePath( WorldSavePath.ROOT )
+                .getWorldPath( LevelResource.ROOT )
                 .resolve( this.legacyBaseSaveDirectoryName );
 
             final StorageVersion writtenStorageVersion = this.determineWrittenDataVersion();
@@ -276,7 +276,7 @@ public class StorageVersionMigration
                 DimensionalInventories.LOGGER.info( "Migrating dimension pool '{}'...", dimensionPoolName );
 
                 // Temporary dimension pool to hold the dimension pool name
-                final DimensionPool tempDimensionPool = new DimensionPool( dimensionPoolName, GameMode.DEFAULT );
+                final DimensionPool tempDimensionPool = new DimensionPool( dimensionPoolName, GameType.DEFAULT_MODE );
 
                 for ( final File v1InventoryFile : files )
                 {

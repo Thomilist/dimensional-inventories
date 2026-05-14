@@ -1,14 +1,14 @@
 package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.util.DummyServerPlayerEntity;
@@ -20,27 +20,27 @@ public class InventoryModuleTests
     // Swap player inventory on dimension pool transition (kinda the whole point of the mod).
     // Tests with every registered item
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void transitionSwapsPlayerItems( final TestContext context )
+    public void transitionSwapsPlayerItems( final GameTestHelper context )
     {
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
-        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
+        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getLevel() );
 
-        for ( final Item item : Registries.ITEM )
+        for ( final Item item : BuiltInRegistries.ITEM )
         {
             if ( item.equals( Items.AIR ) )
             {
                 continue;
             }
 
-            final ItemStack itemStack = new ItemStack( item, item.getMaxCount() );
+            final ItemStack itemStack = new ItemStack( item, item.getDefaultMaxStackSize() );
             DimensionalInventoriesGameTest.LOGGER.debug( "transitionSwapsPlayerItems: {}", itemStack );
 
-            player.giveItemStack( itemStack.copy() );
+            player.addItem( itemStack.copy() );
 
-            context.testEntity(
+            context.assertEntityProperty(
                 player,
-                p -> ItemStack.areItemsEqual( itemStack, p.getInventory().getStack( 0 ) ),
-                Text.of( "Inventory contents non-empty before first transition" )
+                p -> ItemStack.isSameItem( itemStack, p.getInventory().getItem( 0 ) ),
+                Component.nullToEmpty( "Inventory contents non-empty before first transition" )
             );
 
             setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -49,10 +49,10 @@ public class InventoryModuleTests
                 BasicModSetup.DESTINATION_DIMENSION
             );
 
-            context.testEntity(
+            context.assertEntityProperty(
                 player,
-                p -> ItemStack.areItemsEqual( ItemStack.EMPTY, p.getInventory().getStack( 0 ) ),
-                Text.of( "Inventory is empty after first transition" )
+                p -> ItemStack.isSameItem( ItemStack.EMPTY, p.getInventory().getItem( 0 ) ),
+                Component.nullToEmpty( "Inventory is empty after first transition" )
             );
 
             setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -61,27 +61,27 @@ public class InventoryModuleTests
                 BasicModSetup.ORIGIN_DIMENSION
             );
 
-            context.testEntity(
+            context.assertEntityProperty(
                 player,
-                p -> ItemStack.areItemsEqual( itemStack, p.getInventory().getStack( 0 ) ),
-                Text.of( "Inventory contents restored after return transition" )
+                p -> ItemStack.isSameItem( itemStack, p.getInventory().getItem( 0 ) ),
+                Component.nullToEmpty( "Inventory contents restored after return transition" )
             );
 
-            player.getInventory().clear();
+            player.getInventory().clearContent();
         }
 
-        context.complete();
+        context.succeed();
     }
 
     // Do not swap player inventory on unconfigured transition
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void unconfiguredTransitionDoesNotSwapPlayerItems( final TestContext context )
+    public void unconfiguredTransitionDoesNotSwapPlayerItems( final GameTestHelper context )
     {
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
-        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
-        final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getMaxCount() );
+        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getLevel() );
+        final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getDefaultMaxStackSize() );
 
-        player.giveItemStack( itemStack.copy() );
+        player.addItem( itemStack.copy() );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
             player,
@@ -89,25 +89,25 @@ public class InventoryModuleTests
             BasicModSetup.UNCONFIGURED_DIMENSION
         );
 
-        context.testEntity(
+        context.assertEntityProperty(
             player,
-            p -> ItemStack.areItemsEqual( itemStack, p.getInventory().getStack( 0 ) ),
-            Text.of( "Inventory contents unaffected after unconfigured transition" )
+            p -> ItemStack.isSameItem( itemStack, p.getInventory().getItem( 0 ) ),
+            Component.nullToEmpty( "Inventory contents unaffected after unconfigured transition" )
         );
 
-        context.complete();
+        context.succeed();
     }
 
     // Ensure all inventory slots are supported (main, offhand, armour, ender chest)
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void transitionHandlesEveryInventorySlot( final TestContext context )
+    public void transitionHandlesEveryInventorySlot( final GameTestHelper context )
     {
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
-        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld() );
-        final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getMaxCount() );
+        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getLevel() );
+        final ItemStack itemStack = new ItemStack( Items.STONE, Items.STONE.getDefaultMaxStackSize() );
 
-        final DefaultedList<ItemStack> itemStacksMain = DefaultedList.ofSize( 36 );
-        final DefaultedList<ItemStack> itemStacksEnderChest = DefaultedList.ofSize( 27 );
+        final NonNullList<ItemStack> itemStacksMain = NonNullList.createWithCapacity( 36 );
+        final NonNullList<ItemStack> itemStacksEnderChest = NonNullList.createWithCapacity( 27 );
 
         ItemStackListHelper.fillWithCopies( itemStacksMain, itemStack, 36 );
         ItemStackListHelper.fillWithCopies( itemStacksEnderChest, itemStack, 27 );
@@ -115,7 +115,7 @@ public class InventoryModuleTests
         Compat.PLAYER_INVENTORY.setMain( player.getInventory(), itemStacksMain );
         Compat.PLAYER_INVENTORY.setOffHand(
             player.getInventory(),
-            DefaultedList.copyOf( ItemStack.EMPTY, itemStack.copy() )
+            NonNullList.of( ItemStack.EMPTY, itemStack.copy() )
         );
         Compat.SIMPLE_INVENTORY.setHeldStacks( player.getEnderChestInventory(), itemStacksEnderChest );
 
@@ -126,59 +126,59 @@ public class InventoryModuleTests
 
         Compat.PLAYER_INVENTORY.setArmor(
             player.getInventory(),
-            DefaultedList.copyOf( ItemStack.EMPTY, boots, leggings, chestPlate, helmet )
+            NonNullList.of( ItemStack.EMPTY, boots, leggings, chestPlate, helmet )
         );
 
         for ( int i = 0; i < Compat.PLAYER_INVENTORY.getMain( player.getInventory() ).size(); ++i )
         {
             context.assertTrue(
-                ItemStack.areItemsEqual( itemStack, Compat.PLAYER_INVENTORY.getMain( player.getInventory() ).get( i ) ),
-                Text.of( "Main inventory filled before first transition" )
+                ItemStack.isSameItem( itemStack, Compat.PLAYER_INVENTORY.getMain( player.getInventory() ).get( i ) ),
+                Component.nullToEmpty( "Main inventory filled before first transition" )
             );
         }
 
         for ( int i = 0; i < Compat.PLAYER_INVENTORY.getOffHand( player.getInventory() ).size(); ++i )
         {
             context.assertTrue(
-                ItemStack.areItemsEqual(
+                ItemStack.isSameItem(
                     itemStack,
                     Compat.PLAYER_INVENTORY.getOffHand( player.getInventory() ).get( i )
                 ),
-                Text.of( "Offhand inventory filled before first transition" )
+                Component.nullToEmpty( "Offhand inventory filled before first transition" )
             );
         }
 
         for ( int i = 0; i < Compat.SIMPLE_INVENTORY.getHeldStacks( player.getEnderChestInventory() ).size(); ++i )
         {
             context.assertTrue(
-                ItemStack.areItemsEqual(
+                ItemStack.isSameItem(
                     itemStack,
                     Compat.SIMPLE_INVENTORY
                         .getHeldStacks( player.getEnderChestInventory() )
                         .get( i )
                 ),
-                Text.of( "Ender chest inventory filled before first transition" )
+                Component.nullToEmpty( "Ender chest inventory filled before first transition" )
             );
         }
 
         context.assertTrue(
-            ItemStack.areItemsEqual( helmet, player.getEquippedStack( EquipmentSlot.HEAD ) ),
-            Text.of( "Head slot filled before first transition" )
+            ItemStack.isSameItem( helmet, player.getItemBySlot( EquipmentSlot.HEAD ) ),
+            Component.nullToEmpty( "Head slot filled before first transition" )
         );
 
         context.assertTrue(
-            ItemStack.areItemsEqual( chestPlate, player.getEquippedStack( EquipmentSlot.CHEST ) ),
-            Text.of( "Chest slot filled before first transition" )
+            ItemStack.isSameItem( chestPlate, player.getItemBySlot( EquipmentSlot.CHEST ) ),
+            Component.nullToEmpty( "Chest slot filled before first transition" )
         );
 
         context.assertTrue(
-            ItemStack.areItemsEqual( leggings, player.getEquippedStack( EquipmentSlot.LEGS ) ),
-            Text.of( "Legs slot filled before first transition" )
+            ItemStack.isSameItem( leggings, player.getItemBySlot( EquipmentSlot.LEGS ) ),
+            Component.nullToEmpty( "Legs slot filled before first transition" )
         );
 
         context.assertTrue(
-            ItemStack.areItemsEqual( boots, player.getEquippedStack( EquipmentSlot.FEET ) ),
-            Text.of( "Feet slot filled before first transition" )
+            ItemStack.isSameItem( boots, player.getItemBySlot( EquipmentSlot.FEET ) ),
+            Component.nullToEmpty( "Feet slot filled before first transition" )
         );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -190,55 +190,55 @@ public class InventoryModuleTests
         for ( int i = 0; i < Compat.PLAYER_INVENTORY.getMain( player.getInventory() ).size(); i++ )
         {
             context.assertTrue(
-                ItemStack.areItemsEqual(
+                ItemStack.isSameItem(
                     ItemStack.EMPTY,
                     Compat.PLAYER_INVENTORY.getMain( player.getInventory() ).get( i )
                 ),
-                Text.of( "Main inventory empty after first transition" )
+                Component.nullToEmpty( "Main inventory empty after first transition" )
             );
         }
 
         for ( int i = 0; i < Compat.PLAYER_INVENTORY.getOffHand( player.getInventory() ).size(); i++ )
         {
             context.assertTrue(
-                ItemStack.areItemsEqual(
+                ItemStack.isSameItem(
                     ItemStack.EMPTY,
                     Compat.PLAYER_INVENTORY.getOffHand( player.getInventory() ).get( i )
                 ),
-                Text.of( "Offhand inventory empty after first transition" )
+                Component.nullToEmpty( "Offhand inventory empty after first transition" )
             );
         }
 
         for ( int i = 0; i < Compat.SIMPLE_INVENTORY.getHeldStacks( player.getEnderChestInventory() ).size(); i++ )
         {
             context.assertTrue(
-                ItemStack.areItemsEqual(
+                ItemStack.isSameItem(
                     ItemStack.EMPTY,
                     Compat.SIMPLE_INVENTORY
                         .getHeldStacks( player.getEnderChestInventory() )
                         .get( i )
-                ), Text.of( "Ender chest inventory empty after first transition" )
+                ), Component.nullToEmpty( "Ender chest inventory empty after first transition" )
             );
         }
 
         context.assertTrue(
-            ItemStack.areItemsEqual( ItemStack.EMPTY, player.getEquippedStack( EquipmentSlot.HEAD ) ),
-            Text.of( "Head slot empty after first transition" )
+            ItemStack.isSameItem( ItemStack.EMPTY, player.getItemBySlot( EquipmentSlot.HEAD ) ),
+            Component.nullToEmpty( "Head slot empty after first transition" )
         );
 
         context.assertTrue(
-            ItemStack.areItemsEqual( ItemStack.EMPTY, player.getEquippedStack( EquipmentSlot.CHEST ) ),
-            Text.of( "Chest slot empty after first transition" )
+            ItemStack.isSameItem( ItemStack.EMPTY, player.getItemBySlot( EquipmentSlot.CHEST ) ),
+            Component.nullToEmpty( "Chest slot empty after first transition" )
         );
 
         context.assertTrue(
-            ItemStack.areItemsEqual( ItemStack.EMPTY, player.getEquippedStack( EquipmentSlot.LEGS ) ),
-            Text.of( "Legs slot empty after first transition" )
+            ItemStack.isSameItem( ItemStack.EMPTY, player.getItemBySlot( EquipmentSlot.LEGS ) ),
+            Component.nullToEmpty( "Legs slot empty after first transition" )
         );
 
         context.assertTrue(
-            ItemStack.areItemsEqual( ItemStack.EMPTY, player.getEquippedStack( EquipmentSlot.FEET ) ),
-            Text.of( "Feet slot empty after first transition" )
+            ItemStack.isSameItem( ItemStack.EMPTY, player.getItemBySlot( EquipmentSlot.FEET ) ),
+            Component.nullToEmpty( "Feet slot empty after first transition" )
         );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -250,55 +250,55 @@ public class InventoryModuleTests
         for ( int i = 0; i < Compat.PLAYER_INVENTORY.getMain( player.getInventory() ).size(); ++i )
         {
             context.assertTrue(
-                ItemStack.areItemsEqual( itemStack, Compat.PLAYER_INVENTORY.getMain( player.getInventory() ).get( i ) ),
-                Text.of( "Main inventory restored after return transition" )
+                ItemStack.isSameItem( itemStack, Compat.PLAYER_INVENTORY.getMain( player.getInventory() ).get( i ) ),
+                Component.nullToEmpty( "Main inventory restored after return transition" )
             );
         }
 
         for ( int i = 0; i < Compat.PLAYER_INVENTORY.getOffHand( player.getInventory() ).size(); ++i )
         {
             context.assertTrue(
-                ItemStack.areItemsEqual(
+                ItemStack.isSameItem(
                     itemStack,
                     Compat.PLAYER_INVENTORY.getOffHand( player.getInventory() ).get( i )
                 ),
-                Text.of( "Offhand inventory restored after return transition" )
+                Component.nullToEmpty( "Offhand inventory restored after return transition" )
             );
         }
 
         for ( int i = 0; i < Compat.SIMPLE_INVENTORY.getHeldStacks( player.getEnderChestInventory() ).size(); ++i )
         {
             context.assertTrue(
-                ItemStack.areItemsEqual(
+                ItemStack.isSameItem(
                     itemStack,
                     Compat.SIMPLE_INVENTORY
                         .getHeldStacks( player.getEnderChestInventory() )
                         .get( i )
                 ),
-                Text.of( "Ender chest inventory restored after return transition" )
+                Component.nullToEmpty( "Ender chest inventory restored after return transition" )
             );
         }
 
         context.assertTrue(
-            ItemStack.areItemsEqual( helmet, player.getEquippedStack( EquipmentSlot.HEAD ) ),
-            Text.of( "Head slot restored after return transition" )
+            ItemStack.isSameItem( helmet, player.getItemBySlot( EquipmentSlot.HEAD ) ),
+            Component.nullToEmpty( "Head slot restored after return transition" )
         );
 
         context.assertTrue(
-            ItemStack.areItemsEqual( chestPlate, player.getEquippedStack( EquipmentSlot.CHEST ) ),
-            Text.of( "Chest slot restored after return transition" )
+            ItemStack.isSameItem( chestPlate, player.getItemBySlot( EquipmentSlot.CHEST ) ),
+            Component.nullToEmpty( "Chest slot restored after return transition" )
         );
 
         context.assertTrue(
-            ItemStack.areItemsEqual( leggings, player.getEquippedStack( EquipmentSlot.LEGS ) ),
-            Text.of( "Legs slot restored after return transition" )
+            ItemStack.isSameItem( leggings, player.getItemBySlot( EquipmentSlot.LEGS ) ),
+            Component.nullToEmpty( "Legs slot restored after return transition" )
         );
 
         context.assertTrue(
-            ItemStack.areItemsEqual( boots, player.getEquippedStack( EquipmentSlot.FEET ) ),
-            Text.of( "Feet slot restored after return transition" )
+            ItemStack.isSameItem( boots, player.getItemBySlot( EquipmentSlot.FEET ) ),
+            Component.nullToEmpty( "Feet slot restored after return transition" )
         );
 
-        context.complete();
+        context.succeed();
     }
 }

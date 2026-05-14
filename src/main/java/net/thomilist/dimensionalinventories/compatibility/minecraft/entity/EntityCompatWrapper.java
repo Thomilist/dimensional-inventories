@@ -1,15 +1,15 @@
 package net.thomilist.dimensionalinventories.compatibility.minecraft.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.thomilist.dimensionalinventories.compatibility.CompatWrapper;
 
 public interface EntityCompatWrapper
     extends CompatWrapper
 {
-    World getWorld( Entity entity );
+    Level getWorld( Entity entity );
 
-    ServerWorld getWorld( ServerPlayerEntity player );
+    ServerLevel getWorld( ServerPlayer player );
 }

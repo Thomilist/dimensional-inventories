@@ -1,13 +1,13 @@
 package net.thomilist.dimensionalinventories.mixin;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.stat.Stat;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.stats.Stat;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Optional;
 
-@Mixin( PlayerEntity.class )
+@Mixin( Player.class )
 public abstract class DisableStatisticIncrementMixin
     extends LivingEntity
 {
@@ -31,7 +31,7 @@ public abstract class DisableStatisticIncrementMixin
     @Unique
     private static DimensionPoolConfigModule DIMENSION_POOL_CONFIG;
 
-    protected DisableStatisticIncrementMixin( final World world,
+    protected DisableStatisticIncrementMixin( final Level world,
                                               final BlockPos pos,
                                               final float yaw,
                                               final GameProfile gameProfile )
@@ -52,7 +52,7 @@ public abstract class DisableStatisticIncrementMixin
     }
 
     @Inject( at = @At( "HEAD" ),
-             method = "incrementStat(Lnet/minecraft/util/Identifier;)V",
+             method = "awardStat(Lnet/minecraft/resources/Identifier;)V",
              cancellable = true )
     public void incrementStat( final Identifier stat, final CallbackInfo info )
     {
@@ -65,7 +65,7 @@ public abstract class DisableStatisticIncrementMixin
     @Unique
     public boolean canPoolIncrementStatistics()
     {
-        final String dimensionName = Compat.ENTITY.getWorld( this ).getRegistryKey().getValue().toString();
+        final String dimensionName = Compat.ENTITY.getWorld( this ).dimension().identifier().toString();
 
         final Optional<DimensionPool> pool = DisableStatisticIncrementMixin
             .dimensionPoolConfig()
@@ -76,7 +76,7 @@ public abstract class DisableStatisticIncrementMixin
     }
 
     @Inject( at = @At( "HEAD" ),
-             method = "increaseStat(Lnet/minecraft/util/Identifier;I)V",
+             method = "awardStat(Lnet/minecraft/resources/Identifier;I)V",
              cancellable = true )
     public void increaseStat( final Identifier stat, final int amount, final CallbackInfo info )
     {
@@ -87,7 +87,7 @@ public abstract class DisableStatisticIncrementMixin
     }
 
     @Inject( at = @At( "HEAD" ),
-             method = "incrementStat(Lnet/minecraft/stat/Stat;)V",
+             method = "awardStat(Lnet/minecraft/stats/Stat;)V",
              cancellable = true )
     public void incrementStat( final Stat<?> stat, final CallbackInfo info )
     {
@@ -98,7 +98,7 @@ public abstract class DisableStatisticIncrementMixin
     }
 
     @Inject( at = @At( "HEAD" ),
-             method = "increaseStat(Lnet/minecraft/stat/Stat;I)V",
+             method = "awardStat(Lnet/minecraft/stats/Stat;I)V",
              cancellable = true )
     public void increaseStat( final Stat<?> stat, final int amount, final CallbackInfo info )
     {

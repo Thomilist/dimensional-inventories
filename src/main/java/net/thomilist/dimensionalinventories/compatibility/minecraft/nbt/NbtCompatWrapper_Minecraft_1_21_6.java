@@ -1,14 +1,14 @@
 package net.thomilist.dimensionalinventories.compatibility.minecraft.nbt;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.util.ErrorReporter;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
 
 import java.util.Optional;
@@ -18,17 +18,17 @@ import java.util.Optional;
 public final class NbtCompatWrapper_Minecraft_1_21_6
     implements NbtCompatWrapper
 {
-    private RegistryWrapper.WrapperLookup wrapperLookup;
+    private HolderLookup.Provider wrapperLookup;
 
     @Override
     public void onServerStarted( final MinecraftServer server )
     {
         NbtCompatWrapper.super.onServerStarted( server );
-        this.wrapperLookup = server.getRegistryManager();
+        this.wrapperLookup = server.registryAccess();
     }
 
     @Override
-    public ItemStack toItemStack( final NbtCompound nbtCompound )
+    public ItemStack toItemStack( final CompoundTag nbtCompound )
     {
         if ( nbtCompound.isEmpty() )
         {
@@ -48,44 +48,44 @@ public final class NbtCompatWrapper_Minecraft_1_21_6
         }
 
         return ItemStack.CODEC
-            .parse( this.wrapperLookup.getOps( NbtOps.INSTANCE ), nbtCompound )
+            .parse( this.wrapperLookup.createSerializationContext( NbtOps.INSTANCE ), nbtCompound )
             .result()
             .orElse( null );
     }
 
     @Override
-    public NbtCompound fromItemStack( final ItemStack itemStack )
+    public CompoundTag fromItemStack( final ItemStack itemStack )
     {
         if ( itemStack.isEmpty() )
         {
             return null;
         }
 
-        return (NbtCompound) ItemStack.CODEC
-            .encodeStart( this.wrapperLookup.getOps( NbtOps.INSTANCE ), itemStack )
+        return (CompoundTag) ItemStack.CODEC
+            .encodeStart( this.wrapperLookup.createSerializationContext( NbtOps.INSTANCE ), itemStack )
             .getOrThrow();
     }
 
     @Override
-    public StatusEffectInstance toStatusEffectInstance( final NbtCompound nbtCompound )
+    public MobEffectInstance toStatusEffectInstance( final CompoundTag nbtCompound )
     {
-        return StatusEffectInstance.CODEC.parse( NbtOps.INSTANCE, nbtCompound ).result().orElse( null );
+        return MobEffectInstance.CODEC.parse( NbtOps.INSTANCE, nbtCompound ).result().orElse( null );
     }
 
     @Override
-    public NbtCompound fromStatusEffectInstance( final StatusEffectInstance statusEffectInstance )
+    public CompoundTag fromStatusEffectInstance( final MobEffectInstance statusEffectInstance )
     {
-        return (NbtCompound) StatusEffectInstance.CODEC
+        return (CompoundTag) MobEffectInstance.CODEC
             .encodeStart( NbtOps.INSTANCE, statusEffectInstance )
             .result()
-            .orElse( new NbtCompound() );
+            .orElse( new CompoundTag() );
     }
 
     @Override
-    public NbtCompound fromEntity( final Entity entity )
+    public CompoundTag fromEntity( final Entity entity )
     {
-        final NbtWriteView nbtWriteView = NbtWriteView.create( new ErrorReporter.Impl(), this.wrapperLookup );
-        entity.writeData( nbtWriteView );
-        return nbtWriteView.getNbt();
+        final TagValueOutput nbtWriteView = TagValueOutput.createWithContext( new ProblemReporter.Collector(), this.wrapperLookup );
+        entity.saveWithoutId( nbtWriteView );
+        return nbtWriteView.buildResult();
     }
 }

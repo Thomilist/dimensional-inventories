@@ -3,19 +3,19 @@ package net.thomilist.dimensionalinventories.gametest;
 import carpet.CarpetSettings;
 import carpet.patches.EntityPlayerMPFake;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldProperties;
-import net.minecraft.world.rule.GameRules;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.LevelData;
+import net.minecraft.world.phys.Vec3;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
@@ -44,7 +44,7 @@ public class DimensionPoolChangeOnRespawnTest
      */
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS,
                requiredSuccesses = 5 )
-    public void transitionHandledExactlyOnce( final TestContext context )
+    public void transitionHandledExactlyOnce( final GameTestHelper context )
     {
         // Configure dimension pools (creative mode in both, so the player is allowed to fly)
 
@@ -52,13 +52,13 @@ public class DimensionPoolChangeOnRespawnTest
             .get( DimensionPoolConfigModule.class )
             .state();
 
-        dimensionPoolConfig.createPool( BasicModSetup.ORIGIN_DIMENSION_POOL_ID, GameMode.CREATIVE );
+        dimensionPoolConfig.createPool( BasicModSetup.ORIGIN_DIMENSION_POOL_ID, GameType.CREATIVE );
         dimensionPoolConfig.assignDimensionToPool(
             BasicModSetup.ORIGIN_DIMENSION,
             BasicModSetup.ORIGIN_DIMENSION_POOL_ID
         );
 
-        dimensionPoolConfig.createPool( BasicModSetup.DESTINATION_DIMENSION_POOL_ID, GameMode.CREATIVE );
+        dimensionPoolConfig.createPool( BasicModSetup.DESTINATION_DIMENSION_POOL_ID, GameType.CREATIVE );
         dimensionPoolConfig.assignDimensionToPool(
             BasicModSetup.DESTINATION_DIMENSION,
             BasicModSetup.DESTINATION_DIMENSION_POOL_ID
@@ -71,49 +71,49 @@ public class DimensionPoolChangeOnRespawnTest
         context.assertTrue(
             EntityPlayerMPFake.createFake(
                 DimensionPoolChangeOnRespawnTest.FAKE_PLAYER_NAME,
-                context.getWorld().getServer(),
-                new Vec3d( 0, 70, 0 ),
+                context.getLevel().getServer(),
+                new Vec3( 0, 70, 0 ),
                 0,
                 0,
-                context.getWorld().getRegistryKey(),
-                GameMode.CREATIVE,
+                context.getLevel().dimension(),
+                GameType.CREATIVE,
                 true
-            ), Text.of( "fake player spawned successfully" )
+            ), Component.nullToEmpty( "fake player spawned successfully" )
         );
 
-        final ServerPlayerEntity originalPlayer = context
-            .getWorld()
+        final ServerPlayer originalPlayer = context
+            .getLevel()
             .getServer()
-            .getPlayerManager()
-            .getPlayer( DimensionPoolChangeOnRespawnTest.FAKE_PLAYER_NAME );
+            .getPlayerList()
+            .getPlayerByName( DimensionPoolChangeOnRespawnTest.FAKE_PLAYER_NAME );
 
         assert originalPlayer != null;
 
         // Set the player's spawn point in the overworld
 
-        final ServerPlayerEntity.Respawn spawnPoint = new ServerPlayerEntity.Respawn(
-            new WorldProperties.SpawnPoint(
+        final ServerPlayer.RespawnConfig spawnPoint = new ServerPlayer.RespawnConfig(
+            new LevelData.RespawnData(
                 new GlobalPos(
-                    World.OVERWORLD,
-                    BlockPos.ofFloored( 0, 70, 0 )
+                    Level.OVERWORLD,
+                    BlockPos.containing( 0, 70, 0 )
                 ), 0, 0
             ),
             true
         );
 
-        originalPlayer.setSpawnPoint( spawnPoint, true );
+        originalPlayer.setRespawnPosition( spawnPoint, true );
 
         // Ensure the player respawns immediately without player interaction
 
         context
-            .getWorld()
+            .getLevel()
             .getGameRules()
-            .setValue( GameRules.DO_IMMEDIATE_RESPAWN, true, context.getWorld().getServer() );
+            .set( GameRules.IMMEDIATE_RESPAWN, true, context.getLevel().getServer() );
 
         // 0: player in the overworld; has 64 diamonds
 
-        originalPlayer.teleport(
-            context.getWorld().getServer().getWorld( World.OVERWORLD ),
+        originalPlayer.teleportTo(
+            context.getLevel().getServer().getLevel( Level.OVERWORLD ),
             0,
             70,
             0,
@@ -123,31 +123,31 @@ public class DimensionPoolChangeOnRespawnTest
             true
         );
 
-        originalPlayer.giveItemStack( new ItemStack( Items.DIAMOND, 64 ) );
+        originalPlayer.addItem( new ItemStack( Items.DIAMOND, 64 ) );
 
         DimensionalInventoriesGameTest.LOGGER.info(
             "0: Player {} is in {}",
             originalPlayer.getName().getString(),
-            Compat.ENTITY.getWorld( originalPlayer ).getRegistryKey()
+            Compat.ENTITY.getWorld( originalPlayer ).dimension()
         );
 
-        context.assertEquals(
-            World.OVERWORLD,
-            Compat.ENTITY.getWorld( originalPlayer ).getRegistryKey(),
-            Text.of( "initial dimension" )
+        context.assertValueEqual(
+            Level.OVERWORLD,
+            Compat.ENTITY.getWorld( originalPlayer ).dimension(),
+            Component.nullToEmpty( "initial dimension" )
         );
 
         context.assertTrue(
             originalPlayer
                 .getInventory()
-                .contains( itemStack -> itemStack.isOf( Items.DIAMOND ) && (itemStack.getCount() == 64) ),
-            Text.of( "player initially has 64 diamonds in the overworld" )
+                .contains( itemStack -> itemStack.is( Items.DIAMOND ) && (itemStack.getCount() == 64) ),
+            Component.nullToEmpty( "player initially has 64 diamonds in the overworld" )
         );
 
         // 1: player teleported to the nether (different dimension pool); no items
 
-        originalPlayer.teleport(
-            context.getWorld().getServer().getWorld( World.NETHER ),
+        originalPlayer.teleportTo(
+            context.getLevel().getServer().getLevel( Level.NETHER ),
             0,
             130,
             0,
@@ -160,18 +160,18 @@ public class DimensionPoolChangeOnRespawnTest
         DimensionalInventoriesGameTest.LOGGER.info(
             "1: Player {} is in {}",
             originalPlayer.getName().getString(),
-            Compat.ENTITY.getWorld( originalPlayer ).getRegistryKey()
+            Compat.ENTITY.getWorld( originalPlayer ).dimension()
         );
 
-        context.assertEquals(
-            World.NETHER,
-            Compat.ENTITY.getWorld( originalPlayer ).getRegistryKey(),
-            Text.of( "dimension after teleporting" )
+        context.assertValueEqual(
+            Level.NETHER,
+            Compat.ENTITY.getWorld( originalPlayer ).dimension(),
+            Component.nullToEmpty( "dimension after teleporting" )
         );
 
         context.assertFalse(
-            originalPlayer.getInventory().contains( itemStack -> itemStack.isOf( Items.DIAMOND ) ),
-            Text.of( "player has no items after teleporting to the nether" )
+            originalPlayer.getInventory().contains( itemStack -> itemStack.is( Items.DIAMOND ) ),
+            Component.nullToEmpty( "player has no items after teleporting to the nether" )
         );
 
         // 2: player killed; respawns in overworld; has 64 diamonds
@@ -179,15 +179,15 @@ public class DimensionPoolChangeOnRespawnTest
         originalPlayer.kill( Compat.ENTITY.getWorld( originalPlayer ) );
 
         context
-            .getWorld()
+            .getLevel()
             .getServer()
-            .getPlayerManager()
-            .respawnPlayer( originalPlayer, false, Entity.RemovalReason.KILLED );
+            .getPlayerList()
+            .respawn( originalPlayer, false, Entity.RemovalReason.KILLED );
 
-        final ServerPlayerEntity respawnedPlayer = context
-            .getWorld()
+        final ServerPlayer respawnedPlayer = context
+            .getLevel()
             .getServer()
-            .getPlayerManager()
+            .getPlayerList()
             .getPlayer( originalPlayer.getGameProfile().id() );
 
         assert respawnedPlayer != null;
@@ -195,26 +195,26 @@ public class DimensionPoolChangeOnRespawnTest
         DimensionalInventoriesGameTest.LOGGER.info(
             "2: Player {} is in {}",
             respawnedPlayer.getName().getString(),
-            Compat.ENTITY.getWorld( respawnedPlayer ).getRegistryKey()
+            Compat.ENTITY.getWorld( respawnedPlayer ).dimension()
         );
 
-        context.assertEquals(
-            World.OVERWORLD,
-            Compat.ENTITY.getWorld( respawnedPlayer ).getRegistryKey(),
-            Text.of( "dimension after respawning" )
+        context.assertValueEqual(
+            Level.OVERWORLD,
+            Compat.ENTITY.getWorld( respawnedPlayer ).dimension(),
+            Component.nullToEmpty( "dimension after respawning" )
         );
 
         context.assertTrue(
             respawnedPlayer
                 .getInventory()
-                .contains( itemStack -> itemStack.isOf( Items.DIAMOND ) && (itemStack.getCount() == 64) ),
-            Text.of( "player has 64 diamonds after respawning in the overworld" )
+                .contains( itemStack -> itemStack.is( Items.DIAMOND ) && (itemStack.getCount() == 64) ),
+            Component.nullToEmpty( "player has 64 diamonds after respawning in the overworld" )
         );
 
         // 3: player teleported to the nether; no items
 
-        respawnedPlayer.teleport(
-            context.getWorld().getServer().getWorld( World.NETHER ),
+        respawnedPlayer.teleportTo(
+            context.getLevel().getServer().getLevel( Level.NETHER ),
             0,
             130,
             0,
@@ -227,22 +227,22 @@ public class DimensionPoolChangeOnRespawnTest
         DimensionalInventoriesGameTest.LOGGER.info(
             "3: Player {} is in {}",
             respawnedPlayer.getName().getString(),
-            Compat.ENTITY.getWorld( respawnedPlayer ).getRegistryKey()
+            Compat.ENTITY.getWorld( respawnedPlayer ).dimension()
         );
 
-        context.assertEquals(
-            World.NETHER,
-            Compat.ENTITY.getWorld( respawnedPlayer ).getRegistryKey(),
-            Text.of( "dimension after teleporting again" )
+        context.assertValueEqual(
+            Level.NETHER,
+            Compat.ENTITY.getWorld( respawnedPlayer ).dimension(),
+            Component.nullToEmpty( "dimension after teleporting again" )
         );
 
         context.assertFalse(
-            respawnedPlayer.getInventory().contains( itemStack -> itemStack.isOf( Items.DIAMOND ) ),
-            Text.of( "player has no items when returning to the nether after respawning" )
+            respawnedPlayer.getInventory().contains( itemStack -> itemStack.is( Items.DIAMOND ) ),
+            Component.nullToEmpty( "player has no items when returning to the nether after respawning" )
         );
 
         // Done
 
-        context.complete();
+        context.succeed();
     }
 }

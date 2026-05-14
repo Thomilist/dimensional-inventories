@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.compatibility.minecraft.inventory;
 
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
 import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
 import net.thomilist.dimensionalinventories.util.ItemStackListHelper;
 
@@ -12,14 +12,14 @@ public class SimpleInventoryCompatWrapper_Minecraft_1_20_3
     implements SimpleInventoryCompatWrapper
 {
     @Override
-    public DefaultedList<ItemStack> getHeldStacks( final SimpleInventory simpleInventory )
+    public NonNullList<ItemStack> getHeldStacks( final SimpleContainer simpleInventory )
     {
-        return simpleInventory.getHeldStacks();
+        return simpleInventory.getItems();
     }
 
     @Override
-    public void setHeldStacks( final SimpleInventory simpleInventory, final DefaultedList<ItemStack> itemStacks )
+    public void setHeldStacks( final SimpleContainer simpleInventory, final NonNullList<ItemStack> itemStacks )
     {
-        ItemStackListHelper.assignItemStacks( itemStacks, simpleInventory.getHeldStacks() );
+        ItemStackListHelper.assignItemStacks( itemStacks, simpleInventory.getItems() );
     }
 }

@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.module.builtin.pool;
 
-import net.minecraft.world.GameMode;
+import net.minecraft.world.level.GameType;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFoundFormattable;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPool_SV1;
 
@@ -20,7 +20,7 @@ public final class DimensionPool
     private final TreeSet<String> dimensions = new TreeSet<>();
     private String id;
     private String displayName;
-    private GameMode gameMode = GameMode.DEFAULT;
+    private GameType gameMode = GameType.DEFAULT_MODE;
     private boolean progressAdvancements = true;
     private boolean incrementStatistics = true;
 
@@ -33,7 +33,7 @@ public final class DimensionPool
         this.setDisplayName( id );
     }
 
-    public DimensionPool( final String id, final GameMode gameMode )
+    public DimensionPool( final String id, final GameType gameMode )
     {
         this( id );
         this.setGameMode( gameMode );
@@ -118,12 +118,12 @@ public final class DimensionPool
         return true;
     }
 
-    public GameMode getGameMode()
+    public GameType getGameMode()
     {
         return this.gameMode;
     }
 
-    public void setGameMode( final GameMode gameMode )
+    public void setGameMode( final GameType gameMode )
     {
         this.gameMode = gameMode;
     }
@@ -157,7 +157,7 @@ public final class DimensionPool
 
         // Rules
         dimensionPoolString.append( "\n    Rules:" );
-        dimensionPoolString.append( "\n        Gamemode: " ).append( this.getGameMode().asString() );
+        dimensionPoolString.append( "\n        Gamemode: " ).append( this.getGameMode().getSerializedName() );
         dimensionPoolString.append( "\n        Progress advancements: " ).append( this.canProgressAdvancements() );
         dimensionPoolString.append( "\n        Increment statistics: " ).append( this.canIncrementStatistics() );
 

@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories.util;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 
 // Code from sf-inc/xp_storage (MIT licence)
 // https://github.com/sf-inc/xp_storage/blob/master/src/main/java/com/github/charlyb01/xpstorage/Utils.java
@@ -14,21 +14,21 @@ public final class ExperienceHelper
     private ExperienceHelper()
     { }
 
-    public static void setExperience( final ServerPlayerEntity player, final int experience )
+    public static void setExperience( final ServerPlayer player, final int experience )
     {
-        player.totalExperience = MathHelper.clamp( experience, 0, Integer.MAX_VALUE );
+        player.totalExperience = Mth.clamp( experience, 0, Integer.MAX_VALUE );
         player.experienceLevel = 0;
-        player.addExperienceLevels( ExperienceHelper.getLevelFromExperience_sfinc( experience ) );
+        player.giveExperienceLevels( ExperienceHelper.getLevelFromExperience_sfinc( experience ) );
         final int deltaExperience = player.totalExperience -
                                     ExperienceHelper.getExperienceToLevel_sfinc( player.experienceLevel );
-        player.experienceProgress = deltaExperience / (float) player.getNextLevelExperience();
+        player.experienceProgress = deltaExperience / (float) player.getXpNeededForNextLevel();
     }
 
-    public static int getTotalExperience_Meridanus( final ServerPlayerEntity player )
+    public static int getTotalExperience_Meridanus( final ServerPlayer player )
     {
         return ExperienceHelper.getTotalExperience_Meridanus(
             player.experienceLevel,
-            player.getNextLevelExperience(),
+            player.getXpNeededForNextLevel(),
             player.experienceProgress
         );
     }

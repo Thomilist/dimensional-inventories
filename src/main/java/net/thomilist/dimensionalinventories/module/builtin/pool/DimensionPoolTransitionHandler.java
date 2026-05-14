@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.module.builtin.pool;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Clearable;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Clearable;
+import net.minecraft.world.entity.Entity;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.ModuleRegistry;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModule;
@@ -31,7 +31,7 @@ public class DimensionPoolTransitionHandler
 
     public void loadToPlayer( final StorageVersion storageVersion,
                               final DimensionPool dimensionPool,
-                              final ServerPlayerEntity player )
+                              final ServerPlayer player )
     {
         if ( this.playerModules.has( storageVersion ) )
         {
@@ -44,7 +44,7 @@ public class DimensionPoolTransitionHandler
 
     public void saveFromPlayer( final StorageVersion storageVersion,
                                 final DimensionPool dimensionPool,
-                                final ServerPlayerEntity player )
+                                final ServerPlayer player )
     {
         if ( this.playerModules.has( storageVersion ) )
         {
@@ -55,7 +55,7 @@ public class DimensionPoolTransitionHandler
         }
     }
 
-    public void handlePlayerDimensionChange( final ServerPlayerEntity player,
+    public void handlePlayerDimensionChange( final ServerPlayer player,
                                              final String originDimensionName,
                                              final String destinationDimensionName )
     {
@@ -67,7 +67,7 @@ public class DimensionPoolTransitionHandler
         DimensionalInventories.LOGGER.debug(
             "Player '{}' ({}) travelled from {} to {}.",
             player.getName().getString(),
-            player.getUuidAsString(),
+            player.getStringUUID(),
             originDimensionName,
             destinationDimensionName
         );
@@ -154,7 +154,7 @@ public class DimensionPoolTransitionHandler
 
             if ( newEntity instanceof Clearable )
             {
-                ((Clearable) newEntity).clear();
+                ((Clearable) newEntity).clearContent();
             }
 
             newEntity.discard();

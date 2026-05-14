@@ -2,12 +2,12 @@ package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 
 public class StatusEffectModuleTests
@@ -16,21 +16,21 @@ public class StatusEffectModuleTests
     // Status effects should be swapped on dimension pool transition.
     // Test with all registered status effects
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void transitionSwapsStatusEffects( final TestContext context )
+    public void transitionSwapsStatusEffects( final GameTestHelper context )
     {
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
-        final FakePlayer player = FakePlayer.get( context.getWorld() );
+        final FakePlayer player = FakePlayer.get( context.getLevel() );
 
-        for ( final StatusEffect effect : Registries.STATUS_EFFECT )
+        for ( final MobEffect effect : BuiltInRegistries.MOB_EFFECT )
         {
-            final RegistryEntry<StatusEffect> effectEntry = Registries.STATUS_EFFECT.getEntry( effect );
-            final StatusEffectInstance effectInstance = new StatusEffectInstance( effectEntry );
+            final Holder<MobEffect> effectEntry = BuiltInRegistries.MOB_EFFECT.wrapAsHolder( effect );
+            final MobEffectInstance effectInstance = new MobEffectInstance( effectEntry );
             DimensionalInventoriesGameTest.LOGGER.debug(
                 "transitionSwapsStatusEffects: {}",
-                effect.getName().getString()
+                effect.getDisplayName().getString()
             );
 
-            player.addStatusEffect( effectInstance );
+            player.addEffect( effectInstance );
 
             setup.instance.transitionHandler.handlePlayerDimensionChange(
                 player,
@@ -39,8 +39,8 @@ public class StatusEffectModuleTests
             );
 
             context.assertTrue(
-                player.getStatusEffects().isEmpty(),
-                Text.of( "Player has no status effects after transition" )
+                player.getActiveEffects().isEmpty(),
+                Component.nullToEmpty( "Player has no status effects after transition" )
             );
 
             setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -50,13 +50,13 @@ public class StatusEffectModuleTests
             );
 
             context.assertTrue(
-                player.hasStatusEffect( effectEntry ),
-                Text.of( "Player regained status effect after return transition" )
+                player.hasEffect( effectEntry ),
+                Component.nullToEmpty( "Player regained status effect after return transition" )
             );
 
-            player.clearStatusEffects();
+            player.removeAllEffects();
         }
 
-        context.complete();
+        context.succeed();
     }
 }

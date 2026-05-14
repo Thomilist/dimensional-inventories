@@ -2,10 +2,10 @@ package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.world.GameMode;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameType;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 
@@ -15,10 +15,10 @@ public class GameModeModuleTests
     // When a player crosses dimension pools, their gamemode should be changed
     // according to dimension pool settings
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void transitionSwitchesGameMode( final TestContext context )
+    public void transitionSwitchesGameMode( final GameTestHelper context )
     {
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
-        final FakePlayer player = FakePlayer.get( context.getWorld() );
+        final FakePlayer player = FakePlayer.get( context.getLevel() );
 
         final DimensionPool originPool = setup.dimensionPoolConfig
             .state()
@@ -29,8 +29,8 @@ public class GameModeModuleTests
             .poolWithId( BasicModSetup.DESTINATION_DIMENSION_POOL_ID )
             .orElseThrow();
 
-        originPool.setGameMode( GameMode.SPECTATOR );
-        destinationPool.setGameMode( GameMode.CREATIVE );
+        originPool.setGameMode( GameType.SPECTATOR );
+        destinationPool.setGameMode( GameType.CREATIVE );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
             player,
@@ -38,10 +38,10 @@ public class GameModeModuleTests
             BasicModSetup.DESTINATION_DIMENSION
         );
 
-        context.testEntity(
+        context.assertEntityProperty(
             player,
-            ServerPlayerEntity::isCreative,
-            Text.of( "Game mode is creative after first transition" )
+            ServerPlayer::isCreative,
+            Component.nullToEmpty( "Game mode is creative after first transition" )
         );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -50,12 +50,12 @@ public class GameModeModuleTests
             BasicModSetup.ORIGIN_DIMENSION
         );
 
-        context.testEntity(
+        context.assertEntityProperty(
             player,
-            ServerPlayerEntity::isSpectator,
-            Text.of( "Game mode is spectator after return transition" )
+            ServerPlayer::isSpectator,
+            Component.nullToEmpty( "Game mode is spectator after return transition" )
         );
 
-        context.complete();
+        context.succeed();
     }
 }

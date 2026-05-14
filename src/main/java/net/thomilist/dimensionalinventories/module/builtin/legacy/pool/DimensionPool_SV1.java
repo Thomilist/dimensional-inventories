@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.module.builtin.legacy.pool;
 
-import net.minecraft.world.GameMode;
+import net.minecraft.world.level.GameType;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public record DimensionPool_SV1(
     String name,
     ArrayList<String> dimensions,
-    GameMode gameMode,
+    GameType gameMode,
     boolean progressAdvancements,
     boolean incrementStatistics
 )

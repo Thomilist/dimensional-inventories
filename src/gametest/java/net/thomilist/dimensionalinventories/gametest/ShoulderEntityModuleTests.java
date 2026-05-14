@@ -3,15 +3,15 @@ package net.thomilist.dimensionalinventories.gametest;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.ParrotEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.parrot.Parrot;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.gametest.mixin.ParrotAccessor;
 import net.thomilist.dimensionalinventories.gametest.util.BasicModSetup;
-import net.thomilist.dimensionalinventories.mixin.ServerPlayerEntityAccessor;
+import net.thomilist.dimensionalinventories.mixin.ServerPlayerAccessor;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModule;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.shoulderentity.ShoulderEntityModule;
@@ -26,22 +26,22 @@ public class ShoulderEntityModuleTests
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
     // Test with a single parrot
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void transitionSwapsSingleShoulderEntity( final TestContext context )
+    public void transitionSwapsSingleShoulderEntity( final GameTestHelper context )
     {
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
-            context.getWorld(),
+            context.getLevel(),
             new GameProfile( UUID.randomUUID(), "OneParrot" )
         );
 
         player.setOnGround( true );
-        ((ServerPlayerEntityAccessor) player).invokeDropShoulderEntities();
+        ((ServerPlayerAccessor) player).invokeRemoveEntitiesOnShoulder();
 
-        final ParrotEntity parrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
-        ((ParrotAccessor) parrot).invokeSetVariant( ParrotEntity.Variant.RED_BLUE );
-        final NbtCompound parrotNbt = Compat.NBT.fromEntity( parrot );
-        ((ServerPlayerEntityAccessor) player).invokeSetLeftShoulderNbt( parrotNbt );
-        final NbtCompound parrotBefore = player.getLeftShoulderNbt();
+        final Parrot parrot = new Parrot( EntityType.PARROT, context.getLevel() );
+        ((ParrotAccessor) parrot).invokeSetVariant( Parrot.Variant.RED_BLUE );
+        final CompoundTag parrotNbt = Compat.NBT.fromEntity( parrot );
+        ((ServerPlayerAccessor) player).invokeSetShoulderEntityLeft( parrotNbt );
+        final CompoundTag parrotBefore = player.getShoulderEntityLeft();
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
             player,
@@ -50,13 +50,13 @@ public class ShoulderEntityModuleTests
         );
 
         context.assertTrue(
-            NbtUtils.isEffectivelyEmpty( player.getLeftShoulderNbt() ),
-            Text.of( "Left shoulder empty after transition" )
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityLeft() ),
+            Component.nullToEmpty( "Left shoulder empty after transition" )
         );
 
         context.assertTrue(
-            NbtUtils.isEffectivelyEmpty( player.getRightShoulderNbt() ),
-            Text.of( "Right shoulder empty after transition" )
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityRight() ),
+            Component.nullToEmpty( "Right shoulder empty after transition" )
         );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -66,46 +66,46 @@ public class ShoulderEntityModuleTests
         );
 
         context.assertTrue(
-            NbtUtils.areEffectivelyEqual( parrotBefore, player.getLeftShoulderNbt() ),
-            Text.of( "Left parrot restored after return transition" )
+            NbtUtils.areEffectivelyEqual( parrotBefore, player.getShoulderEntityLeft() ),
+            Component.nullToEmpty( "Left parrot restored after return transition" )
         );
 
         context.assertTrue(
-            NbtUtils.isEffectivelyEmpty( player.getRightShoulderNbt() ),
-            Text.of( "Right shoulder empty after return transition" )
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityRight() ),
+            Component.nullToEmpty( "Right shoulder empty after return transition" )
         );
 
-        context.complete();
+        context.succeed();
     }
 
     // Shoulder entities (i.e. parrots) should be swapped on dimension pool transition.
     // Test with two parrots
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void transitionSwapsBothShoulderEntities( final TestContext context )
+    public void transitionSwapsBothShoulderEntities( final GameTestHelper context )
     {
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
         final FakePlayer player = FakePlayer.get(
-            context.getWorld(),
+            context.getLevel(),
             new GameProfile( UUID.randomUUID(), "TwoParrots" )
         );
 
         player.setOnGround( true );
-        ((ServerPlayerEntityAccessor) player).invokeDropShoulderEntities();
+        ((ServerPlayerAccessor) player).invokeRemoveEntitiesOnShoulder();
 
-        final ParrotEntity leftParrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
-        final ParrotEntity rightParrot = new ParrotEntity( EntityType.PARROT, context.getWorld() );
+        final Parrot leftParrot = new Parrot( EntityType.PARROT, context.getLevel() );
+        final Parrot rightParrot = new Parrot( EntityType.PARROT, context.getLevel() );
 
-        ((ParrotAccessor) leftParrot).invokeSetVariant( ParrotEntity.Variant.RED_BLUE );
-        ((ParrotAccessor) rightParrot).invokeSetVariant( ParrotEntity.Variant.GREEN );
+        ((ParrotAccessor) leftParrot).invokeSetVariant( Parrot.Variant.RED_BLUE );
+        ((ParrotAccessor) rightParrot).invokeSetVariant( Parrot.Variant.GREEN );
 
-        final NbtCompound leftParrotNbt = Compat.NBT.fromEntity( leftParrot );
-        final NbtCompound rightParrotNbt = Compat.NBT.fromEntity( rightParrot );
+        final CompoundTag leftParrotNbt = Compat.NBT.fromEntity( leftParrot );
+        final CompoundTag rightParrotNbt = Compat.NBT.fromEntity( rightParrot );
 
-        ((ServerPlayerEntityAccessor) player).invokeSetLeftShoulderNbt( leftParrotNbt );
-        ((ServerPlayerEntityAccessor) player).invokeSetRightShoulderNbt( rightParrotNbt );
+        ((ServerPlayerAccessor) player).invokeSetShoulderEntityLeft( leftParrotNbt );
+        ((ServerPlayerAccessor) player).invokeSetShoulderEntityRight( rightParrotNbt );
 
-        final NbtCompound leftParrotBefore = player.getLeftShoulderNbt();
-        final NbtCompound rightParrotBefore = player.getRightShoulderNbt();
+        final CompoundTag leftParrotBefore = player.getShoulderEntityLeft();
+        final CompoundTag rightParrotBefore = player.getShoulderEntityRight();
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
             player,
@@ -114,13 +114,13 @@ public class ShoulderEntityModuleTests
         );
 
         context.assertTrue(
-            NbtUtils.isEffectivelyEmpty( player.getLeftShoulderNbt() ),
-            Text.of( "Left shoulder empty after transition" )
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityLeft() ),
+            Component.nullToEmpty( "Left shoulder empty after transition" )
         );
 
         context.assertTrue(
-            NbtUtils.isEffectivelyEmpty( player.getRightShoulderNbt() ),
-            Text.of( "Right shoulder empty after transition" )
+            NbtUtils.isEffectivelyEmpty( player.getShoulderEntityRight() ),
+            Component.nullToEmpty( "Right shoulder empty after transition" )
         );
 
         setup.instance.transitionHandler.handlePlayerDimensionChange(
@@ -130,46 +130,46 @@ public class ShoulderEntityModuleTests
         );
 
         context.assertTrue(
-            NbtUtils.areEffectivelyEqual( leftParrotBefore, player.getLeftShoulderNbt() ),
-            Text.of( "Left parrot restored after return transition" )
+            NbtUtils.areEffectivelyEqual( leftParrotBefore, player.getShoulderEntityLeft() ),
+            Component.nullToEmpty( "Left parrot restored after return transition" )
         );
 
         context.assertTrue(
-            NbtUtils.areEffectivelyEqual( rightParrotBefore, player.getRightShoulderNbt() ),
-            Text.of( "Right parrot restored after return transition" )
+            NbtUtils.areEffectivelyEqual( rightParrotBefore, player.getShoulderEntityRight() ),
+            Component.nullToEmpty( "Right parrot restored after return transition" )
         );
 
-        context.complete();
+        context.succeed();
     }
 
     // Parrots changed a bit internally in 1.21.9, but old data should still load correctly.
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void oldDataIsLoadedCorrectly( final TestContext context )
+    public void oldDataIsLoadedCorrectly( final GameTestHelper context )
     {
         final String saveDirectoryName = "dimensional-inventories";
         final String resourcePath = "samples/v2/module/shoulder-entity/mv1/" + saveDirectoryName;
         DimensionalInventoriesGameTest.initializeSampleData( context, resourcePath, saveDirectoryName );
 
-        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getWorld(), "50870ba6-fadb-4ac4-8e7f-ba57a56dc5d5" );
+        final DummyServerPlayerEntity player = new DummyServerPlayerEntity( context.getLevel(), "50870ba6-fadb-4ac4-8e7f-ba57a56dc5d5" );
         final PlayerModule module = new ShoulderEntityModule( "main" );
         final DimensionPool dimensionPool = new DimensionPool( "origin" );
 
         module.load( player, dimensionPool );
 
-        context.assertEquals(
-            ParrotEntity.Variant.RED_BLUE,
-            player.getLeftShoulderParrotVariant().orElseThrow(),
-            Text.of( "Left shoulder parrot variant loaded correctly." )
+        context.assertValueEqual(
+            Parrot.Variant.RED_BLUE,
+            player.getShoulderParrotLeft().orElseThrow(),
+            Component.nullToEmpty( "Left shoulder parrot variant loaded correctly." )
         );
 
-        context.assertEquals(
-            ParrotEntity.Variant.GREEN,
-            player.getRightShoulderParrotVariant().orElseThrow(),
-            Text.of( "Right shoulder parrot variant loaded correctly." )
+        context.assertValueEqual(
+            Parrot.Variant.GREEN,
+            player.getShoulderParrotRight().orElseThrow(),
+            Component.nullToEmpty( "Right shoulder parrot variant loaded correctly." )
         );
 
         module.save( player, dimensionPool );
 
-        context.complete();
+        context.succeed();
     }
 }

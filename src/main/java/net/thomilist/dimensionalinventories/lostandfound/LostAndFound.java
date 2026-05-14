@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories.lostandfound;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 
 import java.io.IOException;
@@ -25,11 +25,11 @@ public class LostAndFound
     private static final String END_CONTENT = "--- END LOST+FOUND CONTENT ---";
     private static final String BEGIN_EXCEPTION = "--- BEGIN LOST+FOUND EXCEPTION ---";
     private static final String END_EXCEPTION = "--- END LOST+FOUND EXCEPTION ---";
-    private static final Text DATA_LOSS_MESSAGE = Text
+    private static final Component DATA_LOSS_MESSAGE = Component
         .literal(
             "Some data was lost when crossing dimension pools. Consult server staff for more details and, possibly, " +
             "data recovery." )
-        .formatted( Formatting.RED );
+        .withStyle( ChatFormatting.RED );
     public static LostAndFoundContext CONTEXT = LostAndFoundContext.create();
 
     public static LostAndFoundContext init( final Object... scopes )
@@ -109,7 +109,7 @@ public class LostAndFound
     {
         try
         {
-            LostAndFound.CONTEXT.getPlayer().sendMessage( LostAndFound.DATA_LOSS_MESSAGE );
+            LostAndFound.CONTEXT.getPlayer().sendSystemMessage( LostAndFound.DATA_LOSS_MESSAGE );
         }
         catch ( final NoSuchElementException e )
         {

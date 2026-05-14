@@ -1,14 +1,14 @@
 package net.thomilist.dimensionalinventories.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 
 public final class ItemStackListHelper
 {
     private ItemStackListHelper()
     { }
 
-    public static void assignItemStacks( final DefaultedList<ItemStack> source, final DefaultedList<ItemStack> target )
+    public static void assignItemStacks( final NonNullList<ItemStack> source, final NonNullList<ItemStack> target )
     {
         if ( source.size() != target.size() )
         {
@@ -21,7 +21,7 @@ public final class ItemStackListHelper
         }
     }
 
-    public static void fillWithCopies( final DefaultedList<ItemStack> target,
+    public static void fillWithCopies( final NonNullList<ItemStack> target,
                                        final ItemStack itemStackToCopy,
                                        final int count )
     {

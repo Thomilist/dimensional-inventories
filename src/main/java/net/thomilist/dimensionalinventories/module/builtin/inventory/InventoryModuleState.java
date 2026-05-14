@@ -1,10 +1,10 @@
 package net.thomilist.dimensionalinventories.module.builtin.inventory;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EnderChestInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.PlayerEnderChestContainer;
+import net.minecraft.world.item.ItemStack;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModuleState;
 import net.thomilist.dimensionalinventories.util.ItemStackListHelper;
@@ -15,23 +15,23 @@ public class InventoryModuleState
     implements PlayerModuleState
 {
     private static final int ARMOR_SIZE = 4;
-    private static final int MAIN_SIZE = PlayerInventory.MAIN_SIZE;
+    private static final int MAIN_SIZE = Inventory.INVENTORY_SIZE;
     private static final int OFF_HAND_SIZE = 1;
-    private static final int ENDER_CHEST_SIZE = new EnderChestInventory().size();
+    private static final int ENDER_CHEST_SIZE = new PlayerEnderChestContainer().getContainerSize();
 
-    public final DefaultedList<ItemStack> armor = DefaultedList.ofSize(
+    public final NonNullList<ItemStack> armor = NonNullList.withSize(
         InventoryModuleState.ARMOR_SIZE,
         ItemStack.EMPTY
     );
-    public final DefaultedList<ItemStack> main = DefaultedList.ofSize(
+    public final NonNullList<ItemStack> main = NonNullList.withSize(
         InventoryModuleState.MAIN_SIZE,
         ItemStack.EMPTY
     );
-    public final DefaultedList<ItemStack> offHand = DefaultedList.ofSize(
+    public final NonNullList<ItemStack> offHand = NonNullList.withSize(
         InventoryModuleState.OFF_HAND_SIZE,
         ItemStack.EMPTY
     );
-    public final DefaultedList<ItemStack> enderChest = DefaultedList.ofSize(
+    public final NonNullList<ItemStack> enderChest = NonNullList.withSize(
         InventoryModuleState.ENDER_CHEST_SIZE,
         ItemStack.EMPTY
     );
@@ -39,7 +39,7 @@ public class InventoryModuleState
     public InventoryModuleState()
     { }
 
-    public InventoryModuleState( final ServerPlayerEntity player )
+    public InventoryModuleState( final ServerPlayer player )
     {
         this.loadFromPlayer( player );
     }
@@ -51,7 +51,7 @@ public class InventoryModuleState
     }
 
     @Override
-    public void applyToPlayer( final ServerPlayerEntity player )
+    public void applyToPlayer( final ServerPlayer player )
     {
         Compat.PLAYER_INVENTORY.setArmor( player.getInventory(), this.armor );
         Compat.PLAYER_INVENTORY.setMain( player.getInventory(), this.main );
@@ -60,7 +60,7 @@ public class InventoryModuleState
     }
 
     @Override
-    public void loadFromPlayer( final ServerPlayerEntity player )
+    public void loadFromPlayer( final ServerPlayer player )
     {
         ItemStackListHelper.assignItemStacks( Compat.PLAYER_INVENTORY.getArmor( player.getInventory() ), this.armor );
         ItemStackListHelper.assignItemStacks( Compat.PLAYER_INVENTORY.getMain( player.getInventory() ), this.main );
@@ -74,7 +74,7 @@ public class InventoryModuleState
         );
     }
 
-    public DefaultedList<ItemStack> section( final InventorySection label )
+    public NonNullList<ItemStack> section( final InventorySection label )
     {
         return switch ( label )
         {

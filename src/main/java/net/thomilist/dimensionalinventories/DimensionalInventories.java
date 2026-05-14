@@ -109,8 +109,8 @@ public class DimensionalInventories
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register( ( player, origin, destination ) -> {
             try ( final LostAndFoundContext LAF = LostAndFound.init( "player changed dimension" ) )
             {
-                final String originDimensionName = origin.getRegistryKey().getValue().toString();
-                final String destinationDimensionName = destination.getRegistryKey().getValue().toString();
+                final String originDimensionName = origin.dimension().identifier().toString();
+                final String destinationDimensionName = destination.dimension().identifier().toString();
 
                 this.transitionHandler.handlePlayerDimensionChange(
                     player,
@@ -126,8 +126,8 @@ public class DimensionalInventories
         ServerPlayerEvents.AFTER_RESPAWN.register( ( oldPlayer, newPlayer, alive ) -> {
             try ( final LostAndFoundContext LAF = LostAndFound.init( "player respawned" ) )
             {
-                final String originDimensionName = Compat.ENTITY.getWorld( oldPlayer ).getRegistryKey().getValue().toString();
-                final String destinationDimensionName = Compat.ENTITY.getWorld( newPlayer ).getRegistryKey().getValue().toString();
+                final String originDimensionName = Compat.ENTITY.getWorld( oldPlayer ).dimension().identifier().toString();
+                final String destinationDimensionName = Compat.ENTITY.getWorld( newPlayer ).dimension().identifier().toString();
 
                 this.transitionHandler.handlePlayerDimensionChange(
                     newPlayer,
@@ -144,8 +144,8 @@ public class DimensionalInventories
                                                                             destination ) -> {
             try ( final LostAndFoundContext LAF = LostAndFound.init( "entity changed dimension" ) )
             {
-                final String originDimensionName = origin.getRegistryKey().getValue().toString();
-                final String destinationDimensionName = destination.getRegistryKey().getValue().toString();
+                final String originDimensionName = origin.dimension().identifier().toString();
+                final String destinationDimensionName = destination.dimension().identifier().toString();
 
                 this.transitionHandler.handleEntityDimensionChange(
                     newEntity,

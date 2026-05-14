@@ -1,9 +1,9 @@
 package net.thomilist.dimensionalinventories.compatibility.minecraft.inventory;
 
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
 import net.thomilist.dimensionalinventories.util.ItemStackListHelper;
 
@@ -13,47 +13,47 @@ public class PlayerInventoryCompatWrapper_Minecraft_1_21_5
     implements PlayerInventoryCompatWrapper
 {
     @Override
-    public DefaultedList<ItemStack> getArmor( final PlayerInventory playerInventory )
+    public NonNullList<ItemStack> getArmor( final Inventory playerInventory )
     {
-        return DefaultedList.copyOf(
+        return NonNullList.of(
             ItemStack.EMPTY,
-            playerInventory.player.getEquippedStack( EquipmentSlot.FEET ),
-            playerInventory.player.getEquippedStack( EquipmentSlot.LEGS ),
-            playerInventory.player.getEquippedStack( EquipmentSlot.CHEST ),
-            playerInventory.player.getEquippedStack( EquipmentSlot.HEAD )
+            playerInventory.player.getItemBySlot( EquipmentSlot.FEET ),
+            playerInventory.player.getItemBySlot( EquipmentSlot.LEGS ),
+            playerInventory.player.getItemBySlot( EquipmentSlot.CHEST ),
+            playerInventory.player.getItemBySlot( EquipmentSlot.HEAD )
         );
     }
 
     @Override
-    public void setArmor( final PlayerInventory playerInventory, final DefaultedList<ItemStack> itemStacks )
+    public void setArmor( final Inventory playerInventory, final NonNullList<ItemStack> itemStacks )
     {
-        playerInventory.player.equipStack( EquipmentSlot.FEET, itemStacks.get( 0 ) );
-        playerInventory.player.equipStack( EquipmentSlot.LEGS, itemStacks.get( 1 ) );
-        playerInventory.player.equipStack( EquipmentSlot.CHEST, itemStacks.get( 2 ) );
-        playerInventory.player.equipStack( EquipmentSlot.HEAD, itemStacks.get( 3 ) );
+        playerInventory.player.setItemSlot( EquipmentSlot.FEET, itemStacks.get( 0 ) );
+        playerInventory.player.setItemSlot( EquipmentSlot.LEGS, itemStacks.get( 1 ) );
+        playerInventory.player.setItemSlot( EquipmentSlot.CHEST, itemStacks.get( 2 ) );
+        playerInventory.player.setItemSlot( EquipmentSlot.HEAD, itemStacks.get( 3 ) );
     }
 
     @Override
-    public DefaultedList<ItemStack> getMain( final PlayerInventory playerInventory )
+    public NonNullList<ItemStack> getMain( final Inventory playerInventory )
     {
-        return playerInventory.getMainStacks();
+        return playerInventory.getNonEquipmentItems();
     }
 
     @Override
-    public void setMain( final PlayerInventory playerInventory, final DefaultedList<ItemStack> itemStacks )
+    public void setMain( final Inventory playerInventory, final NonNullList<ItemStack> itemStacks )
     {
-        ItemStackListHelper.assignItemStacks( itemStacks, playerInventory.getMainStacks() );
+        ItemStackListHelper.assignItemStacks( itemStacks, playerInventory.getNonEquipmentItems() );
     }
 
     @Override
-    public DefaultedList<ItemStack> getOffHand( final PlayerInventory playerInventory )
+    public NonNullList<ItemStack> getOffHand( final Inventory playerInventory )
     {
-        return DefaultedList.copyOf( ItemStack.EMPTY, playerInventory.player.getEquippedStack( EquipmentSlot.OFFHAND ) );
+        return NonNullList.of( ItemStack.EMPTY, playerInventory.player.getItemBySlot( EquipmentSlot.OFFHAND ) );
     }
 
     @Override
-    public void setOffHand( final PlayerInventory playerInventory, final DefaultedList<ItemStack> itemStacks )
+    public void setOffHand( final Inventory playerInventory, final NonNullList<ItemStack> itemStacks )
     {
-        playerInventory.player.equipStack( EquipmentSlot.OFFHAND, itemStacks.getFirst() );
+        playerInventory.player.setItemSlot( EquipmentSlot.OFFHAND, itemStacks.getFirst() );
     }
 }

@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.minecraft.test.TestContext;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.thomilist.dimensionalinventories.gametest.util.assertion.AssertionUtils;
 import net.thomilist.dimensionalinventories.util.LogThrottler;
 
@@ -9,7 +9,7 @@ public class LogThrottlerTests
     extends DimensionalInventoriesGameTest
 {
     @GameTest( maxTicks = DimensionalInventoriesGameTest.MAX_TICKS )
-    public void throttleLog( final TestContext context )
+    public void throttleLog( final GameTestHelper context )
     {
         final LogThrottler logThrottler = new LogThrottler( 10 );
         int count = 0;
@@ -24,6 +24,6 @@ public class LogThrottlerTests
 
         AssertionUtils.assertEquals( context, count, 100, "number of allowed logs" );
 
-        context.complete();
+        context.succeed();
     }
 }

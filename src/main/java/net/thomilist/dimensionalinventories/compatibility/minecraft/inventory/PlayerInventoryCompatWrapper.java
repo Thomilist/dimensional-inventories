@@ -1,22 +1,22 @@
 package net.thomilist.dimensionalinventories.compatibility.minecraft.inventory;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.thomilist.dimensionalinventories.compatibility.CompatWrapper;
 
 public interface PlayerInventoryCompatWrapper
     extends CompatWrapper
 {
-    DefaultedList<ItemStack> getArmor( final PlayerInventory playerInventory );
+    NonNullList<ItemStack> getArmor( final Inventory playerInventory );
 
-    void setArmor( final PlayerInventory playerInventory, final DefaultedList<ItemStack> itemStacks );
+    void setArmor( final Inventory playerInventory, final NonNullList<ItemStack> itemStacks );
 
-    DefaultedList<ItemStack> getMain( final PlayerInventory playerInventory );
+    NonNullList<ItemStack> getMain( final Inventory playerInventory );
 
-    void setMain( final PlayerInventory playerInventory, final DefaultedList<ItemStack> itemStacks );
+    void setMain( final Inventory playerInventory, final NonNullList<ItemStack> itemStacks );
 
-    DefaultedList<ItemStack> getOffHand( final PlayerInventory playerInventory );
+    NonNullList<ItemStack> getOffHand( final Inventory playerInventory );
 
-    void setOffHand( final PlayerInventory playerInventory, final DefaultedList<ItemStack> itemStacks );
+    void setOffHand( final Inventory playerInventory, final NonNullList<ItemStack> itemStacks );
 }

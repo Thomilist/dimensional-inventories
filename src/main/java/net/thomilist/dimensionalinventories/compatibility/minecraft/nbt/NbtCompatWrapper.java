@@ -1,21 +1,21 @@
 package net.thomilist.dimensionalinventories.compatibility.minecraft.nbt;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.thomilist.dimensionalinventories.compatibility.CompatWrapper;
 
 public interface NbtCompatWrapper
     extends CompatWrapper
 {
-    ItemStack toItemStack( NbtCompound nbtCompound );
+    ItemStack toItemStack( CompoundTag nbtCompound );
 
-    NbtCompound fromItemStack( ItemStack itemStack );
+    CompoundTag fromItemStack( ItemStack itemStack );
 
-    StatusEffectInstance toStatusEffectInstance( NbtCompound nbtCompound );
+    MobEffectInstance toStatusEffectInstance( CompoundTag nbtCompound );
 
-    NbtCompound fromStatusEffectInstance( StatusEffectInstance statusEffectInstance );
+    CompoundTag fromStatusEffectInstance( MobEffectInstance statusEffectInstance );
 
-    NbtCompound fromEntity( Entity entity );
+    CompoundTag fromEntity( Entity entity );
 }

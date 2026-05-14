@@ -2,8 +2,8 @@ package net.thomilist.dimensionalinventories.module.builtin.shoulderentity;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.thomilist.dimensionalinventories.module.base.JsonModule;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
@@ -36,7 +36,7 @@ public final class ShoulderEntityModule
         );
     }
 
-    private static void preprocessOldShoulderEntityNbt( final NbtCompound nbtCompound )
+    private static void preprocessOldShoulderEntityNbt( final CompoundTag nbtCompound )
     {
         if ( NbtUtils.isEffectivelyEmpty( nbtCompound ) || nbtCompound.contains( "id" ) )
         {
@@ -65,7 +65,7 @@ public final class ShoulderEntityModule
     }
 
     @Override
-    public ShoulderEntityModuleState newInstance( final ServerPlayerEntity player )
+    public ShoulderEntityModuleState newInstance( final ServerPlayer player )
     {
         return new ShoulderEntityModuleState( player );
     }

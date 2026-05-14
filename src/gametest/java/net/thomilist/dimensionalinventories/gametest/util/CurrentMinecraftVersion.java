@@ -4,17 +4,17 @@ import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.impl.game.minecraft.McVersionLookup;
-import net.minecraft.GameVersion;
-import net.minecraft.MinecraftVersion;
+import net.minecraft.DetectedVersion;
+import net.minecraft.WorldVersion;
 
 public final class CurrentMinecraftVersion
 {
     private CurrentMinecraftVersion()
     { }
 
-    public static GameVersion get()
+    public static WorldVersion get()
     {
-        return MinecraftVersion.create();
+        return DetectedVersion.tryDetectVersion();
     }
 
     public static SemanticVersion asSemanticVersion()

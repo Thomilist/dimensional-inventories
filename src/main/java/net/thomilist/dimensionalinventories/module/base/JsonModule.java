@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.module.version.VersionedJsonData;
@@ -24,7 +24,7 @@ public interface JsonModule<T extends ModuleState>
     GsonBuilder GSON_BUILDER = new GsonBuilder()
         .registerTypeAdapter( VersionedJsonData.class, new VersionedJsonDataSerializerPair() )
         .registerTypeAdapter( Optional.class, new OptionalSerializerPair<>() )
-        .registerTypeAdapter( NbtCompound.class, new NbtCompoundSerializerPair() )
+        .registerTypeAdapter( CompoundTag.class, new NbtCompoundSerializerPair() )
         .setPrettyPrinting();
 
     Gson gson();

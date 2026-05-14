@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.module.builtin.status;
 
 import com.google.gson.Gson;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.thomilist.dimensionalinventories.module.base.JsonModule;
 import net.thomilist.dimensionalinventories.module.base.ModuleBase;
 import net.thomilist.dimensionalinventories.module.base.player.JsonPlayerModule;
@@ -20,7 +20,7 @@ public final class StatusModule
     };
 
     private static final Gson GSON = JsonModule.GSON_BUILDER
-        .registerTypeAdapter( StatusEffectInstance.class, new StatusEffectSerializerPair() )
+        .registerTypeAdapter( MobEffectInstance.class, new StatusEffectSerializerPair() )
         .registerTypeAdapter( StatusEffectCollectionSerializerPair.TYPE, new StatusEffectCollectionSerializerPair() )
         .create();
 
@@ -32,7 +32,7 @@ public final class StatusModule
     }
 
     @Override
-    public StatusModuleState newInstance( final ServerPlayerEntity player )
+    public StatusModuleState newInstance( final ServerPlayer player )
     {
         return new StatusModuleState( player );
     }

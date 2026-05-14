@@ -1,44 +1,44 @@
 package net.thomilist.dimensionalinventories.gametest.util.assertion;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 public class ItemStackAsserter
 {
-    private final TestContext context;
+    private final GameTestHelper context;
     private final Registry<Enchantment> enchantmentRegistry;
 
-    public ItemStackAsserter( final TestContext context )
+    public ItemStackAsserter( final GameTestHelper context )
     {
         this.context = context;
-        this.enchantmentRegistry = context.getWorld().getRegistryManager().getOrThrow( RegistryKeys.ENCHANTMENT );
+        this.enchantmentRegistry = context.getLevel().registryAccess().lookupOrThrow( Registries.ENCHANTMENT );
     }
 
     public void assertItemsEqual( final ItemStack itemStack, final ItemStack expectedItemStack, final String name )
     {
-        AssertionUtils.assertEquals( this.context, itemStack, expectedItemStack, name, ItemStack::areEqual );
+        AssertionUtils.assertEquals( this.context, itemStack, expectedItemStack, name, ItemStack::matches );
     }
 
     public void assertEmpty( final ItemStack itemStack, final String name )
     {
         this.context.assertTrue(
             itemStack.isEmpty(),
-            Text.of( "Expected %s to be empty, but was %s".formatted( name, itemStack ) )
+            Component.nullToEmpty( "Expected %s to be empty, but was %s".formatted( name, itemStack ) )
         );
     }
 
     public void assertItemType( final ItemStack itemStack, final Item expectedItem )
     {
         this.context.assertTrue(
-            itemStack.isOf( expectedItem ),
-            Text.of( "Expected item type to be %s, but was %s".formatted(
+            itemStack.is( expectedItem ),
+            Component.nullToEmpty( "Expected item type to be %s, but was %s".formatted(
                 expectedItem,
                 itemStack.getItem()
             ) )
@@ -59,7 +59,7 @@ public class ItemStackAsserter
     {
         AssertionUtils.assertEquals(
             this.context,
-            itemStack.getDamage(),
+            itemStack.getDamageValue(),
             expectedDamage,
             "%s damage".formatted( itemStack.getItem() )
         );
@@ -69,20 +69,20 @@ public class ItemStackAsserter
     {
         AssertionUtils.assertEquals(
             this.context,
-            itemStack.getName().getString(),
+            itemStack.getHoverName().getString(),
             expectedName,
             "%s item name".formatted( itemStack.getItem() )
         );
     }
 
     public void assertEnchantment( final ItemStack itemStack,
-                                   final RegistryKey<Enchantment> expectedEnchantment,
+                                   final ResourceKey<Enchantment> expectedEnchantment,
                                    final int expectedEnchantmentLevel )
     {
         AssertionUtils.assertEquals(
             this.context,
             EnchantmentHelper
-                .getEnchantments( itemStack )
+                .getEnchantmentsForCrafting( itemStack )
                 .getLevel( this.enchantmentRegistry.getOrThrow( expectedEnchantment ) ),
             expectedEnchantmentLevel,
             "%s level".formatted( expectedEnchantment )

@@ -1,12 +1,12 @@
 package net.thomilist.dimensionalinventories.gametest.util.assertion;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.test.TestContext;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,13 +15,13 @@ public class InventoryAsserter
     private final ItemStackAsserter itemStackAsserter;
     private final InventoryWrapper inventory;
 
-    public InventoryAsserter( final TestContext context, final Inventory inventory )
+    public InventoryAsserter( final GameTestHelper context, final Container inventory )
     {
         this.itemStackAsserter = new ItemStackAsserter( context );
         this.inventory = new InventoryWrapper( inventory );
     }
 
-    public InventoryAsserter( final TestContext context, final DefaultedList<ItemStack> itemStacks )
+    public InventoryAsserter( final GameTestHelper context, final NonNullList<ItemStack> itemStacks )
     {
         this.itemStackAsserter = new ItemStackAsserter( context );
         this.inventory = new InventoryWrapper( itemStacks );
@@ -65,7 +65,7 @@ public class InventoryAsserter
     }
 
     public void assertEnchantment( final int index,
-                                   final RegistryKey<Enchantment> expectedEnchantment,
+                                   final ResourceKey<Enchantment> expectedEnchantment,
                                    final int expectedEnchantmentLevel )
     {
         this.itemStackAsserter.assertEnchantment(
@@ -77,16 +77,16 @@ public class InventoryAsserter
 
     private static class InventoryWrapper
     {
-        @Nullable Inventory inventory;
-        @Nullable DefaultedList<ItemStack> itemStacks;
+        @Nullable Container inventory;
+        @Nullable NonNullList<ItemStack> itemStacks;
 
-        public InventoryWrapper( @NotNull final Inventory inventory )
+        public InventoryWrapper( @NotNull final Container inventory )
         {
             this.inventory = inventory;
             this.itemStacks = null;
         }
 
-        public InventoryWrapper( @NotNull final DefaultedList<ItemStack> itemStacks )
+        public InventoryWrapper( @NotNull final NonNullList<ItemStack> itemStacks )
         {
             this.inventory = null;
             this.itemStacks = itemStacks;
@@ -96,7 +96,7 @@ public class InventoryAsserter
         {
             if ( this.inventory != null )
             {
-                return this.inventory.getStack( index );
+                return this.inventory.getItem( index );
             }
 
             if ( this.itemStacks != null )

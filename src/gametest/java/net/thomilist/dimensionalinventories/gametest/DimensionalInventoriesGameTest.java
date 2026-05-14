@@ -2,9 +2,9 @@ package net.thomilist.dimensionalinventories.gametest;
 
 import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.storage.LevelResource;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.gametest.util.TestState;
 import net.thomilist.dimensionalinventories.util.StringHelper;
@@ -36,7 +36,7 @@ public abstract class DimensionalInventoriesGameTest
     protected DimensionalInventoriesGameTest()
     { }
 
-    protected static void initializeSampleData( final TestContext context,
+    protected static void initializeSampleData( final GameTestHelper context,
                                                 final String resourcePath,
                                                 final String worldDestinationPath )
     {
@@ -48,9 +48,9 @@ public abstract class DimensionalInventoriesGameTest
             .orElseThrow();
 
         final Path legacyDataPath = context
-            .getWorld()
+            .getLevel()
             .getServer()
-            .getSavePath( WorldSavePath.ROOT )
+            .getWorldPath( LevelResource.ROOT )
             .resolve( worldDestinationPath );
 
         final File sampleDataDirectory = TestState.toFileExtractZip( sampleDataPath );
@@ -72,12 +72,12 @@ public abstract class DimensionalInventoriesGameTest
     }
 
     @Override
-    public void invokeTestMethod( final TestContext context, final Method method )
+    public void invokeTestMethod( final GameTestHelper context, final Method method )
         throws ReflectiveOperationException
     {
         if ( DimensionalInventoriesGameTest.RUNNING )
         {
-            context.waitAndRun(
+            context.runAfterDelay(
                 1, () -> {
                     try
                     {
@@ -85,7 +85,7 @@ public abstract class DimensionalInventoriesGameTest
                     }
                     catch ( final ReflectiveOperationException e )
                     {
-                        throw context.createError( Text.of(
+                        throw context.assertionException( Component.nullToEmpty(
                             "Failed to run game test " + "(ReflectiveOperationException): " + e.getMessage() ) );
                     }
                 }
@@ -95,7 +95,7 @@ public abstract class DimensionalInventoriesGameTest
         {
             try
             {
-                this.ticks = context.getWorld().getServer().getTicks();
+                this.ticks = context.getLevel().getServer().getTickCount();
                 this.begin( method );
                 method.invoke( this, context );
             }
@@ -106,7 +106,7 @@ public abstract class DimensionalInventoriesGameTest
             }
             finally
             {
-                this.ticks = context.getWorld().getServer().getTicks();
+                this.ticks = context.getLevel().getServer().getTickCount();
                 this.end();
             }
         }

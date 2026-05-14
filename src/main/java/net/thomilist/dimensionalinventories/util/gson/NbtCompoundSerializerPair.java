@@ -2,17 +2,17 @@ package net.thomilist.dimensionalinventories.util.gson;
 
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 
 import java.lang.reflect.Type;
 
 public class NbtCompoundSerializerPair
-    implements SerializerPair<NbtCompound>
+    implements SerializerPair<CompoundTag>
 {
     @Override
-    public NbtCompound fromJson( final JsonElement json, final Type typeOfT, final JsonDeserializationContext context )
+    public CompoundTag fromJson( final JsonElement json, final Type typeOfT, final JsonDeserializationContext context )
         throws JsonParseException
     {
         if ( !json.isJsonPrimitive() )
@@ -25,7 +25,7 @@ public class NbtCompoundSerializerPair
 
         try
         {
-            return NbtHelper.fromNbtProviderString( nbtString );
+            return NbtUtils.snbtToStructure( nbtString );
         }
         catch ( final CommandSyntaxException e )
         {
@@ -35,13 +35,13 @@ public class NbtCompoundSerializerPair
     }
 
     @Override
-    public JsonElement toJson( final NbtCompound src, final Type typeOfSrc, final JsonSerializationContext context )
+    public JsonElement toJson( final CompoundTag src, final Type typeOfSrc, final JsonSerializationContext context )
     {
         if ( src == null )
         {
             return null;
         }
 
-        return new JsonPrimitive( NbtHelper.toNbtProviderString( src ) );
+        return new JsonPrimitive( NbtUtils.structureToSnbt( src ) );
     }
 }

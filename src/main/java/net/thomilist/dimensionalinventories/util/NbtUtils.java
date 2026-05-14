@@ -1,9 +1,8 @@
 package net.thomilist.dimensionalinventories.util;
 
-import net.minecraft.nbt.AbstractNbtList;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtHelper;
+import net.minecraft.nbt.CollectionTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -14,21 +13,21 @@ public final class NbtUtils
     private NbtUtils()
     { }
 
-    public static boolean isEffectivelyEmpty( final @Nullable NbtElement nbtElement )
+    public static boolean isEffectivelyEmpty( final @Nullable Tag nbtElement )
     {
         return switch ( nbtElement )
         {
-            case final AbstractNbtList nbtList -> nbtList.isEmpty();
-            case final NbtCompound nbtCompound ->
+            case final CollectionTag nbtList -> nbtList.isEmpty();
+            case final CompoundTag nbtCompound ->
                 nbtCompound.isEmpty() || nbtCompound.values().stream().allMatch( NbtUtils::isEffectivelyEmpty );
             case null -> true;
             default -> false;
         };
     }
 
-    public static boolean areEffectivelyEqual( final @Nullable NbtElement left, final @Nullable NbtElement right )
+    public static boolean areEffectivelyEqual( final @Nullable Tag left, final @Nullable Tag right )
     {
-        if ( NbtHelper.matches( left, right, true ) )
+        if ( net.minecraft.nbt.NbtUtils.compareNbt( left, right, true ) )
         {
             return true;
         }
@@ -38,16 +37,16 @@ public final class NbtUtils
             return true;
         }
 
-        if ( (left instanceof final NbtCompound leftCompound) && (right instanceof final NbtCompound rightCompound) )
+        if ( (left instanceof final CompoundTag leftCompound) && (right instanceof final CompoundTag rightCompound) )
         {
             final Collection<String> combinedKeys = new HashSet<>();
-            combinedKeys.addAll( leftCompound.getKeys() );
-            combinedKeys.addAll( rightCompound.getKeys() );
+            combinedKeys.addAll( leftCompound.keySet() );
+            combinedKeys.addAll( rightCompound.keySet() );
 
             for ( final String key : combinedKeys )
             {
-                final NbtElement leftElement = leftCompound.get( key );
-                final NbtElement rightElement = rightCompound.get( key );
+                final Tag leftElement = leftCompound.get( key );
+                final Tag rightElement = rightCompound.get( key );
 
                 if ( !NbtUtils.areEffectivelyEqual( leftElement, rightElement ) )
                 {

@@ -1,22 +1,22 @@
 package net.thomilist.dimensionalinventories.compatibility.minecraft.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 
 public class EntityCompatWrapper_Minecraft_1_21_9
     implements EntityCompatWrapper
 {
     @Override
-    public World getWorld( final Entity entity )
+    public Level getWorld( final Entity entity )
     {
-        return entity.getEntityWorld();
+        return entity.level();
     }
 
     @Override
-    public ServerWorld getWorld( final ServerPlayerEntity player )
+    public ServerLevel getWorld( final ServerPlayer player )
     {
-        return player.getEntityWorld();
+        return player.level();
     }
 }

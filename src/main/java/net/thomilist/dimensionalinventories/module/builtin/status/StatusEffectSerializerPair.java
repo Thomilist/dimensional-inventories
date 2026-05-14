@@ -4,8 +4,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.util.gson.SerializerPair;
@@ -13,22 +13,22 @@ import net.thomilist.dimensionalinventories.util.gson.SerializerPair;
 import java.lang.reflect.Type;
 
 public class StatusEffectSerializerPair
-    implements SerializerPair<StatusEffectInstance>
+    implements SerializerPair<MobEffectInstance>
 {
     @Override
-    public StatusEffectInstance fromJson( final JsonElement json,
-                                          final Type typeOfT,
-                                          final JsonDeserializationContext context )
+    public MobEffectInstance fromJson( final JsonElement json,
+                                       final Type typeOfT,
+                                       final JsonDeserializationContext context )
         throws JsonParseException
     {
-        final NbtCompound nbt = context.deserialize( json, NbtCompound.class );
+        final CompoundTag nbt = context.deserialize( json, CompoundTag.class );
 
         if ( nbt == null )
         {
             return null;
         }
 
-        final StatusEffectInstance effect = Compat.NBT.toStatusEffectInstance( nbt );
+        final MobEffectInstance effect = Compat.NBT.toStatusEffectInstance( nbt );
 
         if ( effect == null )
         {
@@ -40,10 +40,10 @@ public class StatusEffectSerializerPair
     }
 
     @Override
-    public JsonElement toJson( final StatusEffectInstance src,
+    public JsonElement toJson( final MobEffectInstance src,
                                final Type typeOfSrc,
                                final JsonSerializationContext context )
     {
-        return context.serialize( Compat.NBT.fromStatusEffectInstance( src ), NbtCompound.class );
+        return context.serialize( Compat.NBT.fromStatusEffectInstance( src ), CompoundTag.class );
     }
 }

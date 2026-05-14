@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.module.builtin.inventory;
 
 import com.google.gson.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 import net.thomilist.dimensionalinventories.lostandfound.LostAndFound;
 import net.thomilist.dimensionalinventories.util.gson.SerializerPair;
 
@@ -10,14 +10,14 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 public class ItemStackListSerializerPair
-    implements SerializerPair<DefaultedList<ItemStack>>
+    implements SerializerPair<NonNullList<ItemStack>>
 {
     public static final Type TYPE = new ItemStackListSerializerPair().type();
 
     @Override
-    public DefaultedList<ItemStack> fromJson( final JsonElement json,
-                                              final Type typeOfT,
-                                              final JsonDeserializationContext context )
+    public NonNullList<ItemStack> fromJson( final JsonElement json,
+                                            final Type typeOfT,
+                                            final JsonDeserializationContext context )
         throws JsonParseException
     {
         if ( !json.isJsonArray() )
@@ -27,11 +27,11 @@ public class ItemStackListSerializerPair
                 json.getAsString()
             );
 
-            return DefaultedList.ofSize( 0 );
+            return NonNullList.createWithCapacity( 0 );
         }
 
         final JsonArray jsonArray = json.getAsJsonArray();
-        final DefaultedList<ItemStack> items = DefaultedList.ofSize( jsonArray.size(), ItemStack.EMPTY );
+        final NonNullList<ItemStack> items = NonNullList.withSize( jsonArray.size(), ItemStack.EMPTY );
 
         for ( int i = 0; i < jsonArray.size(); i++ )
         {
@@ -48,7 +48,7 @@ public class ItemStackListSerializerPair
     }
 
     @Override
-    public JsonElement toJson( final DefaultedList<ItemStack> src,
+    public JsonElement toJson( final NonNullList<ItemStack> src,
                                final Type typeOfSrc,
                                final JsonSerializationContext context )
     {

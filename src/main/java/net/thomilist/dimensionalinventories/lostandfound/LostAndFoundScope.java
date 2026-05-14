@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.lostandfound;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
 import net.thomilist.dimensionalinventories.util.StringHelper;
 
@@ -30,8 +30,8 @@ public class LostAndFoundScope
         {
             case final LostAndFoundFormattable lostAndFoundFormattable ->
                 lostAndFoundFormattable.toLostAndFoundScopeString();
-            case final ServerPlayerEntity serverPlayerEntity ->
-                serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getUuidAsString() + ')';
+            case final ServerPlayer serverPlayerEntity ->
+                serverPlayerEntity.getName().getString() + " (" + serverPlayerEntity.getStringUUID() + ')';
             default -> layer.toString();
         };
     }

@@ -7,13 +7,12 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.argument.DimensionArgumentType;
-import net.minecraft.command.argument.GameModeArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.world.GameMode;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.commands.arguments.GameModeArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.GameType;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPool;
 import net.thomilist.dimensionalinventories.module.builtin.pool.DimensionPoolConfigModule;
@@ -23,10 +22,10 @@ import java.util.Optional;
 
 import static com.mojang.brigadier.arguments.BoolArgumentType.bool;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
-import static net.minecraft.command.argument.DimensionArgumentType.dimension;
-import static net.minecraft.command.argument.GameModeArgumentType.gameMode;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
+import static net.minecraft.commands.arguments.DimensionArgument.dimension;
+import static net.minecraft.commands.arguments.GameModeArgument.gameMode;
 
 public class Commands
 {
@@ -52,10 +51,10 @@ public class Commands
             dispatcher ) );
     }
 
-    public void register( final CommandDispatcher<ServerCommandSource> dispatcher )
+    public void register( final CommandDispatcher<CommandSourceStack> dispatcher )
     {
         dispatcher.register(literal(DimensionalInventoriesCommand.ROOT.toString())
-            .requires( CommandManager.requirePermissionLevel( CommandManager.OWNERS_CHECK))
+            .requires( net.minecraft.commands.Commands.hasPermission( net.minecraft.commands.Commands.LEVEL_OWNERS ))
             .executes(this::printVersion)
             .then(literal(DimensionalInventoriesCommand.LIST_POOLS.toString())
                 .executes(this::listAllDimensionPools))
@@ -84,19 +83,19 @@ public class Commands
                             .executes(this::setIncrementStatisticsInPool))))));
     }
 
-    public int printVersion( final CommandContext<ServerCommandSource> context )
+    public int printVersion( final CommandContext<CommandSourceStack> context )
     {
-        context.getSource().sendFeedback( () -> Text.literal( Commands.versionString() ), false );
+        context.getSource().sendSuccess( () -> Component.literal( Commands.versionString() ), false );
         return Command.SINGLE_SUCCESS;
     }
 
-    public int listAllDimensionPools( final CommandContext<ServerCommandSource> context )
+    public int listAllDimensionPools( final CommandContext<CommandSourceStack> context )
     {
-        context.getSource().sendFeedback( () -> Text.literal( this.dimensionPoolConfig.state().asString() ), false );
+        context.getSource().sendSuccess( () -> Component.literal( this.dimensionPoolConfig.state().asString() ), false );
         return Command.SINGLE_SUCCESS;
     }
 
-    public int listDimensionPool( final CommandContext<ServerCommandSource> context )
+    public int listDimensionPool( final CommandContext<CommandSourceStack> context )
     {
         final String dimensionPoolId = StringArgumentType.getString(
             context,
@@ -114,12 +113,12 @@ public class Commands
         return Command.SINGLE_SUCCESS;
     }
 
-    public void sendFeedback( final CommandContext<ServerCommandSource> context, final String message )
+    public void sendFeedback( final CommandContext<CommandSourceStack> context, final String message )
     {
-        context.getSource().sendFeedback( () -> Text.literal( message ), false );
+        context.getSource().sendSuccess( () -> Component.literal( message ), false );
     }
 
-    public int createDimensionPool( final CommandContext<ServerCommandSource> context )
+    public int createDimensionPool( final CommandContext<CommandSourceStack> context )
     {
         final String dimensionPoolId = StringArgumentType.getString(
             context,
@@ -128,7 +127,7 @@ public class Commands
 
         final DimensionPoolOperationResult result = this.dimensionPoolConfig
             .state()
-            .createPool( dimensionPoolId, GameMode.DEFAULT );
+            .createPool( dimensionPoolId, GameType.DEFAULT_MODE );
 
         if ( !result.success() )
         {
@@ -141,7 +140,7 @@ public class Commands
         return Command.SINGLE_SUCCESS;
     }
 
-    public int removeDimensionPool( final CommandContext<ServerCommandSource> context )
+    public int removeDimensionPool( final CommandContext<CommandSourceStack> context )
     {
         final String dimensionPoolId = StringArgumentType.getString(
             context,
@@ -161,17 +160,17 @@ public class Commands
         return Command.SINGLE_SUCCESS;
     }
 
-    public int assignDimensionToPool( final CommandContext<ServerCommandSource> context )
+    public int assignDimensionToPool( final CommandContext<CommandSourceStack> context )
     {
         final String dimensionPoolId = StringArgumentType.getString(
             context,
             DimensionalInventoriesCommand.POOL_ID.toString()
         );
-        final ServerWorld dimension;
+        final ServerLevel dimension;
 
         try
         {
-            dimension = DimensionArgumentType.getDimensionArgument(
+            dimension = DimensionArgument.getDimension(
                 context,
                 DimensionalInventoriesCommand.DIMENSION_NAME.toString()
             );
@@ -182,7 +181,7 @@ public class Commands
             return -1;
         }
 
-        final String dimensionName = dimension.getRegistryKey().getValue().toString();
+        final String dimensionName = dimension.dimension().identifier().toString();
         final DimensionPoolOperationResult result = this.dimensionPoolConfig
             .state()
             .assignDimensionToPool( dimensionName, dimensionPoolId );
@@ -228,17 +227,17 @@ public class Commands
         return Command.SINGLE_SUCCESS;
     }
 
-    public int removeDimensionFromPool( final CommandContext<ServerCommandSource> context )
+    public int removeDimensionFromPool( final CommandContext<CommandSourceStack> context )
     {
         final String dimensionPoolId = StringArgumentType.getString(
             context,
             DimensionalInventoriesCommand.POOL_ID.toString()
         );
-        final ServerWorld dimension;
+        final ServerLevel dimension;
 
         try
         {
-            dimension = DimensionArgumentType.getDimensionArgument(
+            dimension = DimensionArgument.getDimension(
                 context,
                 DimensionalInventoriesCommand.DIMENSION_NAME.toString()
             );
@@ -249,7 +248,7 @@ public class Commands
             return -1;
         }
 
-        final String dimensionName = dimension.getRegistryKey().getValue().toString();
+        final String dimensionName = dimension.dimension().identifier().toString();
 
         final DimensionPoolOperationResult result = this.dimensionPoolConfig
             .state()
@@ -287,17 +286,17 @@ public class Commands
         return Command.SINGLE_SUCCESS;
     }
 
-    public int setDimensionPoolGameMode( final CommandContext<ServerCommandSource> context )
+    public int setDimensionPoolGameMode( final CommandContext<CommandSourceStack> context )
     {
         final String dimensionPoolId = StringArgumentType.getString(
             context,
             DimensionalInventoriesCommand.POOL_ID.toString()
         );
-        final GameMode gameMode;
+        final GameType gameMode;
 
         try
         {
-            gameMode = GameModeArgumentType.getGameMode(
+            gameMode = GameModeArgument.getGameMode(
                 context,
                 DimensionalInventoriesCommand.GAME_MODE_NAME.toString()
             );
@@ -320,12 +319,12 @@ public class Commands
         this.dimensionPoolConfig.saveWithContext();
         this.sendFeedback(
             context,
-            "Game mode '" + gameMode.asString() + "' set for dimension pool '" + dimensionPoolId + '\''
+            "Game mode '" + gameMode.getSerializedName() + "' set for dimension pool '" + dimensionPoolId + '\''
         );
         return Command.SINGLE_SUCCESS;
     }
 
-    public int setProgressAdvancementsInPool( final CommandContext<ServerCommandSource> context )
+    public int setProgressAdvancementsInPool( final CommandContext<CommandSourceStack> context )
     {
         final String dimensionPoolId = StringArgumentType.getString(
             context,
@@ -367,7 +366,7 @@ public class Commands
         return Command.SINGLE_SUCCESS;
     }
 
-    public int setIncrementStatisticsInPool( final CommandContext<ServerCommandSource> context )
+    public int setIncrementStatisticsInPool( final CommandContext<CommandSourceStack> context )
     {
         final String dimensionPoolId = StringArgumentType.getString(
             context,

@@ -1,24 +1,24 @@
 package net.thomilist.dimensionalinventories.gametest.util;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.test.TestContext;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.stream.IntStream;
 
 public final class BlockPlacement
 {
-    public static void PlaceFloor( final TestContext context )
+    public static void PlaceFloor( final GameTestHelper context )
     {
         BlockPlacement.PlaceFloor( context, 1, Blocks.SMOOTH_STONE );
     }
 
-    public static void PlaceFloor( final TestContext context, final int y, final Block block )
+    public static void PlaceFloor( final GameTestHelper context, final int y, final Block block )
     {
         BlockPlacement.Fill( context, 0, y, 0, 7, y, 7, block );
     }
 
-    public static void Fill( final TestContext context,
+    public static void Fill( final GameTestHelper context,
                              final int xa,
                              final int ya,
                              final int za,
@@ -37,7 +37,7 @@ public final class BlockPlacement
             {
                 for ( final int z : zValues )
                 {
-                    context.setBlockState( x, y, z, block );
+                    context.setBlock( x, y, z, block );
                 }
             }
         }

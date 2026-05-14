@@ -1,8 +1,8 @@
 package net.thomilist.dimensionalinventories.mixin;
 
-import net.minecraft.advancement.criterion.AbstractCriterion;
-import net.minecraft.advancement.criterion.Criterion;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
+import net.minecraft.server.level.ServerPlayer;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.compatibility.LimitedCompatibility;
@@ -21,9 +21,9 @@ import java.util.function.Predicate;
 // >=1.20.3: T extends AbstractCriterion.Conditions
 //  <1.20.3: T extends AbstractCriterionConditions
 @LimitedCompatibility( target = "Minecraft", versions = ">=1.20.3")
-@Mixin( AbstractCriterion.class )
-public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterion.Conditions>
-    implements Criterion<T>
+@Mixin( SimpleCriterionTrigger.class )
+public abstract class DisableAdvancementProgressMixin<T extends SimpleCriterionTrigger.SimpleInstance>
+    implements CriterionTrigger<T>
 {
     @Unique
     private static final LogThrottler LOG_THROTTLER = new LogThrottler( 10000 );
@@ -44,11 +44,11 @@ public abstract class DisableAdvancementProgressMixin<T extends AbstractCriterio
     }
 
     @Inject( at = @At( "HEAD" ),
-             method = "trigger(Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Predicate;)V",
+             method = "trigger(Lnet/minecraft/server/level/ServerPlayer;Ljava/util/function/Predicate;)V",
              cancellable = true )
-    public void trigger( final ServerPlayerEntity player, final Predicate<T> predicate, final CallbackInfo info )
+    public void trigger( final ServerPlayer player, final Predicate<T> predicate, final CallbackInfo info )
     {
-        final String dimensionName = Compat.ENTITY.getWorld( player ).getRegistryKey().getValue().toString();
+        final String dimensionName = Compat.ENTITY.getWorld( player ).dimension().identifier().toString();
 
         final Optional<DimensionPool> pool = DisableAdvancementProgressMixin
             .dimensionPoolConfig()

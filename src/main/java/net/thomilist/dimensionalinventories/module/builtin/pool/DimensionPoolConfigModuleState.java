@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.module.builtin.pool;
 
-import net.minecraft.world.GameMode;
+import net.minecraft.world.level.GameType;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.module.base.config.ConfigModuleState;
 import net.thomilist.dimensionalinventories.module.builtin.legacy.pool.DimensionPoolConfigModuleState_SV1;
@@ -76,7 +76,7 @@ public class DimensionPoolConfigModuleState
         return Optional.empty();
     }
 
-    public DimensionPoolOperationResult createPool( final String dimensionPoolId, final GameMode gameMode )
+    public DimensionPoolOperationResult createPool( final String dimensionPoolId, final GameType gameMode )
     {
         final boolean exists = this.poolExists( dimensionPoolId );
 

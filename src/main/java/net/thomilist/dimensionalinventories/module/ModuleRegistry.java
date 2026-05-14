@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.module;
 
-import net.minecraft.util.InvalidIdentifierException;
+import net.minecraft.IdentifierException;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.ModuleNotRegisteredException;
 import net.thomilist.dimensionalinventories.module.base.Module;
@@ -68,11 +68,11 @@ public final class ModuleRegistry<T extends Module>
     }
 
     public void register( final ModuleGroup moduleGroup )
-        throws InvalidIdentifierException
+        throws IdentifierException
     {
         if ( !ModuleRegistry.isValidId( moduleGroup.groupId() ) )
         {
-            throw new InvalidIdentifierException( "'%s' is not a valid module group ID".formatted( moduleGroup.groupId() ) );
+            throw new IdentifierException( "'%s' is not a valid module group ID".formatted( moduleGroup.groupId() ) );
         }
 
         for ( final Module module : moduleGroup.modules )

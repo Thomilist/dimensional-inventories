@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.module;
 
-import net.minecraft.util.InvalidIdentifierException;
+import net.minecraft.IdentifierException;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.exception.InvalidModuleException;
 import net.thomilist.dimensionalinventories.exception.ModuleConstructionException;
@@ -30,7 +30,7 @@ public abstract class ModuleGroup
 
     @SafeVarargs
     protected final void register( final Class<? extends Module>... moduleTypes )
-        throws InvalidIdentifierException, InvalidModuleException, ModuleConstructionException
+        throws IdentifierException, InvalidModuleException, ModuleConstructionException
     {
         for ( final Class<? extends Module> moduleType : moduleTypes )
         {
@@ -40,13 +40,13 @@ public abstract class ModuleGroup
     }
 
     private void register( final Module... modules )
-        throws InvalidIdentifierException, InvalidModuleException
+        throws IdentifierException, InvalidModuleException
     {
         for ( final Module module : modules )
         {
             if ( !ModuleRegistry.isValidId( module.moduleId() ) )
             {
-                throw new InvalidIdentifierException( "'%s' is not a valid module ID".formatted( module.moduleId() ) );
+                throw new IdentifierException( "'%s' is not a valid module ID".formatted( module.moduleId() ) );
             }
 
             if ( !((module instanceof ConfigModule) || (module instanceof PlayerModule)) )

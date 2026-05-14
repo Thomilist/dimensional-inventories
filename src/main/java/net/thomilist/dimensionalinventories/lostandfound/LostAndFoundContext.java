@@ -1,6 +1,6 @@
 package net.thomilist.dimensionalinventories.lostandfound;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.thomilist.dimensionalinventories.DimensionalInventories;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.module.base.Module;
@@ -73,7 +73,7 @@ public class LostAndFoundContext
 
     public Path outputDirectory()
     {
-        final List<Class<?>> specialTypes = List.of( DimensionPool.class, ServerPlayerEntity.class, Module.class );
+        final List<Class<?>> specialTypes = List.of( DimensionPool.class, ServerPlayer.class, Module.class );
         final List<Object> specialObjects = new ArrayList<>();
 
         for ( final Object layer : this.layers() )
@@ -98,12 +98,12 @@ public class LostAndFoundContext
             case 2 -> SavePaths.lostAndFoundDirectory(
                 DimensionalInventories.INSTANCE.storageVersion,
                 (DimensionPool) specialObjects.get( 0 ),
-                (ServerPlayerEntity) specialObjects.get( 1 )
+                (ServerPlayer) specialObjects.get( 1 )
             );
             case 3 -> SavePaths.lostAndFoundDirectory(
                 DimensionalInventories.INSTANCE.storageVersion,
                 (DimensionPool) specialObjects.get( 0 ),
-                (ServerPlayerEntity) specialObjects.get( 1 ),
+                (ServerPlayer) specialObjects.get( 1 ),
                 (Module) specialObjects.get( 2 )
             );
             default -> SavePaths.lostAndFoundDirectory( DimensionalInventories.INSTANCE.storageVersion );
@@ -121,14 +121,14 @@ public class LostAndFoundContext
         this.scopes.clear();
     }
 
-    public ServerPlayerEntity getPlayer()
+    public ServerPlayer getPlayer()
         throws NoSuchElementException
     {
         for ( final Object layer : this.layers() )
         {
-            if ( layer instanceof ServerPlayerEntity )
+            if ( layer instanceof ServerPlayer )
             {
-                return (ServerPlayerEntity) layer;
+                return (ServerPlayer) layer;
             }
         }
 
