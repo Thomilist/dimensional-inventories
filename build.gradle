@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -52,9 +52,6 @@ loom {
 			sourceSet sourceSets.gametestClient
 		}
 	}
-
-    createRemapConfigurations( sourceSets.gametest )
-    createRemapConfigurations( sourceSets.gametestClient )
 
 	runs {
 		server {
@@ -183,11 +180,10 @@ repositories {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// Google Gson for JSON parsing and writing
 	api "com.google.code.gson:gson:${project.gson_version}"
@@ -201,13 +197,14 @@ dependencies {
 	gametestClientImplementation sourceSets.gametest.output
 
     // Exclude transitive dependencies to avoid duplicate Fabric Loader classes
-    modGametestImplementation "com.github.gnembon:fabric-carpet:${project.carpet_version}" transitive false
+    gametestImplementation "com.github.gnembon:fabric-carpet:${project.carpet_version}" transitive false
 }
 
 tasks.withType(ProcessResources).configureEach {
 	inputs.property("java_version", project.target_java_version)
 	inputs.property("version", project.version)
 	inputs.property("minecraft_version", project.minecraft_version)
+	inputs.property "target_minecraft_version", project.target_minecraft_version
 	inputs.property("loader_version", project.loader_version)
 	inputs.property("carpet_version", project.carpet_version)
 	filteringCharset = "UTF-8"
@@ -216,6 +213,7 @@ tasks.withType(ProcessResources).configureEach {
 		expand "java_version": project.target_java_version,
 				"version": project.version,
 				"minecraft_version": project.minecraft_version,
+				"target_minecraft_version": project.target_minecraft_version,
                 "loader_version": project.loader_version,
                 "carpet_version": project.carpet_version
 	}

@@ -1,7 +1,7 @@
 package net.thomilist.dimensionalinventories;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
@@ -106,7 +106,7 @@ public class DimensionalInventories
 
     private void registerPlayerTravelHandler()
     {
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register( ( player, origin, destination ) -> {
+        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register( ( player, origin, destination ) -> {
             try ( final LostAndFoundContext LAF = LostAndFound.init( "player changed dimension" ) )
             {
                 final String originDimensionName = origin.dimension().identifier().toString();
@@ -140,7 +140,7 @@ public class DimensionalInventories
 
     private void registerEntityTravelHandler()
     {
-        ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register( ( originalEntity, newEntity, origin,
+        ServerEntityLevelChangeEvents.AFTER_ENTITY_CHANGE_LEVEL.register( ( originalEntity, newEntity, origin,
                                                                             destination ) -> {
             try ( final LostAndFoundContext LAF = LostAndFound.init( "entity changed dimension" ) )
             {

@@ -31,7 +31,7 @@ public class NonPlayerHandlingTests
         {
             DimensionalInventoriesGameTest.LOGGER.debug(
                 "transitionDeletesItemEntity: {}",
-                item.getName().getString()
+                item
             );
             final ItemEntity itemEntity = context.spawnItem( item, 0.5f, 2.5f, 0.5f );
 
