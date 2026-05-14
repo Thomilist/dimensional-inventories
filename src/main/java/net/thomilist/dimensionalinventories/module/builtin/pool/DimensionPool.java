@@ -17,10 +17,10 @@ public final class DimensionPool
     );
 
     private static final String DEFAULT_DIMENSION_POOL_ID = "default";
-    private String id;
-    private String displayName;
     @SuppressWarnings( "FieldMayBeFinal" )
     private TreeSet<String> dimensions = new TreeSet<>();
+    private String id = "";
+    private String displayName = "";
     private GameType gameMode = GameType.DEFAULT_MODE;
     private boolean progressAdvancements = true;
     private boolean incrementStatistics = true;
