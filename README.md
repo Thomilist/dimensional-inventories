@@ -90,7 +90,7 @@ Adding portal support to custom dimensions using another mod alongside Dimension
 
 ## Mod Compatibility
 
-Broadly speaking, there are (at least) two interesting cases when it comes to mod compatiblity:
+Broadly speaking, there are (at least) two interesting cases when it comes to mod compatibility:
 
 1. Mods that use vanilla Minecraft systems to add/remove/modify game content (items, status effects, dimensions and so on). These should be compatible with Dimensional Inventories "out of the box".
 2. Mods that affect the *types* of player state available (extra inventory slots, currency systems and so on). These require additional effort to integrate with Dimensional Inventories.
