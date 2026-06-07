@@ -95,10 +95,17 @@ Broadly speaking, there are (at least) two interesting cases when it comes to mo
 1. Mods that use vanilla Minecraft systems to add/remove/modify game content (items, status effects, dimensions and so on). These should be compatible with Dimensional Inventories "out of the box".
 2. Mods that affect the *types* of player state available (extra inventory slots, currency systems and so on). These require additional effort to integrate with Dimensional Inventories.
 
-For the second case, Dimensional Inventories features a preliminary extension API, which allows *another* mod to register additional player state handlers. The extension API may change, even across minor versions, so be sure to use the compatible mod versions listed on a particular extension release. Note that extension mods may be developed by different people than the "main" Dimensional Inventories mod or the mod they provide support for. **You should not expect mod authors to resolve issues caused by an extension mod developed by a different author**.
+For the second case, Dimensional Inventories features a preliminary extension API, which allows *another* mod to register additional player state handlers (see the *Extensions* section below).
+
+## Extensions
+
+Dimensional Inventories features a preliminary extension API, which can be used to improve compatibility with other mods (as described in the *Mod Compatibility* section above), or to add or change features in the core Dimensional Inventories mod. The extension API may change, even across minor versions, so be sure to use the compatible mod versions listed on a particular extension release.
+
+Note that extension mods may be developed by different people than the "main" Dimensional Inventories mod or the mod they provide support for. **You should not expect mod authors to resolve issues caused by an extension mod developed by a different author**.
 
 Below is a list of extension mods:
 
-| Mod | Extension | Author |
-| --- | --------- | ------ |
-| [Trinkets](https://modrinth.com/mod/trinkets) | [Dimensional Inventories Extension: Trinkets](https://github.com/Thomilist/dimensional-inventories-extension-trinkets) | Same as Dimensional Inventories |
+| Extension                                                                                                              | Description                                                      | Author                                                                                          |
+|------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| [Dimensional Inventories Extension: Trinkets](https://github.com/Thomilist/dimensional-inventories-extension-trinkets) | Compatibility with [Trinkets](https://modrinth.com/mod/trinkets) | Same as Dimensional Inventories                                                                 |
+| [Dimensional Inventories Extension: Warp](https://modrinth.com/mod/dimensional-inventories-extension-warp)             | Warp command to teleport players across dimension pools          | `rofumer` ([Modrinth](https://modrinth.com/user/rofumer); [GitHub](https://github.com/Rofumer)) |
