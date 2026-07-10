@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.parrot.Parrot;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.gametest.mixin.ParrotAccessor;
@@ -37,7 +37,7 @@ public class ShoulderEntityModuleTests
         player.setOnGround( true );
         ((ServerPlayerAccessor) player).invokeRemoveEntitiesOnShoulder();
 
-        final Parrot parrot = new Parrot( EntityType.PARROT, context.getLevel() );
+        final Parrot parrot = new Parrot( EntityTypes.PARROT, context.getLevel() );
         ((ParrotAccessor) parrot).invokeSetVariant( Parrot.Variant.RED_BLUE );
         final CompoundTag parrotNbt = Compat.NBT.fromEntity( parrot );
         ((ServerPlayerAccessor) player).invokeSetShoulderEntityLeft( parrotNbt );
@@ -92,8 +92,8 @@ public class ShoulderEntityModuleTests
         player.setOnGround( true );
         ((ServerPlayerAccessor) player).invokeRemoveEntitiesOnShoulder();
 
-        final Parrot leftParrot = new Parrot( EntityType.PARROT, context.getLevel() );
-        final Parrot rightParrot = new Parrot( EntityType.PARROT, context.getLevel() );
+        final Parrot leftParrot = new Parrot( EntityTypes.PARROT, context.getLevel() );
+        final Parrot rightParrot = new Parrot( EntityTypes.PARROT, context.getLevel() );
 
         ((ParrotAccessor) leftParrot).invokeSetVariant( Parrot.Variant.RED_BLUE );
         ((ParrotAccessor) rightParrot).invokeSetVariant( Parrot.Variant.GREEN );

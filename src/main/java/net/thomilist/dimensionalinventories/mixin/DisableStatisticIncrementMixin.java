@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stat;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -36,7 +36,7 @@ public abstract class DisableStatisticIncrementMixin
                                               final float yaw,
                                               final GameProfile gameProfile )
     {
-        super( EntityType.PLAYER, world );
+        super( EntityTypes.PLAYER, world );
     }
 
     @Unique

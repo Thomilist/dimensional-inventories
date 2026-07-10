@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
@@ -41,7 +42,7 @@ public class NonPlayerHandlingTests
                 BasicModSetup.DESTINATION_DIMENSION
             );
 
-            context.assertEntityNotPresent( EntityType.ITEM );
+            context.assertEntityNotPresent( EntityTypes.ITEM );
         }
 
         context.succeed();
@@ -63,7 +64,7 @@ public class NonPlayerHandlingTests
             BasicModSetup.UNCONFIGURED_DIMENSION
         );
 
-        context.assertEntityPresent( EntityType.ITEM );
+        context.assertEntityPresent( EntityTypes.ITEM );
         context.succeed();
     }
 
@@ -122,7 +123,7 @@ public class NonPlayerHandlingTests
         BlockPlacement.PlaceFloor( context );
         final BasicModSetup setup = BasicModSetup.withDefaultModules();
 
-        final EntityType<Creeper> entityType = EntityType.CREEPER;
+        final EntityType<Creeper> entityType = EntityTypes.CREEPER;
         final Creeper entity = context.spawn( entityType, 4, 4, 4 );
 
         setup.instance.transitionHandler.handleEntityDimensionChange(
@@ -145,19 +146,19 @@ public class NonPlayerHandlingTests
 
         final var clearableEntityTypes = List.of(
             // Minecarts
-            EntityType.HOPPER_MINECART,
-            EntityType.CHEST_MINECART,
+            EntityTypes.HOPPER_MINECART,
+            EntityTypes.CHEST_MINECART,
 
             // Boats
-            EntityType.ACACIA_CHEST_BOAT,
-            EntityType.BIRCH_CHEST_BOAT,
-            EntityType.CHERRY_CHEST_BOAT,
-            EntityType.DARK_OAK_CHEST_BOAT,
-            EntityType.JUNGLE_CHEST_BOAT,
-            EntityType.MANGROVE_CHEST_BOAT,
-            EntityType.OAK_CHEST_BOAT,
-            EntityType.PALE_OAK_CHEST_BOAT,
-            EntityType.SPRUCE_CHEST_BOAT
+            EntityTypes.ACACIA_CHEST_BOAT,
+            EntityTypes.BIRCH_CHEST_BOAT,
+            EntityTypes.CHERRY_CHEST_BOAT,
+            EntityTypes.DARK_OAK_CHEST_BOAT,
+            EntityTypes.JUNGLE_CHEST_BOAT,
+            EntityTypes.MANGROVE_CHEST_BOAT,
+            EntityTypes.OAK_CHEST_BOAT,
+            EntityTypes.PALE_OAK_CHEST_BOAT,
+            EntityTypes.SPRUCE_CHEST_BOAT
         );
 
         for ( final var entityType : clearableEntityTypes )
@@ -177,7 +178,7 @@ public class NonPlayerHandlingTests
                 BasicModSetup.DESTINATION_DIMENSION
             );
 
-            context.assertEntityNotPresent( EntityType.ITEM );
+            context.assertEntityNotPresent( EntityTypes.ITEM );
             context.killAllEntities();
         }
 

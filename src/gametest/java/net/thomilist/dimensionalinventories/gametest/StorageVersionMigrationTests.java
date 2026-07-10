@@ -125,7 +125,7 @@ public class StorageVersionMigrationTests
         instance.transitionHandler.loadToPlayer( StorageVersion.V2, dimensionPoolCreative, player );
 
         final List<@NotNull Item> expectedItems = List.of(
-            Items.WHITE_CONCRETE,
+            Items.CONCRETE.white(),
             Items.OBSERVER,
             Items.REDSTONE,
             Items.REPEATER,
@@ -179,23 +179,23 @@ public class StorageVersionMigrationTests
         combinedInventory.assertItemTypeAt( 38, Items.ELYTRA );
         combinedInventory.assertItemTypeAt( 39, Items.DIAMOND_HELMET );
 
-        enderChest.assertItemTypeAt( 0, Items.BLUE_SHULKER_BOX );
-        enderChest.assertItemTypeAt( 1, Items.BROWN_SHULKER_BOX );
+        enderChest.assertItemTypeAt( 0, Items.DYED_SHULKER_BOX.blue() );
+        enderChest.assertItemTypeAt( 1, Items.DYED_SHULKER_BOX.brown() );
         enderChest.assertItemTypeAt( 2, Items.CRAFTING_TABLE );
-        enderChest.assertItemTypeAt( 3, Items.CYAN_SHULKER_BOX );
+        enderChest.assertItemTypeAt( 3, Items.DYED_SHULKER_BOX.cyan() );
         enderChest.assertItemTypeAt( 4, Items.DIAMOND_AXE );
         enderChest.assertItemTypeAt( 5, Items.DIAMOND_PICKAXE );
         enderChest.assertItemTypeAt( 6, Items.DIAMOND_SWORD );
         enderChest.assertItemTypeAt( 7, Items.DIAMOND_SWORD );
-        enderChest.assertItemTypeAt( 8, Items.GRAY_SHULKER_BOX );
-        enderChest.assertItemTypeAt( 9, Items.LIGHT_GRAY_SHULKER_BOX );
-        enderChest.assertItemTypeAt( 10, Items.ORANGE_SHULKER_BOX );
+        enderChest.assertItemTypeAt( 8, Items.DYED_SHULKER_BOX.gray() );
+        enderChest.assertItemTypeAt( 9, Items.DYED_SHULKER_BOX.lightGray() );
+        enderChest.assertItemTypeAt( 10, Items.DYED_SHULKER_BOX.orange() );
         enderChest.assertItemTypeAt( 11, Items.SHULKER_BOX );
-        enderChest.assertItemTypeAt( 12, Items.WHITE_BED );
+        enderChest.assertItemTypeAt( 12, Items.BED.white() );
 
         for ( int index = 13; index < 20; ++index )
         {
-            enderChest.assertItemTypeAt( index, Items.WHITE_SHULKER_BOX );
+            enderChest.assertItemTypeAt( index, Items.DYED_SHULKER_BOX.white() );
         }
 
         for ( int index = 20; index < 27; ++index )
