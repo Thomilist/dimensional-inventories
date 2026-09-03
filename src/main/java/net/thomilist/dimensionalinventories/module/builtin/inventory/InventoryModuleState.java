@@ -3,7 +3,6 @@ package net.thomilist.dimensionalinventories.module.builtin.inventory;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.ItemStack;
 import net.thomilist.dimensionalinventories.compatibility.Compat;
 import net.thomilist.dimensionalinventories.module.base.player.PlayerModuleState;
@@ -15,32 +14,43 @@ public class InventoryModuleState
     implements PlayerModuleState
 {
     private static final int ARMOR_SIZE = 4;
-    private static final int MAIN_SIZE = Inventory.INVENTORY_SIZE;
     private static final int OFF_HAND_SIZE = 1;
-    private static final int ENDER_CHEST_SIZE = new PlayerEnderChestContainer().getContainerSize();
+    private static final int DEFAULT_ENDER_CHEST_SIZE = 27;
 
-    public final NonNullList<ItemStack> armor = NonNullList.withSize(
-        InventoryModuleState.ARMOR_SIZE,
-        ItemStack.EMPTY
-    );
-    public final NonNullList<ItemStack> main = NonNullList.withSize(
-        InventoryModuleState.MAIN_SIZE,
-        ItemStack.EMPTY
-    );
-    public final NonNullList<ItemStack> offHand = NonNullList.withSize(
-        InventoryModuleState.OFF_HAND_SIZE,
-        ItemStack.EMPTY
-    );
-    public final NonNullList<ItemStack> enderChest = NonNullList.withSize(
-        InventoryModuleState.ENDER_CHEST_SIZE,
-        ItemStack.EMPTY
-    );
+    public NonNullList<ItemStack> armor;
+    public NonNullList<ItemStack> main;
+    public NonNullList<ItemStack> offHand;
+    public NonNullList<ItemStack> enderChest;
+
+    private InventoryModuleState( final int armor_size,
+                                  final int main_size,
+                                  final int off_hand_size,
+                                  final int ender_chest_size )
+    {
+        this.armor = NonNullList.withSize( armor_size, ItemStack.EMPTY );
+        this.main = NonNullList.withSize( main_size, ItemStack.EMPTY );
+        this.offHand = NonNullList.withSize( off_hand_size, ItemStack.EMPTY );
+        this.enderChest = NonNullList.withSize( ender_chest_size, ItemStack.EMPTY );
+    }
 
     public InventoryModuleState()
-    { }
+    {
+        this(
+            InventoryModuleState.ARMOR_SIZE,
+            Inventory.INVENTORY_SIZE,
+            InventoryModuleState.OFF_HAND_SIZE,
+            InventoryModuleState.DEFAULT_ENDER_CHEST_SIZE
+        );
+    }
 
     public InventoryModuleState( final ServerPlayer player )
     {
+        this(
+            InventoryModuleState.ARMOR_SIZE,
+            Inventory.INVENTORY_SIZE,
+            InventoryModuleState.OFF_HAND_SIZE,
+            player.getEnderChestInventory().getContainerSize()
+        );
         this.loadFromPlayer( player );
     }
 
